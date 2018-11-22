@@ -7,6 +7,8 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
 
 /**
@@ -52,10 +54,23 @@ public class XJarDecryptor extends XWrappedDecryptor implements XDecryptor {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
+                // 内嵌JAR包不压缩
                 if (entry.getName().endsWith(".jar")) {
-                    decrypt(key, nis, nos);
-                } else {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
+                    decrypt(key, nis, cos);
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setMethod(JarArchiveEntry.STORED);
+                    jarArchiveEntry.setSize(bos.size());
+                    jarArchiveEntry.setCrc(cos.getChecksum().getValue());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+                    XKit.transfer(bis, nos);
+                }
+                // 其他资源做压缩
+                else {
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    zos.putArchiveEntry(jarArchiveEntry);
                     try (OutputStream eos = decrypt(key, nos)) {
                         XKit.transfer(zis, eos);
                     }
