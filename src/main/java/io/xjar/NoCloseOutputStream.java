@@ -1,6 +1,5 @@
 package io.xjar;
 
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -10,15 +9,34 @@ import java.io.OutputStream;
  * @author Payne 646742615@qq.com
  * 2018/11/22 16:32
  */
-public class NoCloseOutputStream extends FilterOutputStream {
+public class NoCloseOutputStream extends OutputStream {
+    private final OutputStream out;
 
     public NoCloseOutputStream(OutputStream out) {
-        super(out);
+        this.out = out;
     }
 
     @Override
-    public void close() throws IOException {
-
+    public void write(int b) throws IOException {
+        out.write(b);
     }
 
+    @Override
+    public void write(byte[] b) throws IOException {
+        out.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        out.write(b, off, len);
+    }
+
+    @Override
+    public void flush() throws IOException {
+        out.flush();
+    }
+
+    @Override
+    public void close() {
+    }
 }
