@@ -1,7 +1,6 @@
 package io.xjar;
 
 import io.xjar.key.XKey;
-import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
@@ -21,7 +20,7 @@ public class XJarDecryptor extends XWrappedDecryptor implements XDecryptor {
     private final int level;
 
     public XJarDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, Deflater.DEFAULT_COMPRESSION);
+        this(xDecryptor, Deflater.DEFLATED);
     }
 
     public XJarDecryptor(XDecryptor xDecryptor, int level) {
@@ -49,28 +48,24 @@ public class XJarDecryptor extends XWrappedDecryptor implements XDecryptor {
             zos.setLevel(level);
             NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
-            ArchiveEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
+            JarArchiveEntry entry;
+            while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                // 内嵌JAR包不压缩
                 if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    decrypt(key, nis, cos);
-                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
-                    jarArchiveEntry.setMethod(JarArchiveEntry.STORED);
-                    jarArchiveEntry.setSize(bos.size());
-                    jarArchiveEntry.setCrc(cos.getChecksum().getValue());
-                    zos.putArchiveEntry(jarArchiveEntry);
+                    new XJarDecryptor(xDecryptor).decrypt(key, nis, cos);
+                    JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
+                    jar.setMethod(JarArchiveEntry.STORED);
+                    jar.setSize(bos.size());
+                    jar.setCrc(cos.getChecksum().getValue());
+                    zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    XKit.transfer(bis, nos);
-                }
-                // 其他资源做压缩
-                else {
-                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
-                    zos.putArchiveEntry(jarArchiveEntry);
+                    XKit.transfer(bis, zos);
+                } else {
+                    zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
                     try (OutputStream eos = decrypt(key, nos)) {
                         XKit.transfer(zis, eos);
                     }
