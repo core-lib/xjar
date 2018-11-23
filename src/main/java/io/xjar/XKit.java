@@ -1,11 +1,9 @@
 package io.xjar;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
-
 import java.io.*;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.zip.*;
 
 public abstract class XKit {
 
@@ -101,39 +99,53 @@ public abstract class XKit {
     }
 
     public static void pack(File source, OutputStream out) throws IOException {
-        try (ZipArchiveOutputStream zipArchiveOutputStream = new ZipArchiveOutputStream(out)) {
-            pack(source, zipArchiveOutputStream);
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(out)) {
+            pack(source, zipOutputStream);
         }
     }
 
-    public static void pack(File source, ZipArchiveOutputStream zipArchiveOutputStream) throws IOException {
-        Stack<String> parents = new Stack<>();
-        Stack<File> files = new Stack<>();
+    public static void pack(File source, ZipOutputStream zipOutputStream) throws IOException {
+        Queue<String> parents = new LinkedList<>();
+        Queue<File> files = new LinkedList<>();
 
         if (source.exists()) {
-            parents.push(null);
-            files.push(source);
+            parents.offer(null);
+            files.offer(source);
         }
 
         while (!files.isEmpty()) {
-            File file = files.pop();
-            String parent = parents.pop();
+            File file = files.poll();
+            String parent = parents.poll();
 
             if (file.isDirectory()) {
                 File[] children = file.listFiles();
                 for (int i = 0; children != null && i < children.length; i++) {
                     File child = children[i];
-                    parents.push(parent == null ? file.getName() : parent + File.separator + file.getName());
-                    files.push(child);
+                    parents.offer(parent == null ? "" : parent.isEmpty() ? file.getName() : parent + "/" + file.getName());
+                    files.offer(child);
                 }
             } else {
-                ZipArchiveEntry zipArchiveEntry = new ZipArchiveEntry(file, parent == null ? file.getName() : parent + File.separator + file.getName());
-                zipArchiveOutputStream.putArchiveEntry(zipArchiveEntry);
                 FileInputStream fileInputStream = null;
                 try {
                     fileInputStream = new FileInputStream(file);
-                    XKit.transfer(fileInputStream, zipArchiveOutputStream);
-                    zipArchiveOutputStream.closeArchiveEntry();
+                    if (file.getName().endsWith(".jar")) {
+                        ZipEntry zipEntry = new ZipEntry(parent == null || parent.isEmpty() ? file.getName() : parent + "/" + file.getName());
+                        zipEntry.setMethod(ZipEntry.STORED);
+                        zipEntry.setSize(file.length());
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
+                        XKit.transfer(fileInputStream, cos);
+                        zipEntry.setCrc(cos.getChecksum().getValue());
+                        zipOutputStream.putNextEntry(zipEntry);
+                        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+                        XKit.transfer(bis, zipOutputStream);
+                    } else {
+                        ZipEntry zipEntry = new ZipEntry(parent == null || parent.isEmpty() ? file.getName() : parent + "/" + file.getName());
+                        zipEntry.setTime(file.lastModified());
+                        zipOutputStream.putNextEntry(zipEntry);
+                        XKit.transfer(fileInputStream, zipOutputStream);
+                    }
+                    zipOutputStream.closeEntry();
                 } finally {
                     XKit.close(fileInputStream);
                 }
@@ -152,16 +164,16 @@ public abstract class XKit {
     }
 
     public static void unpack(InputStream in, File target) throws IOException {
-        try (ZipArchiveInputStream zipArchiveInputStream = new ZipArchiveInputStream(in)) {
-            unpack(zipArchiveInputStream, target);
+        try (ZipInputStream zipInputStream = new ZipInputStream(in)) {
+            unpack(zipInputStream, target);
         }
     }
 
-    public static void unpack(ZipArchiveInputStream zipArchiveInputStream, File target) throws IOException {
-        ZipArchiveEntry zipArchiveEntry;
-        while ((zipArchiveEntry = zipArchiveInputStream.getNextZipEntry()) != null) {
-            if (zipArchiveEntry.isDirectory()) {
-                File directory = new File(target, zipArchiveEntry.getName());
+    public static void unpack(ZipInputStream zipInputStream, File target) throws IOException {
+        ZipEntry zipEntry;
+        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+            if (zipEntry.isDirectory()) {
+                File directory = new File(target, zipEntry.getName());
                 if (!directory.exists() && !directory.mkdirs()) {
                     throw new IOException("could not make directory: " + directory);
                 }
@@ -169,12 +181,12 @@ public abstract class XKit {
             }
             FileOutputStream fileOutputStream = null;
             try {
-                File file = new File(target, zipArchiveEntry.getName());
+                File file = new File(target, zipEntry.getName());
                 if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
                     throw new IOException("could not make directory: " + file.getParentFile());
                 }
                 fileOutputStream = new FileOutputStream(file);
-                XKit.transfer(zipArchiveInputStream, fileOutputStream);
+                XKit.transfer(zipInputStream, fileOutputStream);
             } finally {
                 XKit.close(fileOutputStream);
             }

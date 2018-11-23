@@ -3,6 +3,7 @@ package io.xjar;
 import io.xjar.key.SymmetricSecureKey;
 import io.xjar.key.XKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.junit.Test;
 
 import javax.crypto.KeyGenerator;
@@ -10,13 +11,15 @@ import javax.crypto.SecretKey;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
-import java.util.zip.Deflater;
 
 /**
  * @author Payne 646742615@qq.com
@@ -35,16 +38,24 @@ public class XJdkEncryptorTest {
     }
 
     @Test
+    public void archive() throws Exception{
+        JarArchiver archiver = new JarArchiver();
+
+
+    }
+
+    @Test
     public void test() throws Exception {
-        Security.addProvider(new BouncyCastleProvider());
-
-        XKey key = generate("AES", 128);
-        String algorithm = "AES/CBC/PKCS7Padding";
-        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm));
-        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm));
-
-        xEncryptor.encrypt(key, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
-        xDecryptor.decrypt(key, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+        XKit.pack(new File("D:\\xjar"), new File("D:\\xjar2.jar"));
+//        Security.addProvider(new BouncyCastleProvider());
+//
+//        XKey key = generate("AES", 128);
+//        String algorithm = "AES/CBC/PKCS7Padding";
+//        XEncryptor xEncryptor = new XSbjEncryptor(new XJdkEncryptor(algorithm));
+//        XDecryptor xDecryptor = new XSbjDecryptor(new XJdkDecryptor(algorithm));
+//
+//        xEncryptor.encrypt(key, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+//        xDecryptor.decrypt(key, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
     }
 
     public XKey generate(String algorithm, int size) throws IOException {
