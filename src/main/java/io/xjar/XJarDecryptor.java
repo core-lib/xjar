@@ -66,6 +66,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
             zos.setLevel(level);
             NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
+            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, xAlwaysFilter);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
@@ -75,7 +76,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                 } else if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    XDecryptor decryptor = filter(entry) ? new XJarDecryptor(xDecryptor, level, new XAlwaysFilter<JarArchiveEntry>()) : xNopDecryptor;
+                    XDecryptor decryptor = filter(entry) ? xJarDecryptor : xNopDecryptor;
                     decryptor.decrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);

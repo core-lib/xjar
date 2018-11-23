@@ -66,6 +66,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
             zos.setLevel(level);
             NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
+            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level, xAlwaysFilter);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
@@ -75,7 +76,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                 } else if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    XEncryptor encryptor = filter(entry) ? new XJarEncryptor(xEncryptor, level, new XAlwaysFilter<JarArchiveEntry>()) : xNopEncryptor;
+                    XEncryptor encryptor = filter(entry) ? xJarEncryptor : xNopEncryptor;
                     encryptor.encrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);

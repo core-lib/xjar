@@ -13,6 +13,8 @@ import java.util.Collections;
 public abstract class XEntryDecryptor<E> extends XWrappedDecryptor implements XDecryptor, XEntryFilter<E> {
     protected final Collection<XEntryFilter<E>> filters;
     protected final XNopDecryptor xNopDecryptor = new XNopDecryptor();
+    protected final XAlwaysFilter<E> xAlwaysFilter = new XAlwaysFilter<>();
+    protected final XNeverFilter<E> xNeverFilter = new XNeverFilter<>();
 
     protected XEntryDecryptor(XDecryptor xDecryptor) {
         this(xDecryptor, (Collection<XEntryFilter<E>>) null);
