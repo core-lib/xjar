@@ -57,10 +57,6 @@ public class XJdkEncryptorTest implements XEntryFilter<JarArchiveEntry> {
 
     @Override
     public boolean filter(JarArchiveEntry entry) {
-        boolean should = entry.getName().startsWith("BOOT-INF/classes/") || entry.getName().startsWith("BOOT-INF/lib/regent-service-");
-        if (should) {
-            System.out.println(entry);
-        }
-        return should;
+        return entry.getName().startsWith("BOOT-INF/classes/") || entry.getName().startsWith("BOOT-INF/lib/regent-service-");
     }
 }

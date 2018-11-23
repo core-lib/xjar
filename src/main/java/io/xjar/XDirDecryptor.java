@@ -4,6 +4,7 @@ import io.xjar.key.XKey;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -16,6 +17,10 @@ public class XDirDecryptor extends XEntryDecryptor<File> implements XDecryptor {
 
     public XDirDecryptor(XDecryptor xDecryptor) {
         super(xDecryptor);
+    }
+
+    public XDirDecryptor(XDecryptor xEncryptor, XEntryFilter<File>... filters) {
+        this(xEncryptor, Arrays.asList(filters));
     }
 
     public XDirDecryptor(XDecryptor xDecryptor, Collection<XEntryFilter<File>> xEntryFilters) {

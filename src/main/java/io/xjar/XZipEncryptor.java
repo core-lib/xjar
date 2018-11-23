@@ -6,6 +6,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.zip.Deflater;
 
@@ -19,7 +20,11 @@ public class XZipEncryptor extends XEntryEncryptor<ZipArchiveEntry> implements X
     private final int level;
 
     public XZipEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, null);
+        this(xEncryptor, (Collection<XEntryFilter<ZipArchiveEntry>>) null);
+    }
+
+    public XZipEncryptor(XEncryptor xEncryptor, XEntryFilter<ZipArchiveEntry>... filters) {
+        this(xEncryptor, Arrays.asList(filters));
     }
 
     public XZipEncryptor(XEncryptor xEncryptor, Collection<XEntryFilter<ZipArchiveEntry>> filters) {
@@ -27,7 +32,11 @@ public class XZipEncryptor extends XEntryEncryptor<ZipArchiveEntry> implements X
     }
 
     public XZipEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, null);
+        this(xEncryptor, level, (Collection<XEntryFilter<ZipArchiveEntry>>) null);
+    }
+
+    public XZipEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<ZipArchiveEntry>... filters) {
+        this(xEncryptor, Arrays.asList(filters));
     }
 
     public XZipEncryptor(XEncryptor xEncryptor, int level, Collection<XEntryFilter<ZipArchiveEntry>> filters) {
