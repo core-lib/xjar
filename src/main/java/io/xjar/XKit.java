@@ -1,9 +1,6 @@
 package io.xjar;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.zip.*;
 
 public abstract class XKit {
 
@@ -85,111 +82,6 @@ public abstract class XKit {
             return deleted && file.delete();
         } else {
             return file.delete();
-        }
-    }
-
-    public static void pack(String source, String target) throws IOException {
-        pack(new File(source), new File(target));
-    }
-
-    public static void pack(File source, File target) throws IOException {
-        try (OutputStream outputStream = new FileOutputStream(target)) {
-            pack(source, outputStream);
-        }
-    }
-
-    public static void pack(File source, OutputStream out) throws IOException {
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(out)) {
-            pack(source, zipOutputStream);
-        }
-    }
-
-    public static void pack(File source, ZipOutputStream zipOutputStream) throws IOException {
-        Queue<String> parents = new LinkedList<>();
-        Queue<File> files = new LinkedList<>();
-
-        if (source.exists()) {
-            parents.offer(null);
-            files.offer(source);
-        }
-
-        while (!files.isEmpty()) {
-            File file = files.poll();
-            String parent = parents.poll();
-
-            if (file.isDirectory()) {
-                File[] children = file.listFiles();
-                for (int i = 0; children != null && i < children.length; i++) {
-                    File child = children[i];
-                    parents.offer(parent == null ? "" : parent.isEmpty() ? file.getName() : parent + "/" + file.getName());
-                    files.offer(child);
-                }
-            } else {
-                FileInputStream fileInputStream = null;
-                try {
-                    fileInputStream = new FileInputStream(file);
-                    if (file.getName().endsWith(".jar")) {
-                        ZipEntry zipEntry = new ZipEntry(parent == null || parent.isEmpty() ? file.getName() : parent + "/" + file.getName());
-                        zipEntry.setMethod(ZipEntry.STORED);
-                        zipEntry.setSize(file.length());
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                        XKit.transfer(fileInputStream, cos);
-                        zipEntry.setCrc(cos.getChecksum().getValue());
-                        zipOutputStream.putNextEntry(zipEntry);
-                        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                        XKit.transfer(bis, zipOutputStream);
-                    } else {
-                        ZipEntry zipEntry = new ZipEntry(parent == null || parent.isEmpty() ? file.getName() : parent + "/" + file.getName());
-                        zipEntry.setTime(file.lastModified());
-                        zipOutputStream.putNextEntry(zipEntry);
-                        XKit.transfer(fileInputStream, zipOutputStream);
-                    }
-                    zipOutputStream.closeEntry();
-                } finally {
-                    XKit.close(fileInputStream);
-                }
-            }
-        }
-    }
-
-    public static void unpack(String source, String target) throws IOException {
-        unpack(new File(source), new File(target));
-    }
-
-    public static void unpack(File source, File target) throws IOException {
-        try (InputStream inputStream = new FileInputStream(source)) {
-            unpack(inputStream, target);
-        }
-    }
-
-    public static void unpack(InputStream in, File target) throws IOException {
-        try (ZipInputStream zipInputStream = new ZipInputStream(in)) {
-            unpack(zipInputStream, target);
-        }
-    }
-
-    public static void unpack(ZipInputStream zipInputStream, File target) throws IOException {
-        ZipEntry zipEntry;
-        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-            if (zipEntry.isDirectory()) {
-                File directory = new File(target, zipEntry.getName());
-                if (!directory.exists() && !directory.mkdirs()) {
-                    throw new IOException("could not make directory: " + directory);
-                }
-                continue;
-            }
-            FileOutputStream fileOutputStream = null;
-            try {
-                File file = new File(target, zipEntry.getName());
-                if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
-                    throw new IOException("could not make directory: " + file.getParentFile());
-                }
-                fileOutputStream = new FileOutputStream(file);
-                XKit.transfer(zipInputStream, fileOutputStream);
-            } finally {
-                XKit.close(fileOutputStream);
-            }
         }
     }
 
