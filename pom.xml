@@ -34,6 +34,11 @@
             <artifactId>commons-compress</artifactId>
             <version>1.18</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-archiver</artifactId>
+            <version>3.7.0</version>
+        </dependency>
     </dependencies>
 
     <build>
