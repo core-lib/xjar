@@ -6,12 +6,10 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
 
 /**
- * ZIP压缩包解密器
+ * JAR包解密器
  *
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
@@ -46,29 +44,15 @@ public class XJarDecryptor extends XWrappedDecryptor implements XDecryptor {
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
-            NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                if (entry.getName().endsWith(".jar")) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    new XJarDecryptor(xDecryptor).decrypt(key, nis, cos);
-                    JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
-                    jar.setMethod(JarArchiveEntry.STORED);
-                    jar.setSize(bos.size());
-                    jar.setCrc(cos.getChecksum().getValue());
-                    zos.putArchiveEntry(jar);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    XKit.transfer(bis, zos);
-                } else {
-                    zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
-                    try (OutputStream eos = decrypt(key, nos)) {
-                        XKit.transfer(zis, eos);
-                    }
+                zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
+                try (OutputStream eos = decrypt(key, nos)) {
+                    XKit.transfer(zis, eos);
                 }
                 zos.closeArchiveEntry();
             }

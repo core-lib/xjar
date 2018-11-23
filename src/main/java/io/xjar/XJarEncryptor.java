@@ -6,8 +6,6 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
 
 /**
@@ -46,29 +44,15 @@ public class XJarEncryptor extends XWrappedEncryptor implements XEncryptor {
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
-            NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;
                 }
-                if (entry.getName().endsWith(".jar")) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    new XJarEncryptor(xEncryptor).encrypt(key, nis, cos);
-                    JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
-                    jar.setMethod(JarArchiveEntry.STORED);
-                    jar.setSize(bos.size());
-                    jar.setCrc(cos.getChecksum().getValue());
-                    zos.putArchiveEntry(jar);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    XKit.transfer(bis, zos);
-                } else {
-                    zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
-                    try (OutputStream eos = encrypt(key, nos)) {
-                        XKit.transfer(zis, eos);
-                    }
+                zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
+                try (OutputStream eos = encrypt(key, nos)) {
+                    XKit.transfer(zis, eos);
                 }
                 zos.closeArchiveEntry();
             }
