@@ -4,6 +4,7 @@ import io.xjar.key.XKey;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * 文件夹加密器
@@ -11,16 +12,21 @@ import java.io.IOException;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:01
  */
-public class XDirEncryptor extends XWrappedEncryptor implements XEncryptor {
+public class XDirEncryptor extends XEntryEncryptor<File> implements XEncryptor {
 
     public XDirEncryptor(XEncryptor xEncryptor) {
         super(xEncryptor);
     }
 
+    public XDirEncryptor(XEncryptor xEncryptor, Collection<XEntryFilter<File>> xEntryFilters) {
+        super(xEncryptor, xEntryFilters);
+    }
+
     @Override
     public void encrypt(XKey key, File src, File dest) throws IOException {
         if (src.isFile()) {
-            super.encrypt(key, src, dest);
+            XEncryptor encryptor = filter(src) ? xEncryptor : xNopEncryptor;
+            encryptor.encrypt(key, src, dest);
         } else if (src.isDirectory()) {
             File[] files = src.listFiles();
             for (int i = 0; files != null && i < files.length; i++) {

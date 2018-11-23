@@ -1,12 +1,12 @@
 package io.xjar;
 
 import io.xjar.key.XKey;
-import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.zip.Deflater;
 
 /**
@@ -15,15 +15,23 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XZipDecryptor extends XWrappedDecryptor implements XDecryptor {
+public class XZipDecryptor extends XEntryDecryptor<ZipArchiveEntry> implements XDecryptor {
     private final int level;
 
     public XZipDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, Deflater.DEFAULT_COMPRESSION);
+        this(xDecryptor, null);
+    }
+
+    public XZipDecryptor(XDecryptor xDecryptor, Collection<XEntryFilter<ZipArchiveEntry>> filters) {
+        this(xDecryptor, Deflater.DEFLATED, filters);
     }
 
     public XZipDecryptor(XDecryptor xDecryptor, int level) {
-        super(xDecryptor);
+        this(xDecryptor, level, null);
+    }
+
+    public XZipDecryptor(XDecryptor xDecryptor, int level, Collection<XEntryFilter<ZipArchiveEntry>> filters) {
+        super(xDecryptor, filters);
         this.level = level;
     }
 
@@ -46,13 +54,14 @@ public class XZipDecryptor extends XWrappedDecryptor implements XDecryptor {
             zos = new ZipArchiveOutputStream(out);
             zos.setLevel(level);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
-            ArchiveEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
+            ZipArchiveEntry entry;
+            while ((entry = zis.getNextZipEntry()) != null) {
                 if (entry.isDirectory()) {
                     continue;
                 }
                 zos.putArchiveEntry(new ZipArchiveEntry(entry.getName()));
-                try (OutputStream eos = decrypt(key, nos)) {
+                XDecryptor decryptor = filter(entry) ? this : xNopDecryptor;
+                try (OutputStream eos = decryptor.decrypt(key, nos)) {
                     XKit.transfer(zis, eos);
                 }
                 zos.closeArchiveEntry();

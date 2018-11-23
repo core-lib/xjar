@@ -6,6 +6,8 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
@@ -16,15 +18,31 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XJarEncryptor extends XWrappedEncryptor implements XEncryptor {
+public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor {
     private final int level;
 
     public XJarEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, Deflater.DEFLATED);
+        this(xEncryptor, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+    }
+
+    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry>... filters) {
+        this(xEncryptor, Arrays.asList(filters));
+    }
+
+    public XJarEncryptor(XEncryptor xEncryptor, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+        this(xEncryptor, Deflater.DEFLATED, filters);
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level) {
-        super(xEncryptor);
+        this(xEncryptor, level, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+    }
+
+    public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry>... filters) {
+        this(xEncryptor, Arrays.asList(filters));
+    }
+
+    public XJarEncryptor(XEncryptor xEncryptor, int level, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+        super(xEncryptor, filters);
         this.level = level;
     }
 
@@ -57,7 +75,8 @@ public class XJarEncryptor extends XWrappedEncryptor implements XEncryptor {
                 } else if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    encrypt(key, nis, cos);
+                    XEncryptor encryptor = filter(entry) ? new XJarEncryptor(xEncryptor, level, new XAlwaysFilter<JarArchiveEntry>()) : xNopEncryptor;
+                    encryptor.encrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);
                     jar.setSize(bos.size());
@@ -70,7 +89,8 @@ public class XJarEncryptor extends XWrappedEncryptor implements XEncryptor {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    try (OutputStream eos = encrypt(key, nos)) {
+                    XEncryptor encryptor = filter(entry) ? this : xNopEncryptor;
+                    try (OutputStream eos = encryptor.encrypt(key, nos)) {
                         XKit.transfer(zis, eos);
                     }
                 }

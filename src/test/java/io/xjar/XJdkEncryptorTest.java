@@ -2,6 +2,7 @@ package io.xjar;
 
 import io.xjar.key.SymmetricSecureKey;
 import io.xjar.key.XKey;
+import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.zip.Deflater;
 
@@ -19,7 +22,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 14:19
  */
-public class XJdkEncryptorTest {
+public class XJdkEncryptorTest implements XEntryFilter<JarArchiveEntry> {
 
     @Test
     public void test() throws Exception {
@@ -27,8 +30,10 @@ public class XJdkEncryptorTest {
 
         XKey key = generate("AES", 128);
         String algorithm = "AES/CBC/PKCS7Padding";
-        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), Deflater.NO_COMPRESSION);
-        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), Deflater.NO_COMPRESSION);
+
+        List<XEntryFilter<JarArchiveEntry>> filters = Arrays.<XEntryFilter<JarArchiveEntry>>asList(this, this);
+        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), Deflater.NO_COMPRESSION, filters);
+        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), Deflater.NO_COMPRESSION, filters);
 
         xEncryptor.encrypt(key, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
         xDecryptor.decrypt(key, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
@@ -50,4 +55,12 @@ public class XJdkEncryptorTest {
         }
     }
 
+    @Override
+    public boolean filter(JarArchiveEntry entry) {
+        boolean should = entry.getName().startsWith("BOOT-INF/classes/") || entry.getName().startsWith("BOOT-INF/lib/regent-service-");
+        if (should) {
+            System.out.println(entry);
+        }
+        return should;
+    }
 }
