@@ -36,7 +36,7 @@ public class XZipEncryptor extends XEntryEncryptor<ZipArchiveEntry> implements X
     }
 
     public XZipEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<ZipArchiveEntry>... filters) {
-        this(xEncryptor, Arrays.asList(filters));
+        this(xEncryptor, level, Arrays.asList(filters));
     }
 
     public XZipEncryptor(XEncryptor xEncryptor, int level, Collection<XEntryFilter<ZipArchiveEntry>> filters) {

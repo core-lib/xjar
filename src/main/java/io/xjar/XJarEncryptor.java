@@ -38,7 +38,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry>... filters) {
-        this(xEncryptor, Arrays.asList(filters));
+        this(xEncryptor, level, Arrays.asList(filters));
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, Collection<XEntryFilter<JarArchiveEntry>> filters) {
