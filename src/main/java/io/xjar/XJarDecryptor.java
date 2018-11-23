@@ -51,21 +51,25 @@ public class XJarDecryptor extends XWrappedDecryptor implements XDecryptor {
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.isDirectory()) {
-                    continue;
-                }
-                if (entry.getName().endsWith(".jar")) {
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                } else if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    new XJarDecryptor(xDecryptor).decrypt(key, nis, cos);
+                    decrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);
                     jar.setSize(bos.size());
+                    jar.setTime(entry.getTime());
                     jar.setCrc(cos.getChecksum().getValue());
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, zos);
                 } else {
-                    zos.putArchiveEntry(new JarArchiveEntry(entry.getName()));
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
                     try (OutputStream eos = decrypt(key, nos)) {
                         XKit.transfer(zis, eos);
                     }

@@ -40,8 +40,8 @@ public class XJdkEncryptorTest {
 
         XKey key = generate("AES", 128);
         String algorithm = "AES/CBC/PKCS7Padding";
-        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm));
-        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm));
+        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), Deflater.NO_COMPRESSION);
+        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), Deflater.NO_COMPRESSION);
 
         xEncryptor.encrypt(key, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
         xDecryptor.decrypt(key, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
