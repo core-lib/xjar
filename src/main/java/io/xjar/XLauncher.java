@@ -1,5 +1,7 @@
 package io.xjar;
 
+import io.xjar.key.SymmetricSecureKey;
+import io.xjar.key.XKey;
 import org.springframework.boot.loader.JarLauncher;
 import org.springframework.boot.loader.archive.Archive;
 import org.springframework.boot.loader.archive.JarFileArchive;
@@ -25,12 +27,19 @@ public class XLauncher extends JarLauncher {
 
     @Override
     protected ClassLoader createClassLoader(URL[] urls) throws IOException {
-        return new XClassLoader(urls, this.getClass().getClassLoader());
+        XDecryptor xDecryptor = new XJdkDecryptor("AES/CBC/PKCS7Padding");
+        XKey xKey = new SymmetricSecureKey(
+                "AES",
+                128,
+                new byte[]{99, -9, -92, -85, 77, -84, -114, -21, -48, 8, -55, 92, -14, 58, 80, 105},
+                new byte[]{81, 82, 29, 10, 105, 15, 52, 126, 100, 16, 42, 90, 60, 25, 13, 114}
+        );
+        return new XClassLoader(urls, this.getClass().getClassLoader(), xDecryptor, xKey);
     }
 
     @Override
     protected List<Archive> getClassPathArchives() throws Exception {
-        Archive archive = new JarFileArchive(new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+        Archive archive = new JarFileArchive(new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
         return new ArrayList<>(archive.getNestedArchives(new Archive.EntryFilter() {
             @Override
             public boolean matches(Archive.Entry entry) {

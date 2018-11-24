@@ -85,7 +85,6 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     boolean filtered = filter(entry);
-                    if (filtered) indexes.add(entry.getName());
                     XDecryptor decryptor = filtered ? xJarDecryptor : xNopDecryptor;
                     decryptor.decrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
@@ -135,8 +134,9 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                 JarArchiveEntry XDEC_IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XDEC_IDX_FILE);
                 XDEC_IDX.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XDEC_IDX);
+                int idx = classpath != null ? classpath.length() : 0;
                 for (String index : indexes) {
-                    zos.write(index.getBytes());
+                    zos.write(index.substring(idx).getBytes());
                     zos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();

@@ -85,7 +85,6 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     boolean filtered = filter(entry);
-                    if (filtered) indexes.add(entry.getName());
                     XEncryptor encryptor = filtered ? xJarEncryptor : xNopEncryptor;
                     encryptor.encrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
@@ -135,8 +134,9 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                 JarArchiveEntry XENC_IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XENC_IDX_FILE);
                 XENC_IDX.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XENC_IDX);
+                int idx = classpath != null ? classpath.length() : 0;
                 for (String index : indexes) {
-                    zos.write(index.getBytes());
+                    zos.write(index.substring(idx).getBytes());
                     zos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();

@@ -1,12 +1,13 @@
 package io.xjar;
 
+import io.xjar.key.XKey;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.loader.LaunchedURLClassLoader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Security;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -19,33 +20,50 @@ import java.util.Set;
  */
 public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
     private final Set<String> xjars = new LinkedHashSet<>();
+    private final XURLHandler xURLHandler;
+    private final XDecryptor xDecryptor;
+    private final XKey xKey;
 
-    public XClassLoader(URL[] urls, ClassLoader parent) throws IOException {
+    public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XKey xKey) throws IOException {
         super(urls, parent);
+        this.xURLHandler = new XURLHandler(xDecryptor, xKey);
+        this.xDecryptor = xDecryptor;
+        this.xKey = xKey;
         Enumeration<URL> resources = this.getResources(XJAR_INF_DIR + XENC_IDX_FILE);
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
-            System.err.println(resource);
+            String url = resource.toString();
+            String classpath = url.substring(0, url.lastIndexOf("!/") + 2);
             InputStream in = resource.openStream();
             InputStreamReader isr = new InputStreamReader(in);
             LineNumberReader lnr = new LineNumberReader(isr);
-            String line;
-            while ((line = lnr.readLine()) != null) {
-                xjars.add(line);
-            }
+            String name;
+            while ((name = lnr.readLine()) != null) xjars.add(classpath + name);
         }
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override
     public URL findResource(String name) {
-        System.out.println("findResource:" + name);
-        return super.findResource(name);
+        URL url = super.findResource(name);
+        if (!xjars.contains(url.toString())) {
+            return url;
+        }
+        try {
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xURLHandler);
+        } catch (MalformedURLException e) {
+            return url;
+        }
     }
 
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
-        System.out.println("findResources:" + name);
         return super.findResources(name);
+    }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        return super.loadClass(name, resolve);
     }
 
     @Override
@@ -53,7 +71,16 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
-            throw e;
+            URL resource = findResource(name.replace(".", "/") + ".class");
+            try {
+                InputStream in = xDecryptor.decrypt(xKey, resource.openStream());
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                XKit.transfer(in, bos);
+                byte[] bytes = bos.toByteArray();
+                return defineClass(name, bytes, 0, bytes.length);
+            } catch (IOException ioe) {
+                throw e;
+            }
         }
     }
 }
