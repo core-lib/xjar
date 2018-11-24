@@ -25,7 +25,7 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
 
     public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XKey xKey) throws IOException {
         super(urls, parent);
-        this.xURLHandler = new XURLHandler(xDecryptor, xKey, this);
+        this.xURLHandler = new XURLHandler(xDecryptor, xKey, this, indexes);
         Enumeration<URL> resources = this.getResources(XJAR_INF_DIR + XENC_IDX_FILE);
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
@@ -47,8 +47,8 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
     @Override
     public URL findResource(String name) {
         URL url = super.findResource(name);
-        if (url == null || !indexes.contains(url.toString())) {
-            return url;
+        if (url == null) {
+            return null;
         }
         try {
             return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xURLHandler);
@@ -101,8 +101,8 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
         @Override
         public URL nextElement() {
             URL url = enumeration.nextElement();
-            if (url == null || !indexes.contains(url.toString())) {
-                return url;
+            if (url == null) {
+                return null;
             }
             try {
                 return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xURLHandler);
