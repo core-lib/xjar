@@ -9,8 +9,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.Permission;
-import java.security.Provider;
-import java.security.Security;
 import java.util.List;
 import java.util.Map;
 
@@ -24,14 +22,12 @@ public class XURLConnection extends URLConnection {
     private final URLConnection urlConnection;
     private final XDecryptor xDecryptor;
     private final XKey xKey;
-    private final ClassLoader classLoader;
 
-    public XURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XKey xKey, ClassLoader classLoader) {
+    public XURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XKey xKey) {
         super(urlConnection.getURL());
         this.urlConnection = urlConnection;
         this.xDecryptor = xDecryptor;
         this.xKey = xKey;
-        this.classLoader = classLoader;
     }
 
     @Override
@@ -152,12 +148,6 @@ public class XURLConnection extends URLConnection {
     @Override
     public InputStream getInputStream() throws IOException {
         InputStream in = urlConnection.getInputStream();
-        try {
-            Class<? extends Provider> providerClass = classLoader.loadClass("org.bouncycastle.jce.provider.BouncyCastleProvider").asSubclass(Provider.class);
-            Security.addProvider(providerClass.newInstance());
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
         return xDecryptor.decrypt(xKey, in);
     }
 

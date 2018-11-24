@@ -1,12 +1,20 @@
 package io.xjar.loader;
 
+import io.xjar.XConstants;
 import io.xjar.XDecryptor;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.jar.Handler;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Enumeration;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -15,23 +23,34 @@ import java.util.Set;
  * @author Payne 646742615@qq.com
  * 2018/11/24 13:19
  */
-public class XURLHandler extends Handler {
+public class XURLHandler extends Handler implements XConstants {
     private final XDecryptor xDecryptor;
     private final XKey xKey;
-    private final ClassLoader classLoader;
     private final Set<String> indexes;
 
-    public XURLHandler(XDecryptor xDecryptor, XKey xKey, ClassLoader classLoader, Set<String> indexes) {
+    public XURLHandler(XDecryptor xDecryptor, XKey xKey, ClassLoader classLoader) throws Exception {
         this.xDecryptor = xDecryptor;
         this.xKey = xKey;
-        this.classLoader = classLoader;
-        this.indexes = indexes;
+        this.indexes = new LinkedHashSet<>();
+        Enumeration<URL> resources = classLoader.getResources(XJAR_INF_DIR + XENC_IDX_FILE);
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            String url = resource.toString();
+            String classpath = url.substring(0, url.lastIndexOf("!/") + 2);
+            InputStream in = resource.openStream();
+            InputStreamReader isr = new InputStreamReader(in);
+            LineNumberReader lnr = new LineNumberReader(isr);
+            String name;
+            while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
+        }
+        Class<? extends Provider> provider = classLoader.loadClass("org.bouncycastle.jce.provider.BouncyCastleProvider").asSubclass(Provider.class);
+        Security.addProvider(provider.newInstance());
     }
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-        return indexes.contains(url.toString()) ? new XURLConnection(urlConnection, xDecryptor, xKey, classLoader) : urlConnection;
+        return indexes.contains(url.toString()) ? new XURLConnection(urlConnection, xDecryptor, xKey) : urlConnection;
     }
 
 }

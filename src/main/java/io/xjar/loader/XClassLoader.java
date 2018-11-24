@@ -1,17 +1,16 @@
 package io.xjar.loader;
 
-import io.xjar.XConstants;
 import io.xjar.XDecryptor;
 import io.xjar.XKit;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.LaunchedURLClassLoader;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * X类加载器
@@ -19,29 +18,12 @@ import java.util.Set;
  * @author Payne 646742615@qq.com
  * 2018/11/23 23:04
  */
-public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
-    private final Set<String> indexes = new LinkedHashSet<>();
+public class XClassLoader extends LaunchedURLClassLoader {
     private final XURLHandler xURLHandler;
 
-    public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XKey xKey) throws IOException {
+    public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XKey xKey) throws Exception {
         super(urls, parent);
-        this.xURLHandler = new XURLHandler(xDecryptor, xKey, this, indexes);
-        Enumeration<URL> resources = this.getResources(XJAR_INF_DIR + XENC_IDX_FILE);
-        while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            String url = resource.toString();
-            String classpath = url.substring(0, url.lastIndexOf("!/") + 2);
-            InputStream in = resource.openStream();
-            InputStreamReader isr = new InputStreamReader(in);
-            LineNumberReader lnr = new LineNumberReader(isr);
-            String name;
-            while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
-        }
-    }
-
-    @Override
-    public Enumeration<URL> getResources(String name) throws IOException {
-        return super.getResources(name);
+        this.xURLHandler = new XURLHandler(xDecryptor, xKey, this);
     }
 
     @Override
