@@ -16,8 +16,24 @@ public class XClassLoader extends LaunchedURLClassLoader {
         super(urls, parent);
     }
 
+//    @Override
+//    public URL findResource(String name) {
+//        System.out.println("findResource:" + name);
+//        return super.findResource(name);
+//    }
+//
+//    @Override
+//    public Enumeration<URL> findResources(String name) throws IOException {
+//        System.out.println("findResources:" + name);
+//        return super.findResources(name);
+//    }
+
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        return super.findClass(name);
+        try {
+            return super.findClass(name);
+        } catch (ClassNotFoundException e) {
+            throw e;
+        }
     }
 }

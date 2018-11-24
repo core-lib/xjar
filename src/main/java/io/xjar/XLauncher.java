@@ -23,7 +23,7 @@ public class XLauncher extends JarLauncher {
 
     @Override
     protected ClassLoader createClassLoader(URL[] urls) {
-        return new XClassLoader(urls, getClass().getClassLoader());
+        return new XClassLoader(urls, this.getClass().getClassLoader());
     }
 
     @Override

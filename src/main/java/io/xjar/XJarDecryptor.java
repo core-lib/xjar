@@ -8,6 +8,8 @@ import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
@@ -18,7 +20,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor {
+public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
     private final int level;
 
     public XJarDecryptor(XDecryptor xDecryptor) {
@@ -60,6 +62,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     public void decrypt(XKey key, InputStream in, OutputStream out) throws IOException {
         JarArchiveInputStream zis = null;
         JarArchiveOutputStream zos = null;
+        Set<String> indexes = new LinkedHashSet<>();
         try {
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
@@ -68,7 +71,11 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, xAlwaysFilter);
             JarArchiveEntry entry;
+
             while ((entry = zis.getNextJarEntry()) != null) {
+                if (entry.getName().startsWith(XJAR_INF_DIR)) {
+                    continue;
+                }
                 if (entry.isDirectory()) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -76,7 +83,9 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                 } else if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    XDecryptor decryptor = filter(entry) ? xJarDecryptor : xNopDecryptor;
+                    boolean filtered = filter(entry);
+                    if (filtered) indexes.add(entry.getName());
+                    XDecryptor decryptor = filtered ? xJarDecryptor : xNopDecryptor;
                     decryptor.decrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);
@@ -90,13 +99,32 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    XDecryptor decryptor = filter(entry) ? this : xNopDecryptor;
+                    boolean filtered = filter(entry);
+                    if (filtered) indexes.add(entry.getName());
+                    XDecryptor decryptor = filtered ? this : xNopDecryptor;
                     try (OutputStream eos = decryptor.decrypt(key, nos)) {
                         XKit.transfer(zis, eos);
                     }
                 }
                 zos.closeArchiveEntry();
             }
+
+            if (!indexes.isEmpty()) {
+                JarArchiveEntry XJAR_INF = new JarArchiveEntry(XJAR_INF_DIR);
+                XJAR_INF.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(XJAR_INF);
+                zos.closeArchiveEntry();
+
+                JarArchiveEntry XDEC_IDX = new JarArchiveEntry(XJAR_INF_DIR + XDEC_IDX_FILE);
+                XDEC_IDX.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(XDEC_IDX);
+                for (String index : indexes) {
+                    zos.write(index.getBytes());
+                    zos.write(CRLF.getBytes());
+                }
+                zos.closeArchiveEntry();
+            }
+
             zos.finish();
         } finally {
             XKit.close(zis);
