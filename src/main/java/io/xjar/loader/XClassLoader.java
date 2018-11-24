@@ -1,13 +1,14 @@
-package io.xjar;
+package io.xjar.loader;
 
+import io.xjar.XConstants;
+import io.xjar.XDecryptor;
+import io.xjar.XKit;
 import io.xjar.key.XKey;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.loader.LaunchedURLClassLoader;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Security;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -19,16 +20,12 @@ import java.util.Set;
  * 2018/11/23 23:04
  */
 public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
-    private final Set<String> xjars = new LinkedHashSet<>();
+    private final Set<String> indexes = new LinkedHashSet<>();
     private final XURLHandler xURLHandler;
-    private final XDecryptor xDecryptor;
-    private final XKey xKey;
 
     public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XKey xKey) throws IOException {
         super(urls, parent);
-        this.xURLHandler = new XURLHandler(xDecryptor, xKey);
-        this.xDecryptor = xDecryptor;
-        this.xKey = xKey;
+        this.xURLHandler = new XURLHandler(xDecryptor, xKey, this);
         Enumeration<URL> resources = this.getResources(XJAR_INF_DIR + XENC_IDX_FILE);
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
@@ -38,15 +35,19 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
             InputStreamReader isr = new InputStreamReader(in);
             LineNumberReader lnr = new LineNumberReader(isr);
             String name;
-            while ((name = lnr.readLine()) != null) xjars.add(classpath + name);
+            while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
         }
-        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        return super.getResources(name);
     }
 
     @Override
     public URL findResource(String name) {
         URL url = super.findResource(name);
-        if (!xjars.contains(url.toString())) {
+        if (url == null || !indexes.contains(url.toString())) {
             return url;
         }
         try {
@@ -58,12 +59,11 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
 
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
-        return super.findResources(name);
-    }
-
-    @Override
-    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        return super.loadClass(name, resolve);
+        Enumeration<URL> enumeration = super.findResources(name);
+        if (enumeration == null) {
+            return null;
+        }
+        return new XEnumeration(enumeration);
     }
 
     @Override
@@ -72,14 +72,42 @@ public class XClassLoader extends LaunchedURLClassLoader implements XConstants {
             return super.findClass(name);
         } catch (ClassFormatError e) {
             URL resource = findResource(name.replace(".", "/") + ".class");
-            try {
-                InputStream in = xDecryptor.decrypt(xKey, resource.openStream());
+            if (resource == null) {
+                throw new ClassNotFoundException(name, e);
+            }
+            try (InputStream in = resource.openStream()) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 XKit.transfer(in, bos);
                 byte[] bytes = bos.toByteArray();
                 return defineClass(name, bytes, 0, bytes.length);
-            } catch (IOException ioe) {
-                throw e;
+            } catch (Throwable t) {
+                throw new ClassNotFoundException(name, t);
+            }
+        }
+    }
+
+    private class XEnumeration implements Enumeration<URL> {
+        private final Enumeration<URL> enumeration;
+
+        XEnumeration(Enumeration<URL> enumeration) {
+            this.enumeration = enumeration;
+        }
+
+        @Override
+        public boolean hasMoreElements() {
+            return enumeration.hasMoreElements();
+        }
+
+        @Override
+        public URL nextElement() {
+            URL url = enumeration.nextElement();
+            if (url == null || !indexes.contains(url.toString())) {
+                return url;
+            }
+            try {
+                return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xURLHandler);
+            } catch (MalformedURLException e) {
+                return url;
             }
         }
     }

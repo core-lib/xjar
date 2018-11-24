@@ -1,5 +1,7 @@
-package io.xjar;
+package io.xjar.loader;
 
+import io.xjar.XDecryptor;
+import io.xjar.XJdkDecryptor;
 import io.xjar.key.SymmetricSecureKey;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.JarLauncher;
@@ -20,9 +22,12 @@ import java.util.List;
  */
 public class XLauncher extends JarLauncher {
 
-
     public static void main(String[] args) throws Exception {
-        new XLauncher().launch(args);
+        try {
+            new XLauncher().launch(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -39,7 +44,7 @@ public class XLauncher extends JarLauncher {
 
     @Override
     protected List<Archive> getClassPathArchives() throws Exception {
-        Archive archive = new JarFileArchive(new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+        Archive archive = new JarFileArchive(new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
         return new ArrayList<>(archive.getNestedArchives(new Archive.EntryFilter() {
             @Override
             public boolean matches(Archive.Entry entry) {

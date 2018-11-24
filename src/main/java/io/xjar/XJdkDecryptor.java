@@ -1,7 +1,6 @@
 package io.xjar;
 
 import io.xjar.key.XKey;
-import org.bouncycastle.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -9,6 +8,7 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * JDK内置解密算法的解密器

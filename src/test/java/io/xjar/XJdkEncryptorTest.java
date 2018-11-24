@@ -26,14 +26,19 @@ public class XJdkEncryptorTest implements XEntryFilter<JarArchiveEntry> {
     public void test() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
-        XKey key = generate("AES", 128);
+        XKey xKey = new SymmetricSecureKey(
+                "AES",
+                128,
+                new byte[]{99, -9, -92, -85, 77, -84, -114, -21, -48, 8, -55, 92, -14, 58, 80, 105},
+                new byte[]{81, 82, 29, 10, 105, 15, 52, 126, 100, 16, 42, 90, 60, 25, 13, 114}
+        );
         String algorithm = "AES/CBC/PKCS7Padding";
 
         XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), Deflater.NO_COMPRESSION, this);
         XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), Deflater.NO_COMPRESSION, this);
 
-        xEncryptor.encrypt(key, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
-        xDecryptor.decrypt(key, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+        xEncryptor.encrypt(xKey, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+        xDecryptor.decrypt(xKey, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
     }
 
     public XKey generate(String algorithm, int size) throws IOException {

@@ -1,5 +1,6 @@
-package io.xjar;
+package io.xjar.loader;
 
+import io.xjar.XDecryptor;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.jar.Handler;
 
@@ -15,18 +16,19 @@ import java.net.URLConnection;
  */
 public class XURLHandler extends Handler {
     private final XDecryptor xDecryptor;
-    private final XKey key;
+    private final XKey xKey;
+    private final ClassLoader classLoader;
 
-    public XURLHandler(XDecryptor xDecryptor, XKey key) {
+    public XURLHandler(XDecryptor xDecryptor, XKey xKey, ClassLoader classLoader) {
         this.xDecryptor = xDecryptor;
-        this.key = key;
+        this.xKey = xKey;
+        this.classLoader = classLoader;
     }
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-
-        return urlConnection;
+        return new XURLConnection(urlConnection, xDecryptor, xKey, classLoader);
     }
 
 }
