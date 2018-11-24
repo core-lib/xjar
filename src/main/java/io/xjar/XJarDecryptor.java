@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.jar.Manifest;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
@@ -71,7 +72,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, xAlwaysFilter);
             JarArchiveEntry entry;
-
+            Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_INF_DIR)) {
                     continue;
@@ -95,6 +96,21 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, zos);
+                } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    XKit.transfer(zis, bos);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+                    manifest = XKit.manifest(bis);
+                    bis.reset();
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    boolean filtered = filter(entry);
+                    if (filtered) indexes.add(entry.getName());
+                    XDecryptor decryptor = filtered ? this : xNopDecryptor;
+                    try (OutputStream eos = decryptor.decrypt(key, nos)) {
+                        XKit.transfer(bis, eos);
+                    }
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -110,12 +126,13 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
             }
 
             if (!indexes.isEmpty()) {
-                JarArchiveEntry XJAR_INF = new JarArchiveEntry(XJAR_INF_DIR);
+                String classpath = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Spring-Boot-Classes") : null;
+                JarArchiveEntry XJAR_INF = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR);
                 XJAR_INF.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XJAR_INF);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry XDEC_IDX = new JarArchiveEntry(XJAR_INF_DIR + XDEC_IDX_FILE);
+                JarArchiveEntry XDEC_IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XDEC_IDX_FILE);
                 XDEC_IDX.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XDEC_IDX);
                 for (String index : indexes) {

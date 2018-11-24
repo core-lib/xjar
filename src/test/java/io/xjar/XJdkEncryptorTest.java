@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.zip.Deflater;
 
@@ -31,9 +29,8 @@ public class XJdkEncryptorTest implements XEntryFilter<JarArchiveEntry> {
         XKey key = generate("AES", 128);
         String algorithm = "AES/CBC/PKCS7Padding";
 
-        List<XEntryFilter<JarArchiveEntry>> filters = Arrays.<XEntryFilter<JarArchiveEntry>>asList(this, this);
-        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), Deflater.NO_COMPRESSION, filters);
-        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), Deflater.NO_COMPRESSION, filters);
+        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), Deflater.NO_COMPRESSION, this);
+        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), Deflater.NO_COMPRESSION, this);
 
         xEncryptor.encrypt(key, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
         xDecryptor.decrypt(key, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));

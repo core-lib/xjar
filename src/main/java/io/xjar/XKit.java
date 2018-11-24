@@ -1,6 +1,7 @@
 package io.xjar;
 
 import java.io.*;
+import java.util.jar.Manifest;
 
 public abstract class XKit {
 
@@ -82,6 +83,14 @@ public abstract class XKit {
             return deleted && file.delete();
         } else {
             return file.delete();
+        }
+    }
+
+    public static Manifest manifest(InputStream in) {
+        try {
+            return new Manifest(in);
+        } catch (IOException e) {
+            return null;
         }
     }
 
