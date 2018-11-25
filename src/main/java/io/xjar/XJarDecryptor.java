@@ -75,9 +75,6 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(XJAR_INF_DIR)) {
-                    continue;
-                }
                 if (entry.isDirectory()) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
