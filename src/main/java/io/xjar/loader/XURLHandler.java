@@ -2,6 +2,7 @@ package io.xjar.loader;
 
 import io.xjar.XConstants;
 import io.xjar.XDecryptor;
+import io.xjar.XEncryptor;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.jar.Handler;
 
@@ -25,11 +26,13 @@ import java.util.Set;
  */
 public class XURLHandler extends Handler implements XConstants {
     private final XDecryptor xDecryptor;
+    private final XEncryptor xEncryptor;
     private final XKey xKey;
     private final Set<String> indexes;
 
-    public XURLHandler(XDecryptor xDecryptor, XKey xKey, ClassLoader classLoader) throws Exception {
+    public XURLHandler(XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey, ClassLoader classLoader) throws Exception {
         this.xDecryptor = xDecryptor;
+        this.xEncryptor = xEncryptor;
         this.xKey = xKey;
         this.indexes = new LinkedHashSet<>();
         Enumeration<URL> resources = classLoader.getResources(XJAR_INF_DIR + XENC_IDX_FILE);
@@ -50,7 +53,7 @@ public class XURLHandler extends Handler implements XConstants {
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-        return indexes.contains(url.toString()) ? new XURLConnection(urlConnection, xDecryptor, xKey) : urlConnection;
+        return indexes.contains(url.toString()) ? new XURLConnection(urlConnection, xDecryptor, xEncryptor, xKey) : urlConnection;
     }
 
 }

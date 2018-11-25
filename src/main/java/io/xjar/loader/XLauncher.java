@@ -1,9 +1,6 @@
 package io.xjar.loader;
 
-import io.xjar.XConstants;
-import io.xjar.XDecryptor;
-import io.xjar.XJdkDecryptor;
-import io.xjar.XKit;
+import io.xjar.*;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.JarLauncher;
 
@@ -19,6 +16,7 @@ import java.net.URL;
 public class XLauncher extends JarLauncher implements XConstants {
     private final String[] args;
     private final XDecryptor xDecryptor;
+    private final XEncryptor xEncryptor;
     private final XKey xKey;
 
     public XLauncher(String[] args) throws Exception {
@@ -47,6 +45,7 @@ public class XLauncher extends JarLauncher implements XConstants {
             password = new String(chars);
         }
         this.xDecryptor = new XJdkDecryptor(algorithm);
+        this.xEncryptor = new XJdkEncryptor(algorithm);
         this.xKey = XKit.key(algorithm, keysize, ivsize, password);
     }
 
@@ -60,7 +59,7 @@ public class XLauncher extends JarLauncher implements XConstants {
 
     @Override
     protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new XClassLoader(urls, this.getClass().getClassLoader(), xDecryptor, xKey);
+        return new XClassLoader(urls, this.getClass().getClassLoader(), xDecryptor, xEncryptor, xKey);
     }
 
 }

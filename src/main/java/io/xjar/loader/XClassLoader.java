@@ -1,6 +1,7 @@
 package io.xjar.loader;
 
 import io.xjar.XDecryptor;
+import io.xjar.XEncryptor;
 import io.xjar.XKit;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.LaunchedURLClassLoader;
@@ -21,9 +22,9 @@ import java.util.Enumeration;
 public class XClassLoader extends LaunchedURLClassLoader {
     private final XURLHandler xURLHandler;
 
-    public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XKey xKey) throws Exception {
+    public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
-        this.xURLHandler = new XURLHandler(xDecryptor, xKey, this);
+        this.xURLHandler = new XURLHandler(xDecryptor, xEncryptor, xKey, this);
     }
 
     @Override

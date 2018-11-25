@@ -1,6 +1,7 @@
 package io.xjar.loader;
 
 import io.xjar.XDecryptor;
+import io.xjar.XEncryptor;
 import io.xjar.key.XKey;
 
 import java.io.IOException;
@@ -21,12 +22,14 @@ import java.util.Map;
 public class XURLConnection extends URLConnection {
     private final URLConnection urlConnection;
     private final XDecryptor xDecryptor;
+    private final XEncryptor xEncryptor;
     private final XKey xKey;
 
-    public XURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XKey xKey) {
+    public XURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) {
         super(urlConnection.getURL());
         this.urlConnection = urlConnection;
         this.xDecryptor = xDecryptor;
+        this.xEncryptor = xEncryptor;
         this.xKey = xKey;
     }
 
@@ -153,7 +156,8 @@ public class XURLConnection extends URLConnection {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        return urlConnection.getOutputStream();
+        OutputStream out = urlConnection.getOutputStream();
+        return xEncryptor.encrypt(xKey, out);
     }
 
     @Override
