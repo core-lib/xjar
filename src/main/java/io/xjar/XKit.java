@@ -9,7 +9,6 @@ import javax.crypto.SecretKey;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.jar.Manifest;
 
 public abstract class XKit implements XConstants {
 
@@ -91,14 +90,6 @@ public abstract class XKit implements XConstants {
             return deleted && file.delete();
         } else {
             return file.delete();
-        }
-    }
-
-    public static Manifest manifest(InputStream in) {
-        try {
-            return new Manifest(in);
-        } catch (IOException e) {
-            return null;
         }
     }
 

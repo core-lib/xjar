@@ -1,6 +1,7 @@
 package io.xjar;
 
 import io.xjar.key.XKey;
+import io.xjar.loader.XLauncher;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -99,8 +101,13 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     XKit.transfer(zis, bos);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    manifest = XKit.manifest(bis);
-                    bis.reset();
+                    manifest = new Manifest(bis);
+                    Attributes attributes = manifest.getMainAttributes();
+                    String mainClass = attributes.getValue("Main-Class");
+                    if (mainClass != null) {
+                        attributes.putValue("Origin-Main-Class", mainClass);
+                        attributes.putValue("Main-Class", XLauncher.class.getName());
+                    }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -108,7 +115,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     if (filtered) indexes.add(entry.getName());
                     XEncryptor encryptor = filtered ? this : xNopEncryptor;
                     try (OutputStream eos = encryptor.encrypt(key, nos)) {
-                        XKit.transfer(bis, eos);
+                        manifest.write(eos);
                     }
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());

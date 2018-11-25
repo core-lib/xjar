@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -96,20 +97,25 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, zos);
                 } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    XKit.transfer(zis, bos);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    manifest = XKit.manifest(bis);
-                    bis.reset();
-                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
-                    jarArchiveEntry.setTime(entry.getTime());
-                    zos.putArchiveEntry(jarArchiveEntry);
                     boolean filtered = filter(entry);
                     if (filtered) indexes.add(entry.getName());
                     XDecryptor decryptor = filtered ? this : xNopDecryptor;
-                    try (OutputStream eos = decryptor.decrypt(key, nos)) {
-                        XKit.transfer(bis, eos);
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    try (InputStream dis = decryptor.decrypt(key, nis)) {
+                        XKit.transfer(dis, bos);
                     }
+                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+                    manifest = new Manifest(bis);
+                    Attributes attributes = manifest.getMainAttributes();
+                    String mainClass = attributes.getValue("Origin-Main-Class");
+                    if (mainClass != null) {
+                        attributes.putValue("Main-Class", mainClass);
+                        attributes.remove(new Attributes.Name("Origin-Main-Class"));
+                    }
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    manifest.write(zos);
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
