@@ -73,8 +73,8 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(XJAR_INF_DIR)
-                        || entry.getName().startsWith(XJAR_SRC_DIR)
+                if (entry.getName().startsWith(XJAR_SRC_DIR)
+                        || entry.getName().endsWith(XJAR_INF_DIR)
                         || entry.getName().endsWith(XJAR_INF_DIR + XENC_IDX_FILE)
                         || entry.getName().endsWith(XJAR_INF_DIR + XDEC_IDX_FILE)
                 ) {

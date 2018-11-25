@@ -68,8 +68,8 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
-                if (entry.getName().startsWith(XJAR_INF_DIR)
-                        || entry.getName().startsWith(XJAR_SRC_DIR)
+                if (entry.getName().startsWith(XJAR_SRC_DIR)
+                        || entry.getName().endsWith(XJAR_INF_DIR)
                         || entry.getName().endsWith(XJAR_INF_DIR + XENC_IDX_FILE)
                         || entry.getName().endsWith(XJAR_INF_DIR + XDEC_IDX_FILE)
                 ) {
