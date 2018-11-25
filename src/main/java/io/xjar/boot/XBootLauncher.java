@@ -1,4 +1,4 @@
-package io.xjar.loader;
+package io.xjar.boot;
 
 import io.xjar.*;
 import io.xjar.key.XKey;
@@ -13,13 +13,13 @@ import java.net.URL;
  * @author Payne 646742615@qq.com
  * 2018/11/23 23:06
  */
-public class XLauncher extends JarLauncher implements XConstants {
+public class XBootLauncher extends JarLauncher implements XConstants {
     private final String[] args;
     private final XDecryptor xDecryptor;
     private final XEncryptor xEncryptor;
     private final XKey xKey;
 
-    public XLauncher(String[] args) throws Exception {
+    public XBootLauncher(String[] args) throws Exception {
         this.args = args;
         String algorithm = DEFAULT_ALGORITHM;
         int keysize = DEFAULT_KEYSIZE;
@@ -50,7 +50,7 @@ public class XLauncher extends JarLauncher implements XConstants {
     }
 
     public static void main(String[] args) throws Exception {
-        new XLauncher(args).launch();
+        new XBootLauncher(args).launch();
     }
 
     public void launch() throws Exception {
@@ -59,7 +59,7 @@ public class XLauncher extends JarLauncher implements XConstants {
 
     @Override
     protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new XClassLoader(urls, this.getClass().getClassLoader(), xDecryptor, xEncryptor, xKey);
+        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xDecryptor, xEncryptor, xKey);
     }
 
 }

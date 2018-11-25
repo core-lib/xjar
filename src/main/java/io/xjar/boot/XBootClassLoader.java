@@ -1,4 +1,4 @@
-package io.xjar.loader;
+package io.xjar.boot;
 
 import io.xjar.XDecryptor;
 import io.xjar.XEncryptor;
@@ -19,12 +19,12 @@ import java.util.Enumeration;
  * @author Payne 646742615@qq.com
  * 2018/11/23 23:04
  */
-public class XClassLoader extends LaunchedURLClassLoader {
-    private final XURLHandler xURLHandler;
+public class XBootClassLoader extends LaunchedURLClassLoader {
+    private final XBootURLHandler xURLHandler;
 
-    public XClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
+    public XBootClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
-        this.xURLHandler = new XURLHandler(xDecryptor, xEncryptor, xKey, this);
+        this.xURLHandler = new XBootURLHandler(xDecryptor, xEncryptor, xKey, this);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class XClassLoader extends LaunchedURLClassLoader {
         if (enumeration == null) {
             return null;
         }
-        return new XEnumeration(enumeration);
+        return new XBootEnumeration(enumeration);
     }
 
     @Override
@@ -69,10 +69,10 @@ public class XClassLoader extends LaunchedURLClassLoader {
         }
     }
 
-    private class XEnumeration implements Enumeration<URL> {
+    private class XBootEnumeration implements Enumeration<URL> {
         private final Enumeration<URL> enumeration;
 
-        XEnumeration(Enumeration<URL> enumeration) {
+        XBootEnumeration(Enumeration<URL> enumeration) {
             this.enumeration = enumeration;
         }
 

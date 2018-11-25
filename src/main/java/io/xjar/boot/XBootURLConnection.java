@@ -1,4 +1,4 @@
-package io.xjar.loader;
+package io.xjar.boot;
 
 import io.xjar.XDecryptor;
 import io.xjar.XEncryptor;
@@ -19,13 +19,13 @@ import java.util.Map;
  * @author Payne 646742615@qq.com
  * 2018/11/24 13:57
  */
-public class XURLConnection extends URLConnection {
+public class XBootURLConnection extends URLConnection {
     private final URLConnection urlConnection;
     private final XDecryptor xDecryptor;
     private final XEncryptor xEncryptor;
     private final XKey xKey;
 
-    public XURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) {
+    public XBootURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) {
         super(urlConnection.getURL());
         this.urlConnection = urlConnection;
         this.xDecryptor = xDecryptor;

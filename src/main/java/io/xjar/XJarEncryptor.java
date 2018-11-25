@@ -1,7 +1,7 @@
 package io.xjar;
 
+import io.xjar.boot.XBootLauncher;
 import io.xjar.key.XKey;
-import io.xjar.loader.XLauncher;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
@@ -88,7 +88,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
                         attributes.putValue("Origin-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", XLauncher.class.getName());
+                        attributes.putValue("Main-Class", XBootLauncher.class.getName());
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -105,7 +105,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     zos.putArchiveEntry(jarArchiveEntry);
                     boolean filtered = filter(entry);
                     if (filtered) indexes.add(entry.getName());
-                    XEncryptor encryptor = filtered ? this : xNopEncryptor;
+                    XEncryptor encryptor = filtered ? xEncryptor : xNopEncryptor;
                     try (OutputStream eos = encryptor.encrypt(key, nos)) {
                         XKit.transfer(nis, eos);
                     }
