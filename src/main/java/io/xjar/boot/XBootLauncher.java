@@ -8,7 +8,7 @@ import java.io.Console;
 import java.net.URL;
 
 /**
- * X启动器
+ * Spring-Boot启动器
  *
  * @author Payne 646742615@qq.com
  * 2018/11/23 23:06

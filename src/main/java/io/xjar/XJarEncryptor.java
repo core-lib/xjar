@@ -1,6 +1,6 @@
 package io.xjar;
 
-import io.xjar.boot.XBootLauncher;
+import io.xjar.jar.XJarLauncher;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -71,6 +71,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
             NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             JarArchiveEntry entry;
+            Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_INF_DIR) || entry.getName().endsWith(XJAR_INF_DIR + XENC_IDX_FILE) || entry.getName().endsWith(XJAR_INF_DIR + XDEC_IDX_FILE)) {
                     continue;
@@ -83,12 +84,12 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     XKit.transfer(nis, bos);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    Manifest manifest = new Manifest(bis);
+                    manifest = new Manifest(bis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
                         attributes.putValue("Origin-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", XBootLauncher.class.getName());
+                        attributes.putValue("Main-Class", XJarLauncher.class.getName());
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -127,6 +128,11 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     zos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
+
+                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+                if (mainClass != null) {
+                    XJar.inject(zos);
+                }
             }
 
             zos.finish();

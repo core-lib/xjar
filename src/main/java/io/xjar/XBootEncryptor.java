@@ -3,7 +3,6 @@ package io.xjar;
 import io.detector.Filter;
 import io.detector.FilterChain;
 import io.detector.Resource;
-import io.detector.SimpleDetector;
 import io.xjar.boot.XBootLauncher;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -152,23 +151,9 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                 }
                 zos.closeArchiveEntry();
 
-                String pkg = this.getClass().getPackage().getName().replace('.', '/');
-                Collection<Resource> resources = SimpleDetector.Builder
-                        .scan(pkg)
-                        .includeJar()
-                        .recursively()
-                        .build()
-                        .detect();
-                for (Resource resource : resources) {
-                    String name = resource.toString();
-                    name = name.substring(name.lastIndexOf(pkg));
-                    JarArchiveEntry e = new JarArchiveEntry(name);
-                    e.setTime(System.currentTimeMillis());
-                    zos.putArchiveEntry(e);
-                    try (InputStream ris = resource.getInputStream()) {
-                        XKit.transfer(ris, nos);
-                    }
-                    zos.closeArchiveEntry();
+                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+                if (mainClass != null) {
+                    XJar.inject(zos);
                 }
             }
 
