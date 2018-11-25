@@ -4,7 +4,6 @@ import io.xjar.XConstants;
 import io.xjar.XDecryptor;
 import io.xjar.XEncryptor;
 import io.xjar.key.XKey;
-import org.springframework.boot.loader.jar.Handler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +12,7 @@ import java.io.LineNumberReader;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Enumeration;
@@ -25,7 +25,7 @@ import java.util.Set;
  * @author Payne 646742615@qq.com
  * 2018/11/24 13:19
  */
-public class XJarURLHandler extends Handler implements XConstants {
+public class XJarURLHandler extends URLStreamHandler implements XConstants {
     private final XDecryptor xDecryptor;
     private final XEncryptor xEncryptor;
     private final XKey xKey;
@@ -53,7 +53,7 @@ public class XJarURLHandler extends Handler implements XConstants {
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
-        URLConnection urlConnection = super.openConnection(url);
+        URLConnection urlConnection = url.openConnection();
         return indexes.contains(url.toString())
                 && urlConnection instanceof JarURLConnection
                 ? new XJarURLConnection((JarURLConnection) urlConnection, xDecryptor, xEncryptor, xKey)
