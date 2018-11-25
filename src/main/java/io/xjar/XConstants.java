@@ -14,9 +14,11 @@ public interface XConstants {
 
     String XJAR_ALGORITHM = "--xjar.algorithm=";
     String XJAR_KEYSIZE = "--xjar.keysize=";
+    String XJAR_IVSIZE = "--xjar.ivsize=";
     String XJAR_PASSWORD = "--xjar.password=";
 
     String DEFAULT_ALGORITHM = "AES/CBC/PKCS7Padding";
     int DEFAULT_KEYSIZE = 128;
+    int DEFAULT_IVSIZE = 128;
 
 }

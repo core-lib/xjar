@@ -25,6 +25,7 @@ public class XLauncher extends JarLauncher implements XConstants {
         this.args = args;
         String algorithm = DEFAULT_ALGORITHM;
         int keysize = DEFAULT_KEYSIZE;
+        int ivsize = DEFAULT_IVSIZE;
         String password = null;
         for (String arg : args) {
             if (arg.toLowerCase().startsWith(XJAR_ALGORITHM)) {
@@ -32,6 +33,9 @@ public class XLauncher extends JarLauncher implements XConstants {
             }
             if (arg.toLowerCase().startsWith(XJAR_KEYSIZE)) {
                 keysize = Integer.valueOf(arg.substring(XJAR_KEYSIZE.length()));
+            }
+            if (arg.toLowerCase().startsWith(XJAR_IVSIZE)) {
+                ivsize = Integer.valueOf(arg.substring(XJAR_IVSIZE.length()));
             }
             if (arg.toLowerCase().startsWith(XJAR_PASSWORD)) {
                 password = arg.substring(XJAR_PASSWORD.length());
@@ -43,7 +47,7 @@ public class XLauncher extends JarLauncher implements XConstants {
             password = new String(chars);
         }
         this.xDecryptor = new XJdkDecryptor(algorithm);
-        this.xKey = XKit.generate(algorithm, keysize, password);
+        this.xKey = XKit.generate(algorithm, keysize, ivsize, password);
     }
 
     public static void main(String[] args) throws Exception {

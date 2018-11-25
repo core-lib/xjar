@@ -19,7 +19,7 @@ public class XJdkEncryptorTest implements XEntryFilter<JarArchiveEntry>, XConsta
     public void test() throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
-        XKey xKey = XKit.generate(DEFAULT_ALGORITHM, DEFAULT_KEYSIZE, "Payne");
+        XKey xKey = XKit.generate("Payne");
 
         XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(DEFAULT_ALGORITHM), Deflater.NO_COMPRESSION, this);
         XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(DEFAULT_ALGORITHM), Deflater.NO_COMPRESSION, this);

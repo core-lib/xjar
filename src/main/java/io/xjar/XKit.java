@@ -11,7 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.jar.Manifest;
 
-public abstract class XKit {
+public abstract class XKit implements XConstants {
 
     public static void close(Closeable closeable) {
         try {
@@ -102,16 +102,28 @@ public abstract class XKit {
         }
     }
 
-    public static XKey generate(String algorithm, int size, String password) throws NoSuchAlgorithmException {
+    public static XKey generate(String password) throws NoSuchAlgorithmException {
+        return generate(DEFAULT_ALGORITHM, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
+    }
+
+    public static XKey generate(String algorithm, String password) throws NoSuchAlgorithmException {
+        return generate(algorithm, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
+    }
+
+    public static XKey generate(String algorithm, int keysize, String password) throws NoSuchAlgorithmException {
+        return generate(algorithm, keysize, DEFAULT_IVSIZE, password);
+    }
+
+    public static XKey generate(String algorithm, int keysize, int ivsize, String password) throws NoSuchAlgorithmException {
         MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
         byte[] seed = sha512.digest(password.getBytes());
         KeyGenerator generator = KeyGenerator.getInstance(algorithm.split("[/]")[0]);
         XSecureRandom random = new XSecureRandom(seed);
-        generator.init(size, random);
+        generator.init(keysize, random);
         SecretKey key = generator.generateKey();
-        generator.init(16 * 8, random);
+        generator.init(ivsize, random);
         SecretKey iv = generator.generateKey();
-        return new SymmetricSecureKey(algorithm, size, key.getEncoded(), iv.getEncoded());
+        return new SymmetricSecureKey(algorithm, keysize, key.getEncoded(), iv.getEncoded());
     }
 
 }
