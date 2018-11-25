@@ -7,11 +7,17 @@ import io.xjar.key.XKey;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.Permission;
+import java.security.cert.Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * 加密的URL连接
@@ -19,15 +25,15 @@ import java.util.Map;
  * @author Payne 646742615@qq.com
  * 2018/11/24 13:57
  */
-public class XBootURLConnection extends URLConnection {
-    private final URLConnection urlConnection;
+public class XBootURLConnection extends JarURLConnection {
+    private final JarURLConnection jarURLConnection;
     private final XDecryptor xDecryptor;
     private final XEncryptor xEncryptor;
     private final XKey xKey;
 
-    public XBootURLConnection(URLConnection urlConnection, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) {
-        super(urlConnection.getURL());
-        this.urlConnection = urlConnection;
+    public XBootURLConnection(JarURLConnection jarURLConnection, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws MalformedURLException {
+        super(jarURLConnection.getURL());
+        this.jarURLConnection = jarURLConnection;
         this.xDecryptor = xDecryptor;
         this.xEncryptor = xEncryptor;
         this.xKey = xKey;
@@ -35,213 +41,253 @@ public class XBootURLConnection extends URLConnection {
 
     @Override
     public void connect() throws IOException {
-        urlConnection.connect();
+        jarURLConnection.connect();
     }
 
     @Override
     public int getConnectTimeout() {
-        return urlConnection.getConnectTimeout();
+        return jarURLConnection.getConnectTimeout();
     }
 
     @Override
     public void setConnectTimeout(int timeout) {
-        urlConnection.setConnectTimeout(timeout);
+        jarURLConnection.setConnectTimeout(timeout);
     }
 
     @Override
     public int getReadTimeout() {
-        return urlConnection.getReadTimeout();
+        return jarURLConnection.getReadTimeout();
     }
 
     @Override
     public void setReadTimeout(int timeout) {
-        urlConnection.setReadTimeout(timeout);
+        jarURLConnection.setReadTimeout(timeout);
     }
 
     @Override
     public URL getURL() {
-        return urlConnection.getURL();
+        return jarURLConnection.getURL();
     }
 
     @Override
     public int getContentLength() {
-        return urlConnection.getContentLength();
+        return jarURLConnection.getContentLength();
     }
 
     @Override
     public long getContentLengthLong() {
-        return urlConnection.getContentLengthLong();
+        return jarURLConnection.getContentLengthLong();
     }
 
     @Override
     public String getContentType() {
-        return urlConnection.getContentType();
+        return jarURLConnection.getContentType();
     }
 
     @Override
     public String getContentEncoding() {
-        return urlConnection.getContentEncoding();
+        return jarURLConnection.getContentEncoding();
     }
 
     @Override
     public long getExpiration() {
-        return urlConnection.getExpiration();
+        return jarURLConnection.getExpiration();
     }
 
     @Override
     public long getDate() {
-        return urlConnection.getDate();
+        return jarURLConnection.getDate();
     }
 
     @Override
     public long getLastModified() {
-        return urlConnection.getLastModified();
+        return jarURLConnection.getLastModified();
     }
 
     @Override
     public String getHeaderField(String name) {
-        return urlConnection.getHeaderField(name);
+        return jarURLConnection.getHeaderField(name);
     }
 
     @Override
     public Map<String, List<String>> getHeaderFields() {
-        return urlConnection.getHeaderFields();
+        return jarURLConnection.getHeaderFields();
     }
 
     @Override
     public int getHeaderFieldInt(String name, int Default) {
-        return urlConnection.getHeaderFieldInt(name, Default);
+        return jarURLConnection.getHeaderFieldInt(name, Default);
     }
 
     @Override
     public long getHeaderFieldLong(String name, long Default) {
-        return urlConnection.getHeaderFieldLong(name, Default);
+        return jarURLConnection.getHeaderFieldLong(name, Default);
     }
 
     @Override
     public long getHeaderFieldDate(String name, long Default) {
-        return urlConnection.getHeaderFieldDate(name, Default);
+        return jarURLConnection.getHeaderFieldDate(name, Default);
     }
 
     @Override
     public String getHeaderFieldKey(int n) {
-        return urlConnection.getHeaderFieldKey(n);
+        return jarURLConnection.getHeaderFieldKey(n);
     }
 
     @Override
     public String getHeaderField(int n) {
-        return urlConnection.getHeaderField(n);
+        return jarURLConnection.getHeaderField(n);
     }
 
     @Override
     public Object getContent() throws IOException {
-        return urlConnection.getContent();
+        return jarURLConnection.getContent();
     }
 
     @Override
     public Object getContent(Class[] classes) throws IOException {
-        return urlConnection.getContent(classes);
+        return jarURLConnection.getContent(classes);
     }
 
     @Override
     public Permission getPermission() throws IOException {
-        return urlConnection.getPermission();
+        return jarURLConnection.getPermission();
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        InputStream in = urlConnection.getInputStream();
+        InputStream in = jarURLConnection.getInputStream();
         return xDecryptor.decrypt(xKey, in);
     }
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        OutputStream out = urlConnection.getOutputStream();
+        OutputStream out = jarURLConnection.getOutputStream();
         return xEncryptor.encrypt(xKey, out);
     }
 
     @Override
     public String toString() {
-        return urlConnection.toString();
+        return jarURLConnection.toString();
     }
 
     @Override
     public boolean getDoInput() {
-        return urlConnection.getDoInput();
+        return jarURLConnection.getDoInput();
     }
 
     @Override
     public void setDoInput(boolean doinput) {
-        urlConnection.setDoInput(doinput);
+        jarURLConnection.setDoInput(doinput);
     }
 
     @Override
     public boolean getDoOutput() {
-        return urlConnection.getDoOutput();
+        return jarURLConnection.getDoOutput();
     }
 
     @Override
     public void setDoOutput(boolean dooutput) {
-        urlConnection.setDoOutput(dooutput);
+        jarURLConnection.setDoOutput(dooutput);
     }
 
     @Override
     public boolean getAllowUserInteraction() {
-        return urlConnection.getAllowUserInteraction();
+        return jarURLConnection.getAllowUserInteraction();
     }
 
     @Override
     public void setAllowUserInteraction(boolean allowuserinteraction) {
-        urlConnection.setAllowUserInteraction(allowuserinteraction);
+        jarURLConnection.setAllowUserInteraction(allowuserinteraction);
     }
 
     @Override
     public boolean getUseCaches() {
-        return urlConnection.getUseCaches();
+        return jarURLConnection.getUseCaches();
     }
 
     @Override
     public void setUseCaches(boolean usecaches) {
-        urlConnection.setUseCaches(usecaches);
+        jarURLConnection.setUseCaches(usecaches);
     }
 
     @Override
     public long getIfModifiedSince() {
-        return urlConnection.getIfModifiedSince();
+        return jarURLConnection.getIfModifiedSince();
     }
 
     @Override
     public void setIfModifiedSince(long ifmodifiedsince) {
-        urlConnection.setIfModifiedSince(ifmodifiedsince);
+        jarURLConnection.setIfModifiedSince(ifmodifiedsince);
     }
 
     @Override
     public boolean getDefaultUseCaches() {
-        return urlConnection.getDefaultUseCaches();
+        return jarURLConnection.getDefaultUseCaches();
     }
 
     @Override
     public void setDefaultUseCaches(boolean defaultusecaches) {
-        urlConnection.setDefaultUseCaches(defaultusecaches);
+        jarURLConnection.setDefaultUseCaches(defaultusecaches);
     }
 
     @Override
     public void setRequestProperty(String key, String value) {
-        urlConnection.setRequestProperty(key, value);
+        jarURLConnection.setRequestProperty(key, value);
     }
 
     @Override
     public void addRequestProperty(String key, String value) {
-        urlConnection.addRequestProperty(key, value);
+        jarURLConnection.addRequestProperty(key, value);
     }
 
     @Override
     public String getRequestProperty(String key) {
-        return urlConnection.getRequestProperty(key);
+        return jarURLConnection.getRequestProperty(key);
     }
 
     @Override
     public Map<String, List<String>> getRequestProperties() {
-        return urlConnection.getRequestProperties();
+        return jarURLConnection.getRequestProperties();
+    }
+
+    @Override
+    public URL getJarFileURL() {
+        return jarURLConnection.getJarFileURL();
+    }
+
+    @Override
+    public String getEntryName() {
+        return jarURLConnection.getEntryName();
+    }
+
+    @Override
+    public JarFile getJarFile() throws IOException {
+        return jarURLConnection.getJarFile();
+    }
+
+    @Override
+    public Manifest getManifest() throws IOException {
+        return jarURLConnection.getManifest();
+    }
+
+    @Override
+    public JarEntry getJarEntry() throws IOException {
+        return jarURLConnection.getJarEntry();
+    }
+
+    @Override
+    public Attributes getAttributes() throws IOException {
+        return jarURLConnection.getAttributes();
+    }
+
+    @Override
+    public Attributes getMainAttributes() throws IOException {
+        return jarURLConnection.getMainAttributes();
+    }
+
+    @Override
+    public Certificate[] getCertificates() throws IOException {
+        return jarURLConnection.getCertificates();
     }
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.Provider;
@@ -53,7 +54,10 @@ public class XBootURLHandler extends Handler implements XConstants {
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-        return indexes.contains(url.toString()) ? new XBootURLConnection(urlConnection, xDecryptor, xEncryptor, xKey) : urlConnection;
+        return indexes.contains(url.toString())
+                && urlConnection instanceof JarURLConnection
+                ? new XBootURLConnection((JarURLConnection) urlConnection, xDecryptor, xEncryptor, xKey)
+                : urlConnection;
     }
 
 }
