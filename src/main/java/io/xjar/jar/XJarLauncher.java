@@ -4,6 +4,7 @@ import io.xjar.*;
 import io.xjar.key.XKey;
 
 import java.io.Console;
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -22,7 +23,7 @@ public class XJarLauncher implements XConstants {
     private final XEncryptor xEncryptor;
     private final XKey xKey;
 
-    public XJarLauncher(String[] args) throws Exception {
+    public XJarLauncher(String... args) throws Exception {
         this.args = args;
         String algorithm = DEFAULT_ALGORITHM;
         int keysize = DEFAULT_KEYSIZE;
@@ -59,7 +60,8 @@ public class XJarLauncher implements XConstants {
     public void launch() throws Exception {
         String dir = System.getProperty("java.user.dir");
         String path = System.getProperty("java.class.path");
-        URL url = new URL("jar:file://" + dir + path);
+        File file = new File(dir, path);
+        URL url = new URL("jar:" + file.toURI().toURL() + "!/");
         XJarClassLoader xJarClassLoader = new XJarClassLoader(new URL[]{url}, this.getClass().getClassLoader(), xDecryptor, xEncryptor, xKey);
         Thread.currentThread().setContextClassLoader(xJarClassLoader);
         URL resource = xJarClassLoader.findResource(META_INF_MANIFEST);

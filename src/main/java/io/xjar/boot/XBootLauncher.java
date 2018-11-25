@@ -19,7 +19,7 @@ public class XBootLauncher extends JarLauncher implements XConstants {
     private final XEncryptor xEncryptor;
     private final XKey xKey;
 
-    public XBootLauncher(String[] args) throws Exception {
+    public XBootLauncher(String... args) throws Exception {
         this.args = args;
         String algorithm = DEFAULT_ALGORITHM;
         int keysize = DEFAULT_KEYSIZE;
