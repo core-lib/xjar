@@ -12,4 +12,11 @@ public interface XConstants {
     String XENC_IDX_FILE = "XENC.IDX";
     String CRLF = System.getProperty("line.separator");
 
+    String XJAR_ALGORITHM = "--xjar.algorithm=";
+    String XJAR_KEYSIZE = "--xjar.keysize=";
+    String XJAR_PASSWORD = "--xjar.password=";
+
+    String DEFAULT_ALGORITHM = "AES/CBC/PKCS7Padding";
+    int DEFAULT_KEYSIZE = 128;
+
 }
