@@ -1,4 +1,4 @@
-package io.xjar.boot;
+package io.xjar.jar;
 
 import io.xjar.XConstants;
 import io.xjar.XDecryptor;
@@ -25,13 +25,13 @@ import java.util.Set;
  * @author Payne 646742615@qq.com
  * 2018/11/24 13:19
  */
-public class XBootURLHandler extends Handler implements XConstants {
+public class XJarURLHandler extends Handler implements XConstants {
     private final XDecryptor xDecryptor;
     private final XEncryptor xEncryptor;
     private final XKey xKey;
     private final Set<String> indexes;
 
-    public XBootURLHandler(XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey, ClassLoader classLoader) throws Exception {
+    public XJarURLHandler(XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey, ClassLoader classLoader) throws Exception {
         this.xDecryptor = xDecryptor;
         this.xEncryptor = xEncryptor;
         this.xKey = xKey;
@@ -56,7 +56,7 @@ public class XBootURLHandler extends Handler implements XConstants {
         URLConnection urlConnection = super.openConnection(url);
         return indexes.contains(url.toString())
                 && urlConnection instanceof JarURLConnection
-                ? new XBootURLConnection((JarURLConnection) urlConnection, xDecryptor, xEncryptor, xKey)
+                ? new XJarURLConnection((JarURLConnection) urlConnection, xDecryptor, xEncryptor, xKey)
                 : urlConnection;
     }
 

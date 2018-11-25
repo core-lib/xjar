@@ -78,8 +78,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
                         || entry.getName().endsWith(XJAR_INF_DIR)
-                        || entry.getName().endsWith(XJAR_INF_DIR + XENC_IDX_FILE)
-                        || entry.getName().endsWith(XJAR_INF_DIR + XDEC_IDX_FILE)
+                        || entry.getName().endsWith(XJAR_INF_DIR + XJAR_INF_IDX)
                 ) {
                     continue;
                 }
@@ -134,7 +133,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                 zos.putArchiveEntry(XJAR_INF);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry XENC_IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XENC_IDX_FILE);
+                JarArchiveEntry XENC_IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XJAR_INF_IDX);
                 XENC_IDX.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XENC_IDX);
                 int idx = classpath != null ? classpath.length() : 0;

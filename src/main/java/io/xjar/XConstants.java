@@ -10,8 +10,7 @@ public interface XConstants {
     String META_INF_MANIFEST = "META-INF/MANIFEST.MF";
     String XJAR_SRC_DIR = XJar.class.getPackage().getName().replace('.', '/');
     String XJAR_INF_DIR = "XJAR-INF/";
-    String XDEC_IDX_FILE = "XDEC.IDX";
-    String XENC_IDX_FILE = "XENC.IDX";
+    String XJAR_INF_IDX = "INDEXES.IDX";
     String CRLF = System.getProperty("line.separator");
 
     String XJAR_ALGORITHM = "--xjar.algorithm=";

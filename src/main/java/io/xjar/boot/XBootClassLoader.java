@@ -20,11 +20,11 @@ import java.util.Enumeration;
  * 2018/11/23 23:04
  */
 public class XBootClassLoader extends LaunchedURLClassLoader {
-    private final XBootURLHandler xURLHandler;
+    private final XBootURLHandler xBootURLHandler;
 
     public XBootClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
-        this.xURLHandler = new XBootURLHandler(xDecryptor, xEncryptor, xKey, this);
+        this.xBootURLHandler = new XBootURLHandler(xDecryptor, xEncryptor, xKey, this);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
             return null;
         }
         try {
-            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xURLHandler);
+            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xBootURLHandler);
         } catch (MalformedURLException e) {
             return url;
         }
@@ -88,7 +88,7 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
                 return null;
             }
             try {
-                return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xURLHandler);
+                return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), xBootURLHandler);
             } catch (MalformedURLException e) {
                 return url;
             }
