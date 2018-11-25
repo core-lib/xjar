@@ -47,13 +47,14 @@ public class XJarURLHandler extends URLStreamHandler implements XConstants {
             String name;
             while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
         }
+        System.out.println(indexes);
         Class<? extends Provider> provider = classLoader.loadClass("org.bouncycastle.jce.provider.BouncyCastleProvider").asSubclass(Provider.class);
         Security.addProvider(provider.newInstance());
     }
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
-        URLConnection urlConnection = url.openConnection();
+        URLConnection urlConnection = new URL(url.toString()).openConnection();
         return indexes.contains(url.toString())
                 && urlConnection instanceof JarURLConnection
                 ? new XJarURLConnection((JarURLConnection) urlConnection, xDecryptor, xEncryptor, xKey)
