@@ -47,7 +47,7 @@ public class XLauncher extends JarLauncher implements XConstants {
             password = new String(chars);
         }
         this.xDecryptor = new XJdkDecryptor(algorithm);
-        this.xKey = XKit.generate(algorithm, keysize, ivsize, password);
+        this.xKey = XKit.key(algorithm, keysize, ivsize, password);
     }
 
     public static void main(String[] args) throws Exception {
