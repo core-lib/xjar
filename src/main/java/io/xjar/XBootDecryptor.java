@@ -96,15 +96,8 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, nos);
-                } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    boolean filtered = filter(entry);
-                    XDecryptor decryptor = filtered ? this : xNopDecryptor;
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    try (InputStream dis = decryptor.decrypt(key, nis)) {
-                        XKit.transfer(dis, bos);
-                    }
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    Manifest manifest = new Manifest(bis);
+                } else if (entry.getName().equals(META_INF_MANIFEST)) {
+                    Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Boot-Main-Class");
                     if (mainClass != null) {

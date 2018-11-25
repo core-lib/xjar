@@ -79,15 +79,8 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    boolean filtered = filter(entry);
-                    XDecryptor decryptor = filtered ? this : xNopDecryptor;
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    try (InputStream dis = decryptor.decrypt(key, nis)) {
-                        XKit.transfer(dis, bos);
-                    }
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    Manifest manifest = new Manifest(bis);
+                } else if (entry.getName().equals(META_INF_MANIFEST)) {
+                    Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Jar-Main-Class");
                     if (mainClass != null) {

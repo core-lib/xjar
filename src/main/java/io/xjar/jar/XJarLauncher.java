@@ -7,4 +7,12 @@ package io.xjar.jar;
  * 2018/11/25 18:41
  */
 public class XJarLauncher {
+
+    public static void main(String... args) {
+        ClassLoader classLoader = XJarClassLoader.class.getClassLoader();
+        System.out.println(classLoader);
+        String classpath = System.getProperty("java.class.path");
+        System.out.println(classpath);
+    }
+
 }

@@ -1,8 +1,5 @@
 package io.xjar;
 
-import io.detector.Filter;
-import io.detector.FilterChain;
-import io.detector.Resource;
 import io.xjar.boot.XBootLauncher;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -26,7 +23,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants, Filter {
+public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
@@ -104,11 +101,8 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, nos);
-                } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    XKit.transfer(nis, bos);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    manifest = new Manifest(bis);
+                } else if (entry.getName().equals(META_INF_MANIFEST)) {
+                    manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
@@ -118,12 +112,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filter(entry);
-                    if (filtered) indexes.add(entry.getName());
-                    XEncryptor encryptor = filtered ? this : xNopEncryptor;
-                    try (OutputStream eos = encryptor.encrypt(key, nos)) {
-                        manifest.write(eos);
-                    }
+                    manifest.write(nos);
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -169,7 +158,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     @Override
-    public boolean accept(Resource resource, FilterChain chain) {
-        return resource.getName().endsWith(".class") && chain.doNext(resource);
+    public boolean filter(JarArchiveEntry entry) {
+        return super.filter(entry) && !entry.getName().equals(META_INF_MANIFEST);
     }
 }

@@ -84,11 +84,8 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    XKit.transfer(nis, bos);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    manifest = new Manifest(bis);
+                } else if (entry.getName().equals(META_INF_MANIFEST)) {
+                    manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
@@ -98,12 +95,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filter(entry);
-                    if (filtered) indexes.add(entry.getName());
-                    XEncryptor encryptor = filtered ? this : xNopEncryptor;
-                    try (OutputStream eos = encryptor.encrypt(key, nos)) {
-                        manifest.write(eos);
-                    }
+                    manifest.write(nos);
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -144,5 +136,10 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
             XKit.close(zis);
             XKit.close(zos);
         }
+    }
+
+    @Override
+    public boolean filter(JarArchiveEntry entry) {
+        return super.filter(entry) && !entry.getName().equals(META_INF_MANIFEST);
     }
 }
