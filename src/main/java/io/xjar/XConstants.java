@@ -7,6 +7,7 @@ package io.xjar;
  * 2018/11/24 9:17
  */
 public interface XConstants {
+    String XJAR_SRC_DIR = XJar.class.getPackage().getName().replace('.', '/');
     String XJAR_INF_DIR = "XJAR-INF/";
     String XDEC_IDX_FILE = "XDEC.IDX";
     String XENC_IDX_FILE = "XENC.IDX";

@@ -18,7 +18,7 @@ import java.util.Collection;
 public class XJar {
 
     public static void inject(JarArchiveOutputStream zos) throws IOException {
-        String pkg = XKit.class.getPackage().getName().replace('.', '/');
+        String pkg = XJar.class.getPackage().getName().replace('.', '/');
         Collection<Resource> resources = SimpleDetector.Builder
                 .scan(pkg)
                 .includeJar()
