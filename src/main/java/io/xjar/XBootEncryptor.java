@@ -112,7 +112,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
-                        attributes.putValue("Origin-Main-Class", mainClass);
+                        attributes.putValue("Boot-Main-Class", mainClass);
                         attributes.putValue("Main-Class", XBootLauncher.class.getName());
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());

@@ -8,8 +8,6 @@ import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.CRC32;
@@ -64,7 +62,6 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     public void decrypt(XKey key, InputStream in, OutputStream out) throws IOException {
         JarArchiveInputStream zis = null;
         JarArchiveOutputStream zos = null;
-        Set<String> indexes = new LinkedHashSet<>();
         try {
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
@@ -73,7 +70,6 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
             XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, xAlwaysFilter);
             JarArchiveEntry entry;
-            Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_INF_DIR)
                         || entry.getName().startsWith(XJAR_SRC_DIR)
@@ -102,19 +98,18 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                     XKit.transfer(bis, nos);
                 } else if (entry.getName().equals("META-INF/MANIFEST.MF")) {
                     boolean filtered = filter(entry);
-                    if (filtered) indexes.add(entry.getName());
                     XDecryptor decryptor = filtered ? this : xNopDecryptor;
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     try (InputStream dis = decryptor.decrypt(key, nis)) {
                         XKit.transfer(dis, bos);
                     }
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    manifest = new Manifest(bis);
+                    Manifest manifest = new Manifest(bis);
                     Attributes attributes = manifest.getMainAttributes();
-                    String mainClass = attributes.getValue("Origin-Main-Class");
+                    String mainClass = attributes.getValue("Boot-Main-Class");
                     if (mainClass != null) {
                         attributes.putValue("Main-Class", mainClass);
-                        attributes.remove(new Attributes.Name("Origin-Main-Class"));
+                        attributes.remove(new Attributes.Name("Boot-Main-Class"));
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -125,29 +120,10 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                     boolean filtered = filter(entry);
-                    if (filtered) indexes.add(entry.getName());
                     XDecryptor decryptor = filtered ? this : xNopDecryptor;
                     try (OutputStream eos = decryptor.decrypt(key, nos)) {
                         XKit.transfer(nis, eos);
                     }
-                }
-                zos.closeArchiveEntry();
-            }
-
-            if (!indexes.isEmpty()) {
-                String classpath = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Spring-Boot-Classes") : null;
-                JarArchiveEntry XJAR_INF = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR);
-                XJAR_INF.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(XJAR_INF);
-                zos.closeArchiveEntry();
-
-                JarArchiveEntry XDEC_IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XDEC_IDX_FILE);
-                XDEC_IDX.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(XDEC_IDX);
-                int idx = classpath != null ? classpath.length() : 0;
-                for (String index : indexes) {
-                    nos.write(index.substring(idx).getBytes());
-                    nos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
             }
