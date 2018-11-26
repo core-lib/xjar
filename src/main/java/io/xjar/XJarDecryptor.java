@@ -22,26 +22,26 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     private final int level;
 
     public XJarDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+        this(xDecryptor, (Collection<XJarArchiveEntryFilter>) null);
     }
 
-    public XJarDecryptor(XDecryptor xEncryptor, XEntryFilter<JarArchiveEntry>... filters) {
+    public XJarDecryptor(XDecryptor xEncryptor, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
-    public XJarDecryptor(XDecryptor xDecryptor, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+    public XJarDecryptor(XDecryptor xDecryptor, Collection<XJarArchiveEntryFilter> filters) {
         this(xDecryptor, Deflater.DEFLATED, filters);
     }
 
     public XJarDecryptor(XDecryptor xDecryptor, int level) {
-        this(xDecryptor, level, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+        this(xDecryptor, level, (Collection<XJarArchiveEntryFilter>) null);
     }
 
-    public XJarDecryptor(XDecryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry>... filters) {
+    public XJarDecryptor(XDecryptor xEncryptor, int level, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, level, Arrays.asList(filters));
     }
 
-    public XJarDecryptor(XDecryptor xDecryptor, int level, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+    public XJarDecryptor(XDecryptor xDecryptor, int level, Collection<XJarArchiveEntryFilter> filters) {
         super(xDecryptor, filters);
         this.level = level;
     }

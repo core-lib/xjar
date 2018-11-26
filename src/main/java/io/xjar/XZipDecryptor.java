@@ -20,26 +20,26 @@ public class XZipDecryptor extends XEntryDecryptor<ZipArchiveEntry> implements X
     private final int level;
 
     public XZipDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, (Collection<XEntryFilter<ZipArchiveEntry>>) null);
+        this(xDecryptor, (Collection<XZipArchiveEntryFilter>) null);
     }
 
-    public XZipDecryptor(XDecryptor xEncryptor, XEntryFilter<ZipArchiveEntry>... filters) {
+    public XZipDecryptor(XDecryptor xEncryptor, XZipArchiveEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
-    public XZipDecryptor(XDecryptor xDecryptor, Collection<XEntryFilter<ZipArchiveEntry>> filters) {
+    public XZipDecryptor(XDecryptor xDecryptor, Collection<XZipArchiveEntryFilter> filters) {
         this(xDecryptor, Deflater.DEFLATED, filters);
     }
 
     public XZipDecryptor(XDecryptor xDecryptor, int level) {
-        this(xDecryptor, level, (Collection<XEntryFilter<ZipArchiveEntry>>) null);
+        this(xDecryptor, level, (Collection<XZipArchiveEntryFilter>) null);
     }
 
-    public XZipDecryptor(XDecryptor xEncryptor, int level, XEntryFilter<ZipArchiveEntry>... filters) {
+    public XZipDecryptor(XDecryptor xEncryptor, int level, XZipArchiveEntryFilter... filters) {
         this(xEncryptor, level, Arrays.asList(filters));
     }
 
-    public XZipDecryptor(XDecryptor xDecryptor, int level, Collection<XEntryFilter<ZipArchiveEntry>> filters) {
+    public XZipDecryptor(XDecryptor xDecryptor, int level, Collection<XZipArchiveEntryFilter> filters) {
         super(xDecryptor, filters);
         this.level = level;
     }

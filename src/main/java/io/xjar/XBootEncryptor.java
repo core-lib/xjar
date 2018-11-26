@@ -27,26 +27,26 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     private final int level;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+        this(xEncryptor, (Collection<XJarArchiveEntryFilter>) null);
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry>... filters) {
+    public XBootEncryptor(XEncryptor xEncryptor, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+    public XBootEncryptor(XEncryptor xEncryptor, Collection<XJarArchiveEntryFilter> filters) {
         this(xEncryptor, Deflater.DEFLATED, filters);
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+        this(xEncryptor, level, (Collection<XJarArchiveEntryFilter>) null);
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry>... filters) {
+    public XBootEncryptor(XEncryptor xEncryptor, int level, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, level, Arrays.asList(filters));
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, int level, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+    public XBootEncryptor(XEncryptor xEncryptor, int level, Collection<XJarArchiveEntryFilter> filters) {
         super(xEncryptor, filters);
         this.level = level;
     }
@@ -72,7 +72,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             zos.setLevel(level);
             NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
-            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level, xAlwaysFilter);
+            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level);
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {

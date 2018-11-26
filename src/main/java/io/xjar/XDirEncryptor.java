@@ -19,11 +19,11 @@ public class XDirEncryptor extends XEntryEncryptor<File> implements XEncryptor {
         super(xEncryptor);
     }
 
-    public XDirEncryptor(XEncryptor xEncryptor, XEntryFilter<File>... filters) {
+    public XDirEncryptor(XEncryptor xEncryptor, XDirEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
-    public XDirEncryptor(XEncryptor xEncryptor, Collection<XEntryFilter<File>> xEntryFilters) {
+    public XDirEncryptor(XEncryptor xEncryptor, Collection<XDirEntryFilter> xEntryFilters) {
         super(xEncryptor, xEntryFilters);
     }
 

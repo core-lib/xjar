@@ -1,6 +1,5 @@
 package io.xjar;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -11,20 +10,14 @@ import java.util.Collections;
  * 2018/11/23 20:38
  */
 public abstract class XEntryEncryptor<E> extends XWrappedEncryptor implements XEncryptor, XEntryFilter<E> {
-    protected final Collection<XEntryFilter<E>> filters;
+    protected final Collection<? extends XEntryFilter<E>> filters;
     protected final XNopEncryptor xNopEncryptor = new XNopEncryptor();
-    protected final XAlwaysFilter<E> xAlwaysFilter = new XAlwaysFilter<>();
-    protected final XNeverFilter<E> xNeverFilter = new XNeverFilter<>();
 
     protected XEntryEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, (Collection<XEntryFilter<E>>) null);
+        this(xEncryptor, null);
     }
 
-    protected XEntryEncryptor(XEncryptor xEncryptor, XEntryFilter<E>... filters) {
-        this(xEncryptor, Arrays.asList(filters));
-    }
-
-    protected XEntryEncryptor(XEncryptor xEncryptor, Collection<XEntryFilter<E>> filters) {
+    protected XEntryEncryptor(XEncryptor xEncryptor, Collection<? extends XEntryFilter<E>> filters) {
         super(xEncryptor);
         this.filters = filters != null ? filters : Collections.<XEntryFilter<E>>emptySet();
     }

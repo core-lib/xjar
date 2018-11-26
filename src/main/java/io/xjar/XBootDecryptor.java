@@ -24,26 +24,26 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     private final int level;
 
     public XBootDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+        this(xDecryptor, (Collection<XJarArchiveEntryFilter>) null);
     }
 
-    public XBootDecryptor(XDecryptor xEncryptor, XEntryFilter<JarArchiveEntry>... filters) {
+    public XBootDecryptor(XDecryptor xEncryptor, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
-    public XBootDecryptor(XDecryptor xDecryptor, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+    public XBootDecryptor(XDecryptor xDecryptor, Collection<XJarArchiveEntryFilter> filters) {
         this(xDecryptor, Deflater.DEFLATED, filters);
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, int level) {
-        this(xDecryptor, level, (Collection<XEntryFilter<JarArchiveEntry>>) null);
+        this(xDecryptor, level, (Collection<XJarArchiveEntryFilter>) null);
     }
 
-    public XBootDecryptor(XDecryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry>... filters) {
+    public XBootDecryptor(XDecryptor xEncryptor, int level, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, level, Arrays.asList(filters));
     }
 
-    public XBootDecryptor(XDecryptor xDecryptor, int level, Collection<XEntryFilter<JarArchiveEntry>> filters) {
+    public XBootDecryptor(XDecryptor xDecryptor, int level, Collection<XJarArchiveEntryFilter> filters) {
         super(xDecryptor, filters);
         this.level = level;
     }
@@ -68,7 +68,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
             zos.setLevel(level);
             NoCloseInputStream nis = new NoCloseInputStream(zis);
             NoCloseOutputStream nos = new NoCloseOutputStream(zos);
-            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, xAlwaysFilter);
+            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
