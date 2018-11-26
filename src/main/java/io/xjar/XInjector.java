@@ -15,10 +15,10 @@ import java.util.Collection;
  * @author Payne 646742615@qq.com
  * 2018/11/25 10:34
  */
-public class XJar {
+public class XInjector {
 
     public static void inject(JarArchiveOutputStream zos) throws IOException {
-        String pkg = XJar.class.getPackage().getName().replace('.', '/');
+        String pkg = XInjector.class.getPackage().getName().replace('.', '/');
         Collection<Resource> resources = SimpleDetector.Builder
                 .scan(pkg)
                 .includeJar()

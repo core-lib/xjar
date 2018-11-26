@@ -126,7 +126,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
 
                 String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
                 if (mainClass != null) {
-                    XJar.inject(zos);
+                    XInjector.inject(zos);
                 }
             }
 
