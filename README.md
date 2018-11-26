@@ -1,5 +1,5 @@
 # **XJar** [![](https://jitpack.io/v/core-lib/xjar.svg)](https://jitpack.io/#core-lib/xjar)
-##### Java JAR 包加密安全运行工具，支持Spring Boot的Fat Jar方式，避免本地部署的应用被反编译。
+#### Java JAR 包加密安全运行工具，支持Spring Boot的Fat Jar方式，避免本地部署的应用被反编译。
 
 ## **功能特性**
 * 无需侵入代码，只需要把编译好的JAR包通过工具加密即可。
@@ -95,7 +95,8 @@ public static void main(String[] args) {
     XJar.encrypt(plaintext, encrypted, password, new XJarArchiveEntryFilter() {
         @Override
         public boolean filter(JarArchiveEntry entry) {
-            return entry.getName().startsWith("/BOOT-INF/classes/") || entry.getName().startsWith("/BOOT-INF/lib/jar-need-encrypted");
+            return entry.getName().startsWith("/BOOT-INF/classes/")
+             || entry.getName().startsWith("/BOOT-INF/lib/jar-need-encrypted");
         }
     });
 }
