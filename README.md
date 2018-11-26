@@ -21,7 +21,7 @@ JDK 1.7 +
             <url>https://www.jitpack.io</url>
         </repository>
     </repositories>
-    <!-- 添加 HttpDoc 依赖 -->
+    <!-- 添加 XJar 依赖 -->
     <dependencies>
         <dependency>
             <groupId>com.github.core-lib</groupId>
@@ -87,7 +87,7 @@ java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 
 ## **进阶用法**
 ```java
-// 只加密自身项目及模块的源码不加密第三方依赖，可以通过XJarArchiveEntryFilter来定制需要加密的JAR包内资源
+// 只加密自身项目及相关模块的源码不加密第三方依赖，可以通过XJarArchiveEntryFilter来定制需要加密的JAR包内资源
 public static void main(String[] args) {
     String password = "io.xjar";
     File plaintext = new File("/path/to/read/plaintext.jar");
