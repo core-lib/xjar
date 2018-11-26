@@ -42,8 +42,8 @@ public class NoCloseInputStream extends InputStream {
     }
 
     @Override
-    public void mark(int readlimit) {
-        in.mark(readlimit);
+    public void mark(int readLimit) {
+        in.mark(readLimit);
     }
 
     @Override

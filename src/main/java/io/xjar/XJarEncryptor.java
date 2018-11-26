@@ -107,9 +107,9 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                 zos.putArchiveEntry(XJAR_INF);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry XENC_IDX = new JarArchiveEntry(XJAR_INF_DIR + XJAR_INF_IDX);
-                XENC_IDX.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(XENC_IDX);
+                JarArchiveEntry IDX = new JarArchiveEntry(XJAR_INF_DIR + XJAR_INF_IDX);
+                IDX.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(IDX);
                 for (String index : indexes) {
                     zos.write(index.getBytes());
                     zos.write(CRLF.getBytes());
