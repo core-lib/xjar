@@ -15,10 +15,6 @@ import java.util.Collection;
  */
 public class XDirDecryptor extends XEntryDecryptor<File> implements XDecryptor {
 
-    public XDirDecryptor(XDecryptor xDecryptor) {
-        super(xDecryptor);
-    }
-
     public XDirDecryptor(XDecryptor xEncryptor, XDirEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }

@@ -26,20 +26,12 @@ import java.util.zip.Deflater;
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
 
-    public XBootEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, (Collection<XJarArchiveEntryFilter>) null);
-    }
-
     public XBootEncryptor(XEncryptor xEncryptor, XJarArchiveEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, Collection<XJarArchiveEntryFilter> filters) {
         this(xEncryptor, Deflater.DEFLATED, filters);
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, (Collection<XJarArchiveEntryFilter>) null);
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, XJarArchiveEntryFilter... filters) {

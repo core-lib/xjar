@@ -19,20 +19,12 @@ import java.util.zip.Deflater;
 public class XZipDecryptor extends XEntryDecryptor<ZipArchiveEntry> implements XDecryptor {
     private final int level;
 
-    public XZipDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, (Collection<XZipArchiveEntryFilter>) null);
-    }
-
     public XZipDecryptor(XDecryptor xEncryptor, XZipArchiveEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
 
     public XZipDecryptor(XDecryptor xDecryptor, Collection<XZipArchiveEntryFilter> filters) {
         this(xDecryptor, Deflater.DEFLATED, filters);
-    }
-
-    public XZipDecryptor(XDecryptor xDecryptor, int level) {
-        this(xDecryptor, level, (Collection<XZipArchiveEntryFilter>) null);
     }
 
     public XZipDecryptor(XDecryptor xEncryptor, int level, XZipArchiveEntryFilter... filters) {

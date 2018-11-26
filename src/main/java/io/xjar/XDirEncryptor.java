@@ -15,10 +15,6 @@ import java.util.Collection;
  */
 public class XDirEncryptor extends XEntryEncryptor<File> implements XEncryptor {
 
-    public XDirEncryptor(XEncryptor xEncryptor) {
-        super(xEncryptor);
-    }
-
     public XDirEncryptor(XEncryptor xEncryptor, XDirEntryFilter... filters) {
         this(xEncryptor, Arrays.asList(filters));
     }
