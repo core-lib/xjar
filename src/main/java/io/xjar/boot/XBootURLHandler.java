@@ -13,8 +13,6 @@ import java.io.LineNumberReader;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.Provider;
-import java.security.Security;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -47,8 +45,6 @@ public class XBootURLHandler extends Handler implements XConstants {
             String name;
             while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
         }
-        Class<? extends Provider> provider = classLoader.loadClass("org.bouncycastle.jce.provider.BouncyCastleProvider").asSubclass(Provider.class);
-        Security.addProvider(provider.newInstance());
     }
 
     @Override

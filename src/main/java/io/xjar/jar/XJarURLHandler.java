@@ -13,8 +13,6 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.security.Provider;
-import java.security.Security;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -47,9 +45,6 @@ public class XJarURLHandler extends URLStreamHandler implements XConstants {
             String name;
             while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
         }
-        System.out.println(indexes);
-        Class<? extends Provider> provider = classLoader.loadClass("org.bouncycastle.jce.provider.BouncyCastleProvider").asSubclass(Provider.class);
-        Security.addProvider(provider.newInstance());
     }
 
     @Override

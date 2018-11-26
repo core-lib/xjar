@@ -5,10 +5,8 @@ import io.xjar.key.XKey;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * JDK内置加密算法的加密器
@@ -41,8 +39,7 @@ public class XJdkEncryptor implements XEncryptor {
         CipherInputStream cis = null;
         try {
             Cipher cipher = Cipher.getInstance(algorithm);
-            byte[] keys = key.getEncryptKey().length <= key.getSize() / 8 ? key.getEncryptKey() : Arrays.copyOf(key.getEncryptKey(), key.getSize() / 8);
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(keys, algorithm), new IvParameterSpec(key.getIvParameter()));
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncryptKey(), algorithm));
             cis = new CipherInputStream(in, cipher);
             XKit.transfer(cis, out);
         } catch (Exception e) {
@@ -56,8 +53,7 @@ public class XJdkEncryptor implements XEncryptor {
     public InputStream encrypt(XKey key, InputStream in) throws IOException {
         try {
             Cipher cipher = Cipher.getInstance(algorithm);
-            byte[] keys = key.getEncryptKey().length <= key.getSize() / 8 ? key.getEncryptKey() : Arrays.copyOf(key.getEncryptKey(), key.getSize() / 8);
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(keys, algorithm), new IvParameterSpec(key.getIvParameter()));
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncryptKey(), algorithm));
             return new CipherInputStream(in, cipher);
         } catch (Exception e) {
             throw new IOException(e);
@@ -68,8 +64,7 @@ public class XJdkEncryptor implements XEncryptor {
     public OutputStream encrypt(XKey key, OutputStream out) throws IOException {
         try {
             Cipher cipher = Cipher.getInstance(algorithm);
-            byte[] keys = key.getEncryptKey().length <= key.getSize() / 8 ? key.getEncryptKey() : Arrays.copyOf(key.getEncryptKey(), key.getSize() / 8);
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(keys, algorithm), new IvParameterSpec(key.getIvParameter()));
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncryptKey(), algorithm));
             return new CipherOutputStream(out, cipher);
         } catch (Exception e) {
             throw new IOException(e);
