@@ -18,25 +18,23 @@ import java.util.Collection;
 public class XJar {
 
     public static void inject(JarArchiveOutputStream zos) throws IOException {
-        {
-            String pkg = XJar.class.getPackage().getName().replace('.', '/');
-            Collection<Resource> resources = SimpleDetector.Builder
-                    .scan(pkg)
-                    .includeJar()
-                    .recursively()
-                    .build()
-                    .detect();
-            for (Resource resource : resources) {
-                String name = resource.toString();
-                name = name.substring(name.lastIndexOf(pkg));
-                JarArchiveEntry xEntry = new JarArchiveEntry(name);
-                xEntry.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(xEntry);
-                try (InputStream ris = resource.getInputStream()) {
-                    XKit.transfer(ris, zos);
-                }
-                zos.closeArchiveEntry();
+        String pkg = XJar.class.getPackage().getName().replace('.', '/');
+        Collection<Resource> resources = SimpleDetector.Builder
+                .scan(pkg)
+                .includeJar()
+                .recursively()
+                .build()
+                .detect();
+        for (Resource resource : resources) {
+            String name = resource.toString();
+            name = name.substring(name.lastIndexOf(pkg));
+            JarArchiveEntry xEntry = new JarArchiveEntry(name);
+            xEntry.setTime(System.currentTimeMillis());
+            zos.putArchiveEntry(xEntry);
+            try (InputStream ris = resource.getInputStream()) {
+                XKit.transfer(ris, zos);
             }
+            zos.closeArchiveEntry();
         }
     }
 
