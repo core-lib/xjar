@@ -6,25 +6,67 @@ import io.xjar.key.XKey;
 import java.io.*;
 
 /**
- * Spring Jar 工具类
+ * 普通JAR包加解密工具类
  *
  * @author Payne 646742615@qq.com
  * 2018/11/26 11:11
  */
 public class XJar implements XConstants {
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param src      原文包
+     * @param dest     加密包
+     * @param password 密码
+     * @param filters  过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(File src, File dest, String password, XJarArchiveEntryFilter... filters) throws Exception {
         encrypt(src, dest, password, DEFAULT_ALGORITHM, filters);
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param src       原文包
+     * @param dest      加密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(File src, File dest, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
         encrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filters);
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param src       原文包
+     * @param dest      加密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(File src, File dest, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
         encrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param src       原文包
+     * @param dest      加密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
         try (
                 InputStream in = new FileInputStream(src);
@@ -34,36 +76,120 @@ public class XJar implements XConstants {
         }
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param in       原文包输入流
+     * @param out      加密包输出流
+     * @param password 密码
+     * @param filters  过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(InputStream in, OutputStream out, String password, XJarArchiveEntryFilter... filters) throws Exception {
         encrypt(in, out, password, DEFAULT_ALGORITHM, filters);
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param in        原文包输入流
+     * @param out       加密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
         encrypt(in, out, password, algorithm, DEFAULT_KEYSIZE, filters);
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param in        原文包输入流
+     * @param out       加密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
         encrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
     }
 
+    /**
+     * 加密普通JAR 包
+     *
+     * @param in        原文包输入流
+     * @param out       加密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
         XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(algorithm), filters);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xJarEncryptor.encrypt(xKey, in, out);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param src      加密包
+     * @param dest     解密包
+     * @param password 密码
+     * @param filters  过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(File src, File dest, String password, XJarArchiveEntryFilter... filters) throws Exception {
         decrypt(src, dest, password, DEFAULT_ALGORITHM, filters);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(File src, File dest, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
         decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filters);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(File src, File dest, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
         decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
         try (
                 InputStream in = new FileInputStream(src);
@@ -73,18 +199,60 @@ public class XJar implements XConstants {
         }
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param in       加密包输入流
+     * @param out      解密包输出流
+     * @param password 密码
+     * @param filters  过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(InputStream in, OutputStream out, String password, XJarArchiveEntryFilter... filters) throws Exception {
         decrypt(in, out, password, DEFAULT_ALGORITHM, filters);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param in        加密包输入流
+     * @param out       解密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
         decrypt(in, out, password, algorithm, DEFAULT_KEYSIZE, filters);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param in        加密包输入流
+     * @param out       解密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
         decrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
     }
 
+    /**
+     * 解密普通JAR 包
+     *
+     * @param in        加密包输入流
+     * @param out       解密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @param filters   过滤器
+     * @throws Exception 加密异常
+     */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
         XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm), filters);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
