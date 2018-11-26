@@ -92,7 +92,7 @@ public static void main(String[] args) {
     String password = "io.xjar";
     File plaintext = new File("/path/to/read/plaintext.jar");
     File encrypted = new File("/path/to/save/encrypted.jar");
-    XJar.encrypt(plaintext, encrypted, password, new XJarArchiveEntryFilter() {
+    XBoot.encrypt(plaintext, encrypted, password, new XJarArchiveEntryFilter() {
         @Override
         public boolean filter(JarArchiveEntry entry) {
             return entry.getName().startsWith("/BOOT-INF/classes/")
