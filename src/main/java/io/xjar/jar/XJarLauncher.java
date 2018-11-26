@@ -7,7 +7,10 @@ import java.io.Console;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -58,11 +61,17 @@ public class XJarLauncher implements XConstants {
     }
 
     public void launch() throws Exception {
-        String dir = System.getProperty("java.user.dir");
-        String path = System.getProperty("java.class.path");
-        File file = new File(dir, path);
-        URL url = new URL("jar:" + file.toURI().toURL() + "!/");
-        XJarClassLoader xJarClassLoader = new XJarClassLoader(new URL[]{url}, this.getClass().getClassLoader().getParent(), xDecryptor, xEncryptor, xKey);
+        ProtectionDomain domain = this.getClass().getProtectionDomain();
+        CodeSource source = domain.getCodeSource();
+        URI location = (source == null ? null : source.getLocation().toURI());
+        String path = (location == null ? null : location.getSchemeSpecificPart());
+        if (path == null) {
+            throw new IllegalStateException("Unable to determine code source archive");
+        }
+        File jar = new File(path);
+        URL url = new URL("jar:" + jar.toURI().toURL() + "!/");
+        ClassLoader parent = this.getClass().getClassLoader().getParent();
+        XJarClassLoader xJarClassLoader = new XJarClassLoader(new URL[]{url}, parent, xDecryptor, xEncryptor, xKey);
         Thread.currentThread().setContextClassLoader(xJarClassLoader);
         URL resource = xJarClassLoader.findResource(META_INF_MANIFEST);
         try (InputStream in = resource.openStream()) {
