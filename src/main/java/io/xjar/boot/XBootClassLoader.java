@@ -54,7 +54,7 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
-            URL resource = findResource(name.replace(".", "/") + ".class");
+            URL resource = findResource(name.replace('.', '/') + ".class");
             if (resource == null) {
                 throw new ClassNotFoundException(name, e);
             }
