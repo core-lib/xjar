@@ -177,8 +177,8 @@ public class XJarURLConnection extends JarURLConnection {
     }
 
     @Override
-    public void setDoInput(boolean doinput) {
-        jarURLConnection.setDoInput(doinput);
+    public void setDoInput(boolean doInput) {
+        jarURLConnection.setDoInput(doInput);
     }
 
     @Override
@@ -187,8 +187,8 @@ public class XJarURLConnection extends JarURLConnection {
     }
 
     @Override
-    public void setDoOutput(boolean dooutput) {
-        jarURLConnection.setDoOutput(dooutput);
+    public void setDoOutput(boolean doOutput) {
+        jarURLConnection.setDoOutput(doOutput);
     }
 
     @Override
@@ -197,8 +197,8 @@ public class XJarURLConnection extends JarURLConnection {
     }
 
     @Override
-    public void setAllowUserInteraction(boolean allowuserinteraction) {
-        jarURLConnection.setAllowUserInteraction(allowuserinteraction);
+    public void setAllowUserInteraction(boolean allowUserInteraction) {
+        jarURLConnection.setAllowUserInteraction(allowUserInteraction);
     }
 
     @Override
@@ -207,8 +207,8 @@ public class XJarURLConnection extends JarURLConnection {
     }
 
     @Override
-    public void setUseCaches(boolean usecaches) {
-        jarURLConnection.setUseCaches(usecaches);
+    public void setUseCaches(boolean useCaches) {
+        jarURLConnection.setUseCaches(useCaches);
     }
 
     @Override
@@ -217,8 +217,8 @@ public class XJarURLConnection extends JarURLConnection {
     }
 
     @Override
-    public void setIfModifiedSince(long ifmodifiedsince) {
-        jarURLConnection.setIfModifiedSince(ifmodifiedsince);
+    public void setIfModifiedSince(long ifModifiedSince) {
+        jarURLConnection.setIfModifiedSince(ifModifiedSince);
     }
 
     @Override
@@ -227,8 +227,8 @@ public class XJarURLConnection extends JarURLConnection {
     }
 
     @Override
-    public void setDefaultUseCaches(boolean defaultusecaches) {
-        jarURLConnection.setDefaultUseCaches(defaultusecaches);
+    public void setDefaultUseCaches(boolean defaultUseCaches) {
+        jarURLConnection.setDefaultUseCaches(defaultUseCaches);
     }
 
     @Override

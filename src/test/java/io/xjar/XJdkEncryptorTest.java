@@ -17,15 +17,15 @@ public class XJdkEncryptorTest implements XEntryFilter<JarArchiveEntry>, XConsta
     public void test() throws Exception {
         XKey xKey = XKit.key("Payne");
 
-        XEncryptor xEncryptor = new XBootEncryptor(new XJdkEncryptor(DEFAULT_ALGORITHM), Deflater.NO_COMPRESSION, this);
-        XDecryptor xDecryptor = new XBootDecryptor(new XJdkDecryptor(DEFAULT_ALGORITHM), Deflater.NO_COMPRESSION, this);
+        XEncryptor xEncryptor = new XJarEncryptor(new XJdkEncryptor(DEFAULT_ALGORITHM), Deflater.NO_COMPRESSION, this);
+        XDecryptor xDecryptor = new XJarDecryptor(new XJdkDecryptor(DEFAULT_ALGORITHM), Deflater.NO_COMPRESSION, this);
 
-        xEncryptor.encrypt(xKey, new File("D:\\xjar\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
-        xDecryptor.decrypt(xKey, new File("D:\\xjar-encrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\regent-service-mr-web-0.0.1-SNAPSHOT.jar"));
+        xEncryptor.encrypt(xKey, new File("D:\\xjar\\xjar-test-1.0-SNAPSHOT.jar"), new File("D:\\xjar-encrypted\\xjar-test-1.0-SNAPSHOT.jar"));
+        xDecryptor.decrypt(xKey, new File("D:\\xjar-encrypted\\xjar-test-1.0-SNAPSHOT.jar"), new File("D:\\xjar-decrypted\\xjar-test-1.0-SNAPSHOT.jar"));
     }
 
     @Override
     public boolean filter(JarArchiveEntry entry) {
-        return entry.getName().startsWith("BOOT-INF/classes/") || entry.getName().startsWith("BOOT-INF/lib/regent-service-");
+        return true;
     }
 }

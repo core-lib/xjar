@@ -62,7 +62,7 @@ public class XJarLauncher implements XConstants {
         String path = System.getProperty("java.class.path");
         File file = new File(dir, path);
         URL url = new URL("jar:" + file.toURI().toURL() + "!/");
-        XJarClassLoader xJarClassLoader = new XJarClassLoader(new URL[]{url}, this.getClass().getClassLoader(), xDecryptor, xEncryptor, xKey);
+        XJarClassLoader xJarClassLoader = new XJarClassLoader(new URL[]{url}, this.getClass().getClassLoader().getParent(), xDecryptor, xEncryptor, xKey);
         Thread.currentThread().setContextClassLoader(xJarClassLoader);
         URL resource = xJarClassLoader.findResource(META_INF_MANIFEST);
         try (InputStream in = resource.openStream()) {
