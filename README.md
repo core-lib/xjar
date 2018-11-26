@@ -103,7 +103,7 @@ public static void main(String[] args) {
 ```
 
 ## 变更记录
-* v1.0.0
+* v1.0.0 第一个正式版发布
 
 ## 协议声明
 [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
