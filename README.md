@@ -1,5 +1,5 @@
 # **XJar** [![](https://jitpack.io/v/core-lib/xjar.svg)](https://jitpack.io/#core-lib/xjar)
-#### Java JAR 包加密安全运行工具，支持Spring Boot的Fat Jar方式，避免本地部署的应用被反编译。
+#### Java JAR 包安全加密运行工具，支持Spring Boot的Fat Jar方式。是基于对JAR包内资源的加密以及拓展ClassLoader来构建的一套程序加密启动，动态解密运行的方案。
 
 ## **功能特性**
 * 无需侵入代码，只需要把编译好的JAR包通过工具加密即可。
