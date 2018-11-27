@@ -104,6 +104,7 @@ public static void main(String[] args) {
 ```
 
 ## 变更记录
+* v1.0.2 修复中文及空格路径的问题
 * v1.0.1 升级detector框架
 * v1.0.0 第一个正式版发布
 
