@@ -22,6 +22,10 @@ import java.util.Enumeration;
 public class XBootClassLoader extends LaunchedURLClassLoader {
     private final XBootURLHandler xBootURLHandler;
 
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
+
     public XBootClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
         this.xBootURLHandler = new XBootURLHandler(xDecryptor, xEncryptor, xKey, this);

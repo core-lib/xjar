@@ -22,6 +22,10 @@ import java.util.Enumeration;
 public class XJarClassLoader extends URLClassLoader {
     private final XJarURLHandler xJarURLHandler;
 
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
+
     public XJarClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
         this.xJarURLHandler = new XJarURLHandler(xDecryptor, xEncryptor, xKey, this);
