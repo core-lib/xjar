@@ -6,7 +6,7 @@ import io.xjar.key.XKey;
 import java.io.*;
 
 /**
- * Spring-Boot JAR包加解密工具类
+ * Spring-Boot JAR包加解密工具类，在不提供过滤器的情况下只加解密 BOOT-INF/classes/ 目录下的资源，也就是项目本身的资源。
  *
  * @author Payne 646742615@qq.com
  * 2018/11/26 11:11
@@ -131,7 +131,12 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm), filters);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(
+                new XJdkEncryptor(algorithm),
+                filters != null && filters.length > 0
+                        ? filters
+                        : new XJarArchiveEntryFilter[]{new XBootDefaultFilter()}
+        );
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootEncryptor.encrypt(xKey, in, out);
     }
@@ -254,7 +259,12 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
-        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(algorithm), filters);
+        XBootDecryptor xBootDecryptor = new XBootDecryptor(
+                new XJdkDecryptor(algorithm),
+                filters != null && filters.length > 0
+                        ? filters
+                        : new XJarArchiveEntryFilter[]{new XBootDefaultFilter()}
+        );
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootDecryptor.decrypt(xKey, in, out);
     }
