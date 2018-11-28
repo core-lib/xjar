@@ -104,6 +104,7 @@ public static void main(String[] args) {
 ```
 
 ## 变更记录
+* v1.0.3 增加Spring-Boot的FatJar加解密时的缺省过滤器，避免由于没有提供过滤器时加密后的JAR包不能正常运行。
 * v1.0.2 修复中文及空格路径的问题
 * v1.0.1 升级detector框架
 * v1.0.0 第一个正式版发布
