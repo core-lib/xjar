@@ -6,7 +6,7 @@
 
     <groupId>io.xjar</groupId>
     <artifactId>xjar</artifactId>
-    <version>v1.0.3</version>
+    <version>v1.0.4</version>
 
     <name>xjar</name>
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>detector</artifactId>
-            <version>v1.1.0</version>
+            <version>v1.1.1</version>
         </dependency>
     </dependencies>
 
