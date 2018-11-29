@@ -27,7 +27,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>v1.0.0</version>
+            <version>LATEST_VERSION</version>
         </dependency>
     </dependencies>
 </project>
