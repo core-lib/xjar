@@ -1,5 +1,6 @@
 package io.xjar;
 
+import io.xjar.boot.XBootAllFilter;
 import io.xjar.boot.XBootLauncher;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -18,12 +19,14 @@ import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
 
 /**
- * JAR包加密器
+ * Spring-Boot JAR包加密器
  *
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
+    // 安全过滤器，避免由于用户自定义过滤器时把其他无关资源加密了造成无法运行
+    private final XJarArchiveEntryFilter safeFilter = new XBootAllFilter();
     private final int level;
 
     public XBootEncryptor(XEncryptor xEncryptor, XJarArchiveEntryFilter... filters) {
@@ -150,6 +153,6 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
 
     @Override
     public boolean filter(JarArchiveEntry entry) {
-        return super.filter(entry) && !entry.getName().equals(META_INF_MANIFEST);
+        return super.filter(entry) && safeFilter.filter(entry);
     }
 }

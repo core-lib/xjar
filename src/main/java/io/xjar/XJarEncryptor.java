@@ -16,7 +16,7 @@ import java.util.jar.Manifest;
 import java.util.zip.Deflater;
 
 /**
- * JAR包加密器
+ * 普通JAR包加密器
  *
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27

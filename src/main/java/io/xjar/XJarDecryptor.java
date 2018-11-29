@@ -13,7 +13,7 @@ import java.util.jar.Manifest;
 import java.util.zip.Deflater;
 
 /**
- * ZIP压缩包解密器
+ * 普通JAR包解密器
  *
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
