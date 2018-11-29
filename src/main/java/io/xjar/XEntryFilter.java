@@ -8,7 +8,6 @@ package io.xjar;
  */
 public interface XEntryFilter<E> {
 
-
     /**
      * 记录是否需要加/解密
      *
