@@ -1,4 +1,5 @@
 # **XJar** [![](https://jitpack.io/v/core-lib/xjar.svg)](https://jitpack.io/#core-lib/xjar)
+GitHub: https://github.com/core-lib/xjar
 ### Spring Boot JAR 安全加密运行工具，同时支持的原生JAR。
 ### 基于对JAR包内资源的加密以及拓展ClassLoader来构建的一套程序加密启动，动态解密运行的方案，避免源码泄露或反编译。
 
@@ -104,6 +105,8 @@ public static void main(String[] args) {
 ```
 
 ## 变更记录
+* v1.0.6
+    1. 采用[LoadKit](https://github.com/core-lib/loadkit)作为资源加载工具
 * v1.0.5
     1. 支持并行类加载，需要JDK1.7+的支持，可提升多线程环境类加载的效率
     2. Spring-Boot JAR 包加解密增加一个安全过滤器，避免无关资源被加密造成无法运行
