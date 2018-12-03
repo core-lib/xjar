@@ -75,9 +75,9 @@ public static void main(String[] args) {
 ```
 
 ```text
-// 命令行运行JAR
+// 命令行运行JAR 然后在提示输入密码的时候输入密码后按回车即可正常启动
 java -jar /path/to/encrypted.jar
-// 在提示输入密码的时候输入密码后按回车即可正常启动，也可以通过传参的方式直接启动
+//也可以通过传参的方式直接启动
 java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 ```
 
