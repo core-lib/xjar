@@ -6,7 +6,7 @@ import io.xjar.key.XKey;
 import java.io.*;
 
 /**
- * Java Web WAR包加解密工具类
+ * Java Web WAR包加解密工具类，目前WAR包加密还不能正常运行！
  *
  * @author Payne 646742615@qq.com
  * 2018/11/26 11:11
