@@ -13,10 +13,6 @@ import java.io.*;
  */
 public class XWar implements XConstants {
 
-    public static void main(String... args) throws Exception {
-        encrypt("D:\\httpdoc-sample-v1.6.4.war", "D:\\httpdoc-sample.war", "xjar", new XWarLibFilter());
-    }
-
     /**
      * 加密Java Web WAR 包
      *
