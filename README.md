@@ -101,7 +101,7 @@ public static void main(String[] args) {
 }
 ```
 
-## 变更记录
+## 版本记录
 * v1.0.7
     1. 将sprint-boot-loader依赖设为provide
     2. 将XEntryFilter#filter(E entry); 变更为XEntryFilter#filtrate(E entry);
