@@ -12,6 +12,10 @@ import java.io.*;
  * 2018/11/26 11:11
  */
 public class XBoot implements XConstants {
+    public static void main(String... args) throws Exception {
+        XBoot.encrypt("D:\\workspace\\regent-service\\regent-service-mr\\regent-service-mr-web\\target\\regent-service-mr-web-0.0.1-SNAPSHOT.jar",
+                "D:\\workspace\\regent-service\\regent-service-mr\\regent-service-mr-web\\target\\regent-service-mr-web-0.0.1-SNAPSHOT.xjar", "io.xjar");
+    }
 
     /**
      * 加密 Spring-Boot JAR 包

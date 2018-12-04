@@ -1,6 +1,5 @@
 package io.xjar;
 
-import io.xjar.jar.XJarLauncher;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -81,7 +80,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
                         attributes.putValue("Jar-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", XJarLauncher.class.getName());
+                        attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());

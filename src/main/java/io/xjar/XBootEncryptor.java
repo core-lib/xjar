@@ -1,7 +1,6 @@
 package io.xjar;
 
 import io.xjar.boot.XBootAllFilter;
-import io.xjar.boot.XBootLauncher;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -101,7 +100,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
                         attributes.putValue("Boot-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", XBootLauncher.class.getName());
+                        attributes.putValue("Main-Class", "io.xjar.boot.XBootLauncher");
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
