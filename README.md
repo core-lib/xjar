@@ -94,17 +94,18 @@ public static void main(String[] args) {
     String password = "io.xjar";
     File plaintext = new File("/path/to/read/plaintext.jar");
     File encrypted = new File("/path/to/save/encrypted.jar");
-    XBoot.encrypt(plaintext, encrypted, password, new XJarArchiveEntryFilter() {
-        @Override
-        public boolean filter(JarArchiveEntry entry) {
-            return entry.getName().startsWith("/BOOT-INF/classes/")
-             || entry.getName().startsWith("/BOOT-INF/lib/jar-need-encrypted");
-        }
+    XBoot.encrypt(plaintext, encrypted, password, (entry) -> {
+        String name = entry.getName();
+        return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/xjar-");
     });
 }
 ```
 
 ## 变更记录
+* v1.0.7
+    1. 将sprint-boot-loader依赖设为provide
+    2. 将XEntryFilter#filter(E entry); 变更为XEntryFilter#filtrate(E entry);
+    3. 将Encryptor/Decryptor的构造函数中接收多个过滤器参数变成接收一个，外部提供XEntryFilters工具类来实现多过滤器混合成一个，避免框架自身的逻辑限制了使用者的过滤逻辑实现。
 * v1.0.6
     1. 采用[LoadKit](https://github.com/core-lib/loadkit)作为资源加载工具
 * v1.0.5
