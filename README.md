@@ -101,7 +101,87 @@ public static void main(String[] args) {
 }
 ```
 
+## 插件集成
+[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
+```xml
+<project>
+    <!-- 设置 jitpack.io 插件仓库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <!-- 添加 XJar Maven 插件 -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.core-lib</groupId>
+                <artifactId>xjar-maven-plugin</artifactId>
+                <version>LATEST_VERSION</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>spring-boot</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <password>io.xjar</password>
+                            <!-- optional
+                            <algorithm/>
+                            <keySize/>
+                            <ivSize/>
+                            <includes>
+                                <include/>
+                            </includes>
+                            <excludes>
+                                <exclude/>
+                            </excludes>
+                            <sourceDir/>
+                            <sourceJar/>
+                            <targetDir/>
+                            <targetJar/>
+                            -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+#### 也可以通过Maven命令执行
+```text
+mvn xjar:spring-boot -Dxjar.password=io.xjar
+mvn xjar:jar -Dxjar.password=io.xjar -Dxjar.targetDir=/path/to/save/target.xjar 
+```
+
+## 命令目标
+| 目标名称 | 目标说明 |
+| :------- | :------ |
+| spring-boot | Spring-Boot项目或模块使用 |
+| jar | 普通jar项目或模块使用 |
+
+## 参数说明
+| 参数名称 | 命令参数名称 | 参数说明 | 参数类型 | 缺省值 | 示例值 |
+| :------ | :----------- | :------ | :------ | :----- | :----- |
+| password | -Dxjar.password | 密码字符串 | String | 必须 | 任意字符串，io.xjar |
+| algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES | JDK内置加密算法，如：AES / DES |
+| keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定，56，128，256 |
+| ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定，128 |
+| sourceDir | -Dxjar.sourceDir | 源jar所在目录 | File | ${project.build.directory} | 文件目录 |
+| sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
+| targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |
+| targetDir | -Dxjar.targetJar | 目标jar名称 | String | ${project.build.finalName}.xjar | 文件名称 |
+| includes | -Dxjar.includes | 需要加密的包内资源 | String[] | 无 | BOOT-INF/classes/** , BOOT-INF/lib/xjar-*.jar , 支持Ant表达式 |
+| excludes | -Dxjar.excludes | 无需加密的包内资源 | String[] | 无 | BOOT-INF/classes/** , BOOT-INF/lib/xjar-*.jar , 支持Ant表达式 |
+
+#### 注意：
+当 includes 和 excludes 同时使用是，excludes将会失效！
+
 ## 版本记录
+* v1.0.8
+    1. 支持以Maven插件方式集成
 * v1.0.7
     1. 将sprint-boot-loader依赖设为provide
     2. 将XEntryFilter#filter(E entry); 变更为XEntryFilter#filtrate(E entry);
