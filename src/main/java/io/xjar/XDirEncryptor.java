@@ -26,7 +26,7 @@ public class XDirEncryptor extends XEntryEncryptor<File> implements XEncryptor {
     @Override
     public void encrypt(XKey key, File src, File dest) throws IOException {
         if (src.isFile()) {
-            XEncryptor encryptor = filter(src) ? xEncryptor : xNopEncryptor;
+            XEncryptor encryptor = filtrate(src) ? xEncryptor : xNopEncryptor;
             encryptor.encrypt(key, src, dest);
         } else if (src.isDirectory()) {
             File[] files = src.listFiles();

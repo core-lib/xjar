@@ -26,7 +26,7 @@ public class XDirDecryptor extends XEntryDecryptor<File> implements XDecryptor {
     @Override
     public void decrypt(XKey key, File src, File dest) throws IOException {
         if (src.isFile()) {
-            XDecryptor decryptor = filter(src) ? xDecryptor : xNopDecryptor;
+            XDecryptor decryptor = filtrate(src) ? xDecryptor : xNopDecryptor;
             decryptor.decrypt(key, src, dest);
         } else if (src.isDirectory()) {
             File[] files = src.listFiles();

@@ -23,9 +23,9 @@ public abstract class XEntryDecryptor<E> extends XWrappedDecryptor implements XD
     }
 
     @Override
-    public boolean filter(E entry) {
+    public boolean filtrate(E entry) {
         for (XEntryFilter<E> filter : filters) {
-            if (!filter.filter(entry)) {
+            if (!filter.filtrate(entry)) {
                 return false;
             }
         }

@@ -79,7 +79,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                 } else if (entry.getName().endsWith(".jar")) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    boolean filtered = filter(entry);
+                    boolean filtered = filtrate(entry);
                     XDecryptor decryptor = filtered ? xJarDecryptor : xNopDecryptor;
                     decryptor.decrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
@@ -106,7 +106,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filter(entry);
+                    boolean filtered = filtrate(entry);
                     XDecryptor decryptor = filtered ? this : xNopDecryptor;
                     try (OutputStream eos = decryptor.decrypt(key, nos)) {
                         XKit.transfer(nis, eos);
@@ -123,7 +123,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     }
 
     @Override
-    public boolean filter(JarArchiveEntry entry) {
-        return super.filter(entry) && safeFilter.filter(entry);
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && safeFilter.filtrate(entry);
     }
 }

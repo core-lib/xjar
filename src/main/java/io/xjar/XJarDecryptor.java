@@ -86,7 +86,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filter(entry);
+                    boolean filtered = filtrate(entry);
                     XDecryptor decryptor = filtered ? xDecryptor : xNopDecryptor;
                     try (OutputStream eos = decryptor.decrypt(key, nos)) {
                         XKit.transfer(nis, eos);

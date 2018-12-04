@@ -14,6 +14,6 @@ public interface XEntryFilter<E> {
      * @param entry 记录
      * @return true: 需要 false:不需要
      */
-    boolean filter(E entry);
+    boolean filtrate(E entry);
 
 }

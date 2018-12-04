@@ -61,7 +61,7 @@ public class XZipDecryptor extends XEntryDecryptor<ZipArchiveEntry> implements X
                     continue;
                 }
                 zos.putArchiveEntry(new ZipArchiveEntry(entry.getName()));
-                XDecryptor decryptor = filter(entry) ? this : xNopDecryptor;
+                XDecryptor decryptor = filtrate(entry) ? this : xNopDecryptor;
                 try (OutputStream eos = decryptor.decrypt(key, nos)) {
                     XKit.transfer(zis, eos);
                 }

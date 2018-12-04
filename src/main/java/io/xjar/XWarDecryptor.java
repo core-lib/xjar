@@ -76,14 +76,14 @@ public class XWarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setTime(entry.getTime());
                     zos.putArchiveEntry(jar);
-                    boolean filtered = filter(entry);
+                    boolean filtered = filtrate(entry);
                     XDecryptor decryptor = filtered ? xJarDecryptor : xNopDecryptor;
                     decryptor.decrypt(key, nis, nos);
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filter(entry);
+                    boolean filtered = filtrate(entry);
                     XDecryptor decryptor = filtered ? this : xNopDecryptor;
                     try (InputStream eis = decryptor.decrypt(key, nis)) {
                         XKit.transfer(eis, nos);
@@ -100,7 +100,7 @@ public class XWarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     }
 
     @Override
-    public boolean filter(JarArchiveEntry entry) {
-        return super.filter(entry) && safeFilter.filter(entry);
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && safeFilter.filtrate(entry);
     }
 }

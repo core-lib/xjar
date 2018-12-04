@@ -12,7 +12,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 public class XWarAllFilter implements XJarArchiveEntryFilter {
 
     @Override
-    public boolean filter(JarArchiveEntry entry) {
+    public boolean filtrate(JarArchiveEntry entry) {
         return entry.getName().startsWith("WEB-INF/classes/io/") || entry.getName().startsWith("WEB-INF/lib/");
     }
 

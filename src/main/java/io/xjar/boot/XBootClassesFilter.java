@@ -12,7 +12,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 public class XBootClassesFilter implements XJarArchiveEntryFilter {
 
     @Override
-    public boolean filter(JarArchiveEntry entry) {
+    public boolean filtrate(JarArchiveEntry entry) {
         return entry.getName().startsWith("BOOT-INF/classes/");
     }
 

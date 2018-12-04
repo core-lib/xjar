@@ -90,7 +90,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filter(entry);
+                    boolean filtered = filtrate(entry);
                     if (filtered) indexes.add(entry.getName());
                     XEncryptor encryptor = filtered ? xEncryptor : xNopEncryptor;
                     try (OutputStream eos = encryptor.encrypt(key, nos)) {
@@ -129,7 +129,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     @Override
-    public boolean filter(JarArchiveEntry entry) {
-        return super.filter(entry) && !entry.getName().equals(META_INF_MANIFEST);
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && !entry.getName().equals(META_INF_MANIFEST);
     }
 }
