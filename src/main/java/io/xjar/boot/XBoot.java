@@ -2,6 +2,7 @@ package io.xjar.boot;
 
 import io.xjar.*;
 import io.xjar.key.XKey;
+import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 import java.io.*;
 
@@ -13,8 +14,12 @@ import java.io.*;
  */
 public class XBoot implements XConstants {
     public static void main(String... args) throws Exception {
-        XBoot.encrypt("D:\\workspace\\regent-service\\regent-service-mr\\regent-service-mr-web\\target\\regent-service-mr-web-0.0.1-SNAPSHOT.jar",
-                "D:\\workspace\\regent-service\\regent-service-mr\\regent-service-mr-web\\target\\regent-service-mr-web-0.0.1-SNAPSHOT.xjar", "io.xjar");
+        XBoot.encrypt(
+                "D:\\workspace\\regent-service\\regent-service-mr\\regent-service-mr-web\\target\\regent-service-mr-web-0.0.1-SNAPSHOT.jar",
+                "D:\\workspace\\regent-service\\regent-service-mr\\regent-service-mr-web\\target\\regent-service-mr-web-0.0.1-SNAPSHOT.xjar",
+                "xjar",
+                null
+        );
     }
 
     /**
@@ -23,11 +28,11 @@ public class XBoot implements XConstants {
      * @param src      原文包
      * @param dest     加密包
      * @param password 密码
-     * @param filters  过滤器
+     * @param filter   过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(src, dest, password, DEFAULT_ALGORITHM, filters);
+    public static void encrypt(String src, String dest, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(src, dest, password, DEFAULT_ALGORITHM, filter);
     }
 
     /**
@@ -37,11 +42,11 @@ public class XBoot implements XConstants {
      * @param dest      加密包
      * @param password  密码
      * @param algorithm 加密算法
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filters);
+    public static void encrypt(String src, String dest, String password, String algorithm, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filter);
     }
 
     /**
@@ -52,11 +57,11 @@ public class XBoot implements XConstants {
      * @param password  密码
      * @param algorithm 加密算法
      * @param keysize   密钥长度
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
+    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filter);
     }
 
     /**
@@ -68,11 +73,11 @@ public class XBoot implements XConstants {
      * @param algorithm 加密算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize, filters);
+    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize, filter);
     }
 
     /**
@@ -81,11 +86,11 @@ public class XBoot implements XConstants {
      * @param src      原文包
      * @param dest     加密包
      * @param password 密码
-     * @param filters  过滤器
+     * @param filter   过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(src, dest, password, DEFAULT_ALGORITHM, filters);
+    public static void encrypt(File src, File dest, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(src, dest, password, DEFAULT_ALGORITHM, filter);
     }
 
     /**
@@ -95,11 +100,11 @@ public class XBoot implements XConstants {
      * @param dest      加密包
      * @param password  密码
      * @param algorithm 加密算法
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filters);
+    public static void encrypt(File src, File dest, String password, String algorithm, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filter);
     }
 
     /**
@@ -110,11 +115,11 @@ public class XBoot implements XConstants {
      * @param password  密码
      * @param algorithm 加密算法
      * @param keysize   密钥长度
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
+    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filter);
     }
 
     /**
@@ -126,15 +131,15 @@ public class XBoot implements XConstants {
      * @param algorithm 加密算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
+    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
         try (
                 InputStream in = new FileInputStream(src);
                 OutputStream out = new FileOutputStream(dest)
         ) {
-            encrypt(in, out, password, algorithm, keysize, ivsize, filters);
+            encrypt(in, out, password, algorithm, keysize, ivsize, filter);
         }
     }
 
@@ -144,11 +149,11 @@ public class XBoot implements XConstants {
      * @param in       原文包输入流
      * @param out      加密包输出流
      * @param password 密码
-     * @param filters  过滤器
+     * @param filter   过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(in, out, password, DEFAULT_ALGORITHM, filters);
+    public static void encrypt(InputStream in, OutputStream out, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(in, out, password, DEFAULT_ALGORITHM, filter);
     }
 
     /**
@@ -158,11 +163,11 @@ public class XBoot implements XConstants {
      * @param out       加密包输出流
      * @param password  密码
      * @param algorithm 加密算法
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(in, out, password, algorithm, DEFAULT_KEYSIZE, filters);
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(in, out, password, algorithm, DEFAULT_KEYSIZE, filter);
     }
 
     /**
@@ -173,11 +178,11 @@ public class XBoot implements XConstants {
      * @param password  密码
      * @param algorithm 加密算法
      * @param keysize   密钥长度
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
-        encrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE, filter);
     }
 
     /**
@@ -189,11 +194,11 @@ public class XBoot implements XConstants {
      * @param algorithm 加密算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
-     * @param filters   过滤器
+     * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm), filters);
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm), filter);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootEncryptor.encrypt(xKey, in, out);
     }
@@ -204,11 +209,11 @@ public class XBoot implements XConstants {
      * @param src      加密包
      * @param dest     解密包
      * @param password 密码
-     * @param filters  过滤器
-     * @throws Exception 加密异常
+     * @param filter   过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(src, dest, password, DEFAULT_ALGORITHM, filters);
+    public static void decrypt(String src, String dest, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(src, dest, password, DEFAULT_ALGORITHM, filter);
     }
 
     /**
@@ -218,11 +223,11 @@ public class XBoot implements XConstants {
      * @param dest      解密包
      * @param password  密码
      * @param algorithm 加密算法
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filters);
+    public static void decrypt(String src, String dest, String password, String algorithm, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filter);
     }
 
     /**
@@ -233,11 +238,11 @@ public class XBoot implements XConstants {
      * @param password  密码
      * @param algorithm 加密算法
      * @param keysize   密钥长度
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filter);
     }
 
     /**
@@ -249,11 +254,11 @@ public class XBoot implements XConstants {
      * @param algorithm 加密算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize, filters);
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize, filter);
     }
 
     /**
@@ -262,11 +267,11 @@ public class XBoot implements XConstants {
      * @param src      加密包
      * @param dest     解密包
      * @param password 密码
-     * @param filters  过滤器
-     * @throws Exception 加密异常
+     * @param filter   过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(src, dest, password, DEFAULT_ALGORITHM, filters);
+    public static void decrypt(File src, File dest, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(src, dest, password, DEFAULT_ALGORITHM, filter);
     }
 
     /**
@@ -276,11 +281,11 @@ public class XBoot implements XConstants {
      * @param dest      解密包
      * @param password  密码
      * @param algorithm 加密算法
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filters);
+    public static void decrypt(File src, File dest, String password, String algorithm, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE, filter);
     }
 
     /**
@@ -291,11 +296,11 @@ public class XBoot implements XConstants {
      * @param password  密码
      * @param algorithm 加密算法
      * @param keysize   密钥长度
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE, filter);
     }
 
     /**
@@ -307,15 +312,15 @@ public class XBoot implements XConstants {
      * @param algorithm 加密算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
         try (
                 InputStream in = new FileInputStream(src);
                 OutputStream out = new FileOutputStream(dest)
         ) {
-            decrypt(in, out, password, algorithm, keysize, ivsize, filters);
+            decrypt(in, out, password, algorithm, keysize, ivsize, filter);
         }
     }
 
@@ -325,11 +330,11 @@ public class XBoot implements XConstants {
      * @param in       加密包输入流
      * @param out      解密包输出流
      * @param password 密码
-     * @param filters  过滤器
-     * @throws Exception 加密异常
+     * @param filter   过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(in, out, password, DEFAULT_ALGORITHM, filters);
+    public static void decrypt(InputStream in, OutputStream out, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(in, out, password, DEFAULT_ALGORITHM, filter);
     }
 
     /**
@@ -339,11 +344,11 @@ public class XBoot implements XConstants {
      * @param out       解密包输出流
      * @param password  密码
      * @param algorithm 加密算法
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(in, out, password, algorithm, DEFAULT_KEYSIZE, filters);
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(in, out, password, algorithm, DEFAULT_KEYSIZE, filter);
     }
 
     /**
@@ -354,11 +359,11 @@ public class XBoot implements XConstants {
      * @param password  密码
      * @param algorithm 加密算法
      * @param keysize   密钥长度
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, XJarArchiveEntryFilter... filters) throws Exception {
-        decrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE, filters);
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE, filter);
     }
 
     /**
@@ -370,11 +375,11 @@ public class XBoot implements XConstants {
      * @param algorithm 加密算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
-     * @param filters   过滤器
-     * @throws Exception 加密异常
+     * @param filter    过滤器
+     * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XJarArchiveEntryFilter... filters) throws Exception {
-        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(algorithm), filters);
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(algorithm), filter);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootDecryptor.decrypt(xKey, in, out);
     }

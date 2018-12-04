@@ -1,8 +1,5 @@
 package io.xjar;
 
-import java.util.Collection;
-import java.util.Collections;
-
 /**
  * 记录可过滤的加密器
  *
@@ -10,25 +7,20 @@ import java.util.Collections;
  * 2018/11/23 20:38
  */
 public abstract class XEntryEncryptor<E> extends XWrappedEncryptor implements XEncryptor, XEntryFilter<E> {
-    protected final Collection<? extends XEntryFilter<E>> filters;
+    protected final XEntryFilter<E> filter;
     protected final XNopEncryptor xNopEncryptor = new XNopEncryptor();
 
     protected XEntryEncryptor(XEncryptor xEncryptor) {
         this(xEncryptor, null);
     }
 
-    protected XEntryEncryptor(XEncryptor xEncryptor, Collection<? extends XEntryFilter<E>> filters) {
+    protected XEntryEncryptor(XEncryptor xEncryptor, XEntryFilter<E> filter) {
         super(xEncryptor);
-        this.filters = filters != null ? filters : Collections.<XEntryFilter<E>>emptySet();
+        this.filter = filter;
     }
 
     @Override
     public boolean filtrate(E entry) {
-        for (XEntryFilter<E> filter : filters) {
-            if (!filter.filtrate(entry)) {
-                return false;
-            }
-        }
-        return true;
+        return filter == null || filter.filtrate(entry);
     }
 }

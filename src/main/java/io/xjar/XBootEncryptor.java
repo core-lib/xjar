@@ -7,8 +7,6 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -25,23 +23,23 @@ import java.util.zip.Deflater;
  */
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     // 安全过滤器，避免由于用户自定义过滤器时把其他无关资源加密了造成无法运行
-    private final XJarArchiveEntryFilter safeFilter = new XBootAllFilter();
+    private final XEntryFilter<JarArchiveEntry> safeFilter = new XBootAllFilter();
     private final int level;
 
-    public XBootEncryptor(XEncryptor xEncryptor, XJarArchiveEntryFilter... filters) {
-        this(xEncryptor, Arrays.asList(filters));
+    public XBootEncryptor(XEncryptor xEncryptor) {
+        this(xEncryptor, null);
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, Collection<XJarArchiveEntryFilter> filters) {
-        this(xEncryptor, Deflater.DEFLATED, filters);
+    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
+        this(xEncryptor, Deflater.DEFLATED, filter);
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, int level, XJarArchiveEntryFilter... filters) {
-        this(xEncryptor, level, Arrays.asList(filters));
+    public XBootEncryptor(XEncryptor xEncryptor, int level) {
+        this(xEncryptor, level, null);
     }
 
-    public XBootEncryptor(XEncryptor xEncryptor, int level, Collection<XJarArchiveEntryFilter> filters) {
-        super(xEncryptor, filters);
+    public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+        super(xEncryptor, filter);
         this.level = level;
     }
 

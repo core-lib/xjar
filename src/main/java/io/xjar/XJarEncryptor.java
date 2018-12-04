@@ -6,8 +6,6 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -23,20 +21,20 @@ import java.util.zip.Deflater;
 public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
 
-    public XJarEncryptor(XEncryptor xEncryptor, XJarArchiveEntryFilter... filters) {
-        this(xEncryptor, Arrays.asList(filters));
+    public XJarEncryptor(XEncryptor xEncryptor) {
+        this(xEncryptor, null);
     }
 
-    public XJarEncryptor(XEncryptor xEncryptor, Collection<XJarArchiveEntryFilter> filters) {
-        this(xEncryptor, Deflater.DEFLATED, filters);
+    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
+        this(xEncryptor, Deflater.DEFLATED, filter);
     }
 
-    public XJarEncryptor(XEncryptor xEncryptor, int level, XJarArchiveEntryFilter... filters) {
-        this(xEncryptor, level, Arrays.asList(filters));
+    public XJarEncryptor(XEncryptor xEncryptor, int level) {
+        this(xEncryptor, level, null);
     }
 
-    public XJarEncryptor(XEncryptor xEncryptor, int level, Collection<XJarArchiveEntryFilter> filters) {
-        super(xEncryptor, filters);
+    public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+        super(xEncryptor, filter);
         this.level = level;
     }
 

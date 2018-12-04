@@ -6,8 +6,6 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.zip.Deflater;
 
 /**
@@ -19,20 +17,20 @@ import java.util.zip.Deflater;
 public class XZipEncryptor extends XEntryEncryptor<ZipArchiveEntry> implements XEncryptor {
     private final int level;
 
-    public XZipEncryptor(XEncryptor xEncryptor, XZipArchiveEntryFilter... filters) {
-        this(xEncryptor, Arrays.asList(filters));
+    public XZipEncryptor(XEncryptor xEncryptor) {
+        this(xEncryptor, null);
     }
 
-    public XZipEncryptor(XEncryptor xEncryptor, Collection<XZipArchiveEntryFilter> filters) {
-        this(xEncryptor, Deflater.DEFLATED, filters);
+    public XZipEncryptor(XEncryptor xEncryptor, XEntryFilter<ZipArchiveEntry> filter) {
+        this(xEncryptor, Deflater.DEFLATED, filter);
     }
 
-    public XZipEncryptor(XEncryptor xEncryptor, int level, XZipArchiveEntryFilter... filters) {
-        this(xEncryptor, level, Arrays.asList(filters));
+    public XZipEncryptor(XEncryptor xEncryptor, int level) {
+        this(xEncryptor, level, null);
     }
 
-    public XZipEncryptor(XEncryptor xEncryptor, int level, Collection<XZipArchiveEntryFilter> filters) {
-        super(xEncryptor, filters);
+    public XZipEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<ZipArchiveEntry> filter) {
+        super(xEncryptor, filter);
         this.level = level;
     }
 

@@ -4,8 +4,6 @@ import io.xjar.key.XKey;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * 文件夹解密器
@@ -15,12 +13,12 @@ import java.util.Collection;
  */
 public class XDirDecryptor extends XEntryDecryptor<File> implements XDecryptor {
 
-    public XDirDecryptor(XDecryptor xEncryptor, XDirEntryFilter... filters) {
-        this(xEncryptor, Arrays.asList(filters));
+    public XDirDecryptor(XDecryptor xEncryptor) {
+        this(xEncryptor, null);
     }
 
-    public XDirDecryptor(XDecryptor xDecryptor, Collection<XDirEntryFilter> xEntryFilters) {
-        super(xDecryptor, xEntryFilters);
+    public XDirDecryptor(XDecryptor xDecryptor, XEntryFilter<File> filter) {
+        super(xDecryptor, filter);
     }
 
     @Override

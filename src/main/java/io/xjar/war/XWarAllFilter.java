@@ -1,6 +1,6 @@
 package io.xjar.war;
 
-import io.xjar.XJarArchiveEntryFilter;
+import io.xjar.XEntryFilter;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 /**
@@ -9,7 +9,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
  * @author Payne 646742615@qq.com
  * 2018/11/29 9:57
  */
-public class XWarAllFilter implements XJarArchiveEntryFilter {
+public class XWarAllFilter implements XEntryFilter<JarArchiveEntry> {
 
     @Override
     public boolean filtrate(JarArchiveEntry entry) {
