@@ -96,7 +96,7 @@ public static void main(String[] args) {
     File encrypted = new File("/path/to/save/encrypted.jar");
     XBoot.encrypt(plaintext, encrypted, password, (entry) -> {
         String name = entry.getName();
-        return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/xjar-");
+        return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/io-xjar-");
     });
 }
 ```
