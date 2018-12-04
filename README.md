@@ -103,6 +103,7 @@ public static void main(String[] args) {
 
 ## 插件集成
 [XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
+GitHub: https://github.com/core-lib/xjar-maven-plugin
 ```xml
 <project>
     <!-- 设置 jitpack.io 插件仓库 -->
@@ -127,21 +128,6 @@ public static void main(String[] args) {
                         <phase>package</phase>
                         <configuration>
                             <password>io.xjar</password>
-                            <!-- optional
-                            <algorithm/>
-                            <keySize/>
-                            <ivSize/>
-                            <includes>
-                                <include/>
-                            </includes>
-                            <excludes>
-                                <exclude/>
-                            </excludes>
-                            <sourceDir/>
-                            <sourceJar/>
-                            <targetDir/>
-                            <targetJar/>
-                            -->
                         </configuration>
                     </execution>
                 </executions>
@@ -177,7 +163,7 @@ mvn xjar:jar -Dxjar.password=io.xjar -Dxjar.targetDir=/path/to/save/target.xjar
 | excludes | -Dxjar.excludes | 无需加密的包内资源 | String[] | 无 | BOOT-INF/classes/** , BOOT-INF/lib/xjar-*.jar , 支持Ant表达式 |
 
 #### 注意：
-当 includes 和 excludes 同时使用是，excludes将会失效！
+当 includes 和 excludes 同时使用是，excludes将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
 * v1.0.8
