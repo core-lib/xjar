@@ -1,18 +1,18 @@
-# **XJar** [![](https://jitpack.io/v/core-lib/xjar.svg)](https://jitpack.io/#core-lib/xjar)
+# XJar [![](https://jitpack.io/v/core-lib/xjar.svg)](https://jitpack.io/#core-lib/xjar)
 GitHub: https://github.com/core-lib/xjar
 ### Spring Boot JAR 安全加密运行工具，同时支持的原生JAR。
 ### 基于对JAR包内资源的加密以及拓展ClassLoader来构建的一套程序加密启动，动态解密运行的方案，避免源码泄露或反编译。
 
-## **功能特性**
+## 功能特性
 * 无需侵入代码，只需要把编译好的JAR包通过工具加密即可。
 * 完全内存解密，杜绝源码以及字节码泄露或反编译。
 * 支持所有JDK内置加解密算法。
 * 可选择需要加解密的字节码或其他资源文件，避免计算资源浪费。
 
-## **环境依赖**
+## 环境依赖
 JDK 1.7 +
 
-## **使用步骤**
+## 使用步骤
 
 ```xml
 <project>
@@ -81,13 +81,13 @@ java -jar /path/to/encrypted.jar
 java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 ```
 
-## **参数说明**
+## 参数说明
 * --xjar.algorithm  加解密算法名称，缺省为AES，支持JDK所有内置算法，如AES / DES ...
 * --xjar.keysize    密钥长度，缺省为128，根据不同的算法选取不同的密钥长度。
 * --xjar.ivsize     向量长度，缺省为128，根据不同的算法选取不同的向量长度。
 * --xjar.password   密码
 
-## **进阶用法**
+## 进阶用法
 ```java
 // 只加密自身项目及相关模块的源码不加密第三方依赖，可以通过XEntryFilter来定制需要加密的JAR包内资源
 public static void main(String[] args) {
