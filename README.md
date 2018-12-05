@@ -139,7 +139,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
 #### 也可以通过Maven命令执行
 ```text
 mvn xjar:spring-boot -Dxjar.password=io.xjar
-mvn xjar:jar -Dxjar.password=io.xjar -Dxjar.targetDir=/path/to/save/target.xjar 
+mvn xjar:jar -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/target.xjar
 ```
 
 ## 命令目标
