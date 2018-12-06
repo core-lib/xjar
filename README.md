@@ -101,6 +101,19 @@ public static void main(String[] args) {
 }
 ```
 
+## 注意事项
+```xml
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <!-- 请将executable参数删除或设置为false，目前还不能支持对该模式Jar的加密！ 
+    <configuration>
+        <executable>true</executable>
+    </configuration>
+    -->
+</plugin>
+```
+
 ## 插件集成
 [XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 GitHub: https://github.com/core-lib/xjar-maven-plugin
