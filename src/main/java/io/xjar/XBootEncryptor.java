@@ -119,16 +119,16 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             }
 
             if (!indexes.isEmpty()) {
-                String classpath = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Spring-Boot-Classes") : null;
-                JarArchiveEntry XJAR_INF = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR);
+                String classpath = "BOOT-INF/classes/";
+                JarArchiveEntry XJAR_INF = new JarArchiveEntry(classpath + XJAR_INF_DIR);
                 XJAR_INF.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XJAR_INF);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry IDX = new JarArchiveEntry((classpath != null ? classpath : "") + XJAR_INF_DIR + XJAR_INF_IDX);
+                JarArchiveEntry IDX = new JarArchiveEntry(classpath + XJAR_INF_DIR + XJAR_INF_IDX);
                 IDX.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(IDX);
-                int idx = classpath != null ? classpath.length() : 0;
+                int idx = classpath.length();
                 for (String index : indexes) {
                     nos.write(index.substring(idx).getBytes());
                     nos.write(CRLF.getBytes());

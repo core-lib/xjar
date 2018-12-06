@@ -12,6 +12,36 @@ import java.security.NoSuchAlgorithmException;
 
 public abstract class XKit implements XConstants {
 
+    public static byte[] readln(InputStream in) throws IOException {
+        int b = in.read();
+        if (b == -1) {
+            return null;
+        }
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        while (b != -1) {
+            switch (b) {
+                case '\r':
+                    break;
+                case '\n':
+                    return bos.toByteArray();
+                default:
+                    bos.write(b);
+                    break;
+            }
+            b = in.read();
+        }
+        return bos.toByteArray();
+    }
+
+    public static void writeln(byte[] line, OutputStream out) throws IOException {
+        if (line == null) {
+            return;
+        }
+        out.write(line);
+        out.write('\r');
+        out.write('\n');
+    }
+
     public static void close(Closeable closeable) {
         try {
             close(closeable, true);
