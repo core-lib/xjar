@@ -36,48 +36,32 @@ JDK 1.7 +
 
 ```java
 // Spring-Boot Jar包加密
-public static void main(String[] args) {
-    String password = "io.xjar";
-    File plaintext = new File("/path/to/read/plaintext.jar");
-    File encrypted = new File("/path/to/save/encrypted.jar");
-    XBoot.encrypt(plaintext, encrypted, password);
-}
+String password = "io.xjar";
+XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", password);
 ```
 
 ```java
 // Spring-Boot Jar包解密
-public static void main(String[] args) {
-    String password = "io.xjar";
-    File encrypted = new File("/path/to/read/encrypted.jar");
-    File decrypted = new File("/path/to/save/decrypted.jar");
-    XBoot.decrypt(encrypted, decrypted, password);
-}
+String password = "io.xjar";
+XBoot.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", password);
 ```
 
 ```java
 // Jar包加密
-public static void main(String[] args) {
-    String password = "io.xjar";
-    File plaintext = new File("/path/to/read/plaintext.jar");
-    File encrypted = new File("/path/to/save/encrypted.jar");
-    XJar.encrypt(plaintext, encrypted, password);
-}
+String password = "io.xjar";
+XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", password);
 ```
 
 ```java
 // Jar包解密
-public static void main(String[] args) {
-    String password = "io.xjar";
-    File encrypted = new File("/path/to/read/encrypted.jar");
-    File decrypted = new File("/path/to/save/decrypted.jar");
-    XJar.decrypt(encrypted, decrypted, password);
-}
+String password = "io.xjar";
+XJar.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", password);
 ```
 
 ```text
 // 命令行运行JAR 然后在提示输入密码的时候输入密码后按回车即可正常启动
 java -jar /path/to/encrypted.jar
-//也可以通过传参的方式直接启动
+// 也可以通过传参的方式直接启动，不太推荐这种方式，因为泄露的可能性更大！
 java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 ```
 
@@ -95,15 +79,15 @@ java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 * #### 硬编码方式
 ```java
 // 对于Spring Boot JAR，只加密自身项目及相关模块的源码不加密第三方依赖，可以通过XEntryFilter来指定需要加密的JAR包内资源。
-public static void main(String[] args) {
-    String password = "io.xjar";
-    File plaintext = new File("/path/to/read/plaintext.jar");
-    File encrypted = new File("/path/to/save/encrypted.jar");
-    XBoot.encrypt(plaintext, encrypted, password, (entry) -> {
-        String name = entry.getName();
-        return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/io-xjar-");
-    });
-}
+XBoot.encrypt(
+        "/path/to/read/plaintext.jar", 
+        "/path/to/save/encrypted.jar", 
+        "io.xjar", 
+        (entry) -> {
+            String name = entry.getName();
+            return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/io-xjar-");
+        }
+    );
 ```
 * #### 表达式方式
 ```java
