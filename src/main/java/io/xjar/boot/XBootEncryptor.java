@@ -24,7 +24,7 @@ import java.util.zip.Deflater;
  */
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     // 安全过滤器，避免由于用户自定义过滤器时把其他无关资源加密了造成无法运行
-    private final XEntryFilter<JarArchiveEntry> safeFilter = new XBootAllFilter();
+    private final XEntryFilter<JarArchiveEntry> safeFilter = new XBootClassesFilter();
     private final int level;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
