@@ -88,8 +88,13 @@ java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 * --xjar.password   密码
 
 ## 进阶用法
+默认情况下，即没有提供过滤器的时候，对于Spring Boot JAR包只加密本项目即 BOOT-INF/classes/ 下的资源，
+而对于普通JAR则除了META-INF/MANIFEST.MF 之外的所有资源。
+框架提供使用过滤器的方式来灵活指定需要加密的资源或排除不需要加密的资源。
+
+* #### 硬编码方式
 ```java
-// 只加密自身项目及相关模块的源码不加密第三方依赖，可以通过XEntryFilter来定制需要加密的JAR包内资源
+// 对于Spring Boot JAR，只加密自身项目及相关模块的源码不加密第三方依赖，可以通过XEntryFilter来指定需要加密的JAR包内资源。
 public static void main(String[] args) {
     String password = "io.xjar";
     File plaintext = new File("/path/to/read/plaintext.jar");
@@ -99,6 +104,47 @@ public static void main(String[] args) {
         return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/io-xjar-");
     });
 }
+```
+* #### 表达式方式
+```java
+// 1. 采用Ant表达式过滤器更简洁地来指定需要加密的资源。
+XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("BOOT-INF/classes/**"));
+
+XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+
+XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-???.jar"));
+
+// 2. 采用更精确的正则表达式过滤器。
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("BOOT-INF/classes/.+?"));
+
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("BOOT-INF/lib/io-xjar-.+?.jar"));
+
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("BOOT-INF/lib/io-xjar-\\w{3}.jar"));
+```
+* #### 混合方式
+当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 XKit 工具类提供的多个过滤器混合方法混合成一个，XKit 提供 “与” “或” “非” 三种逻辑运算的混合。
+```java
+// 1. 与运算，即所有过滤器都满足的情况下才满足，mix() 方法返回的是this，可以继续拼接。
+XEntryFilter and = XKit.and()
+    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
+    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+
+XEntryFilter all = XKit.all()
+    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
+    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+
+// 2. 或运算，即任意一个过滤器满足的情况下就满足，mix() 方法返回的是this，可以继续拼接。
+XEntryFilter or = XKit.or()
+    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
+    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+
+XEntryFilter any = XKit.any()
+    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
+    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+
+// 3. 非运算，即除此之外都满足。该例子中即表示除了满足 BOOT-INF/classes/** 和 BOOT-INF/lib/io-xjar-*.jar 之外的资源，
+//    也就是非项目相关的资源，其实没有意义只是举个例子，因为我们自己的资源才需要加密对吧。
+XEntryFilter not  = XKit.not(and);
 ```
 
 ## 注意事项
@@ -136,7 +182,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
                 <executions>
                     <execution>
                         <goals>
-                            <goal>spring-boot</goal>
+                            <goal>build</goal>
                         </goals>
                         <phase>package</phase>
                         <configuration>
@@ -151,15 +197,9 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
 ```
 #### 也可以通过Maven命令执行
 ```text
-mvn xjar:spring-boot -Dxjar.password=io.xjar
-mvn xjar:jar -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/target.xjar
+mvn xjar:build -Dxjar.password=io.xjar
+mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/target.xjar
 ```
-
-## 命令目标
-| 目标名称 | 目标说明 |
-| :------- | :------ |
-| spring-boot | Spring-Boot项目或模块使用 |
-| jar | 普通jar项目或模块使用 |
 
 ## 参数说明
 | 参数名称 | 命令参数名称 | 参数说明 | 参数类型 | 缺省值 | 示例值 |
@@ -179,6 +219,11 @@ mvn xjar:jar -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/target.
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v1.1.0
+    1. 整理目录结构
+    2. 增加正则表达式/Ant表达式过滤器和“非”(!)逻辑运算过滤器
+    3. 将XEntryFilters工具类整合在XKit类中
+    4. 缺省过滤器情况下Spring-Boot JAR包加密的资源只限定在 BOOT-INF/classes/ 下
 * v1.0.9
     1. 修复对Spring-Boot 版本依赖的bug
 * v1.0.8
