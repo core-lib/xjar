@@ -163,6 +163,10 @@ XEntryFilter not  = XKit.not(and);
 ## 插件集成
 [XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 GitHub: https://github.com/core-lib/xjar-maven-plugin
+
+#### 对于Spring Boot 项目或模块，该插件要后于 spring-boot-maven-plugin 插件执行，有两种方式：
+* 将插件放置于 spring-boot-maven-plugin 的后面，因为其插件的默认 phase 也是 package
+* 将插件的 phase 设置为 install（默认值为：package），打包命令采用 mvn clean install
 ```xml
 <project>
     <!-- 设置 jitpack.io 插件仓库 -->
@@ -185,6 +189,9 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
                             <goal>build</goal>
                         </goals>
                         <phase>package</phase>
+                        <!-- 或使用
+                        <phase>install</phase>
+                        -->
                         <configuration>
                             <password>io.xjar</password>
                         </configuration>
