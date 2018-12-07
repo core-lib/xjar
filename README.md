@@ -136,7 +136,7 @@ XEntryFilter not  = XKit.not(and);
 <plugin>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-maven-plugin</artifactId>
-    <!-- 必须将executable和embeddedLaunchScript参数删除，目前还不能支持对该模式Jar的加密！后面将会支持该方式的打包。 
+    <!-- 需要将executable和embeddedLaunchScript参数删除，目前还不能支持对该模式Jar的加密！后面将会支持该方式的打包。 
     <configuration>
         <executable>true</executable>
         <embeddedLaunchScript>...</embeddedLaunchScript>
