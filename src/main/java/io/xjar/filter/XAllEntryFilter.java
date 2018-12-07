@@ -1,4 +1,6 @@
-package io.xjar;
+package io.xjar.filter;
+
+import io.xjar.XEntryFilter;
 
 import java.util.Collection;
 

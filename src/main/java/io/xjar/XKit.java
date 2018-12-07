@@ -1,17 +1,31 @@
 package io.xjar;
 
-import io.xjar.key.SymmetricSecureKey;
+import io.xjar.filter.XAllEntryFilter;
+import io.xjar.filter.XAnyEntryFilter;
+import io.xjar.filter.XNotEntryFilter;
 import io.xjar.key.XKey;
 import io.xjar.key.XSecureRandom;
+import io.xjar.key.XSymmetricSecureKey;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 
+/**
+ * XJar 工具类，包含I/O，密钥，过滤器的工具方法。
+ */
 public abstract class XKit implements XConstants {
 
+    /**
+     * 从输入流中读取一行字节码
+     *
+     * @param in 输入流
+     * @return 最前面的一行字节码
+     * @throws IOException I/O 异常
+     */
     public static byte[] readln(InputStream in) throws IOException {
         int b = in.read();
         if (b == -1) {
@@ -33,7 +47,14 @@ public abstract class XKit implements XConstants {
         return bos.toByteArray();
     }
 
-    public static void writeln(byte[] line, OutputStream out) throws IOException {
+    /**
+     * 往输出流中写入一行字节码
+     *
+     * @param out  输出流
+     * @param line 一行字节码
+     * @throws IOException I/O 异常
+     */
+    public static void writeln(OutputStream out, byte[] line) throws IOException {
         if (line == null) {
             return;
         }
@@ -42,6 +63,11 @@ public abstract class XKit implements XConstants {
         out.write('\n');
     }
 
+    /**
+     * 关闭资源，等效于XKit.close(closeable, true);
+     *
+     * @param closeable 资源
+     */
     public static void close(Closeable closeable) {
         try {
             close(closeable, true);
@@ -50,6 +76,13 @@ public abstract class XKit implements XConstants {
         }
     }
 
+    /**
+     * 关闭资源
+     *
+     * @param closeable 资源
+     * @param quietly   是否安静关闭，即捕获到关闭异常时是否忽略
+     * @throws IOException 当quietly == false, 时捕获到的I/O异常将会往外抛
+     */
     public static void close(Closeable closeable, boolean quietly) throws IOException {
         if (closeable == null) return;
         try {
@@ -59,6 +92,14 @@ public abstract class XKit implements XConstants {
         }
     }
 
+    /**
+     * 输入流传输到输出流
+     *
+     * @param in  输入流
+     * @param out 输出流
+     * @return 传输长度
+     * @throws IOException I/O 异常
+     */
     public static long transfer(InputStream in, OutputStream out) throws IOException {
         long total = 0;
         byte[] buffer = new byte[4096];
@@ -71,6 +112,14 @@ public abstract class XKit implements XConstants {
         return total;
     }
 
+    /**
+     * reader传输到writer
+     *
+     * @param reader reader
+     * @param writer writer
+     * @return 传输长度
+     * @throws IOException I/O 异常
+     */
     public static long transfer(Reader reader, Writer writer) throws IOException {
         long total = 0;
         char[] buffer = new char[4096];
@@ -83,6 +132,14 @@ public abstract class XKit implements XConstants {
         return total;
     }
 
+    /**
+     * 输入流传输到文件
+     *
+     * @param in   输入流
+     * @param file 文件
+     * @return 传输长度
+     * @throws IOException I/O 异常
+     */
     public static long transfer(InputStream in, File file) throws IOException {
         OutputStream out = null;
         try {
@@ -93,6 +150,14 @@ public abstract class XKit implements XConstants {
         }
     }
 
+    /**
+     * reader传输到文件
+     *
+     * @param reader reader
+     * @param file   文件
+     * @return 传输长度
+     * @throws IOException I/O 异常
+     */
     public static long transfer(Reader reader, File file) throws IOException {
         OutputStream out = null;
         Writer writer = null;
@@ -106,10 +171,22 @@ public abstract class XKit implements XConstants {
         }
     }
 
+    /**
+     * 删除文件，如果是目录将不递归删除子文件或目录，等效于delete(file, false);
+     *
+     * @param file 文件/目录
+     * @return 是否删除成功
+     */
     public static boolean delete(File file) {
         return delete(file, false);
     }
 
+    /**
+     * 删除文件，如果是目录将递归删除子文件或目录
+     *
+     * @param file 文件/目录
+     * @return 是否删除成功
+     */
     public static boolean delete(File file, boolean recursively) {
         if (file.isDirectory() && recursively) {
             boolean deleted = true;
@@ -123,18 +200,52 @@ public abstract class XKit implements XConstants {
         }
     }
 
+    /**
+     * 根据密码生成密钥
+     *
+     * @param password 密码
+     * @return 密钥
+     * @throws NoSuchAlgorithmException 没有该密钥算法
+     */
     public static XKey key(String password) throws NoSuchAlgorithmException {
         return key(DEFAULT_ALGORITHM, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
     }
 
+    /**
+     * 根据密码生成密钥
+     *
+     * @param algorithm 密钥算法
+     * @param password  密码
+     * @return 密钥
+     * @throws NoSuchAlgorithmException 没有该密钥算法
+     */
     public static XKey key(String algorithm, String password) throws NoSuchAlgorithmException {
         return key(algorithm, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
     }
 
+    /**
+     * 根据密码生成密钥
+     *
+     * @param algorithm 密钥算法
+     * @param keysize   密钥长度
+     * @param password  密码
+     * @return 密钥
+     * @throws NoSuchAlgorithmException 没有该密钥算法
+     */
     public static XKey key(String algorithm, int keysize, String password) throws NoSuchAlgorithmException {
         return key(algorithm, keysize, DEFAULT_IVSIZE, password);
     }
 
+    /**
+     * 根据密码生成密钥
+     *
+     * @param algorithm 密钥算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @param password  密码
+     * @return 密钥
+     * @throws NoSuchAlgorithmException 没有该密钥算法
+     */
     public static XKey key(String algorithm, int keysize, int ivsize, String password) throws NoSuchAlgorithmException {
         MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
         byte[] seed = sha512.digest(password.getBytes());
@@ -144,7 +255,94 @@ public abstract class XKit implements XConstants {
         SecretKey key = generator.generateKey();
         generator.init(ivsize, random);
         SecretKey iv = generator.generateKey();
-        return new SymmetricSecureKey(algorithm, keysize, key.getEncoded(), iv.getEncoded());
+        return new XSymmetricSecureKey(algorithm, keysize, key.getEncoded(), iv.getEncoded());
+    }
+
+    /**
+     * 创建多个子过滤器AND连接的混合过滤器
+     *
+     * @return 多个子过滤器AND连接的混合过滤器
+     */
+    public static <E> XAllEntryFilter<E> all() {
+        return new XAllEntryFilter<>();
+    }
+
+    /**
+     * 创建多个子过滤器AND连接的混合过滤器
+     *
+     * @param filters 子过滤器
+     * @return 多个子过滤器AND连接的混合过滤器
+     */
+    public static <E> XAllEntryFilter<E> all(Collection<? extends XEntryFilter<E>> filters) {
+        return new XAllEntryFilter<>(filters);
+    }
+
+    /**
+     * 创建多个子过滤器AND连接的混合过滤器
+     *
+     * @return 多个子过滤器AND连接的混合过滤器
+     */
+    public static <E> XAllEntryFilter<E> and() {
+        return new XAllEntryFilter<>();
+    }
+
+    /**
+     * 创建多个子过滤器AND连接的混合过滤器
+     *
+     * @param filters 子过滤器
+     * @return 多个子过滤器AND连接的混合过滤器
+     */
+    public static <E> XAllEntryFilter<E> and(Collection<? extends XEntryFilter<E>> filters) {
+        return new XAllEntryFilter<>(filters);
+    }
+
+    /**
+     * 创建多个子过滤器OR连接的混合过滤器
+     *
+     * @return 多个子过滤器OR连接的混合过滤器
+     */
+    public static <E> XAnyEntryFilter<E> any() {
+        return new XAnyEntryFilter<>();
+    }
+
+    /**
+     * 创建多个子过滤器OR连接的混合过滤器
+     *
+     * @param filters 子过滤器
+     * @return 多个子过滤器OR连接的混合过滤器
+     */
+    public static <E> XAnyEntryFilter<E> any(Collection<? extends XEntryFilter<E>> filters) {
+        return new XAnyEntryFilter<>(filters);
+    }
+
+    /**
+     * 创建多个子过滤器OR连接的混合过滤器
+     *
+     * @return 多个子过滤器OR连接的混合过滤器
+     */
+    public static <E> XAnyEntryFilter<E> or() {
+        return new XAnyEntryFilter<>();
+    }
+
+    /**
+     * 创建多个子过滤器OR连接的混合过滤器
+     *
+     * @param filters 子过滤器
+     * @return 多个子过滤器OR连接的混合过滤器
+     */
+    public static <E> XAnyEntryFilter<E> or(Collection<? extends XEntryFilter<E>> filters) {
+        return new XAnyEntryFilter<>(filters);
+    }
+
+    /**
+     * 创建非门逻辑过滤器，实际上就是将委派过滤器的过滤结果取反
+     *
+     * @param filter 委派过滤器
+     * @param <E>    记录类型
+     * @return 非门逻辑过滤器
+     */
+    public static <E> XEntryFilter<E> not(XEntryFilter<E> filter) {
+        return new XNotEntryFilter<>(filter);
     }
 
 }

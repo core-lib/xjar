@@ -1,6 +1,7 @@
-package io.xjar;
+package io.xjar.boot;
 
-import io.xjar.boot.XBootAllFilter;
+import io.xjar.*;
+import io.xjar.jar.XJarEncryptor;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -62,8 +63,8 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
-            NoCloseInputStream nis = new NoCloseInputStream(zis);
-            NoCloseOutputStream nos = new NoCloseOutputStream(zos);
+            XUnclosedInputStream nis = new XUnclosedInputStream(zis);
+            XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
             XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level);
             JarArchiveEntry entry;
             Manifest manifest = null;

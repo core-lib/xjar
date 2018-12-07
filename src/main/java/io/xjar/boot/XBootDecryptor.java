@@ -1,6 +1,7 @@
-package io.xjar;
+package io.xjar.boot;
 
-import io.xjar.boot.XBootAllFilter;
+import io.xjar.*;
+import io.xjar.jar.XJarDecryptor;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -59,8 +60,8 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
-            NoCloseInputStream nis = new NoCloseInputStream(zis);
-            NoCloseOutputStream nos = new NoCloseOutputStream(zos);
+            XUnclosedInputStream nis = new XUnclosedInputStream(zis);
+            XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
             XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {

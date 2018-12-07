@@ -1,62 +1,67 @@
-package io.xjar;
+package io.xjar.jar;
 
+import io.xjar.*;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.Deflater;
 
 /**
- * 普通JAR包解密器
+ * 普通JAR包加密器
  *
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
+public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
 
-    public XJarDecryptor(XDecryptor xEncryptor) {
+    public XJarEncryptor(XEncryptor xEncryptor) {
         this(xEncryptor, null);
     }
 
-    public XJarDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xDecryptor, Deflater.DEFLATED, filter);
+    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
+        this(xEncryptor, Deflater.DEFLATED, filter);
     }
 
-    public XJarDecryptor(XDecryptor xEncryptor, int level) {
+    public XJarEncryptor(XEncryptor xEncryptor, int level) {
         this(xEncryptor, level, null);
     }
 
-    public XJarDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
-        super(xDecryptor, filter);
+    public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+        super(xEncryptor, filter);
         this.level = level;
     }
 
     @Override
-    public void decrypt(XKey key, File src, File dest) throws IOException {
+    public void encrypt(XKey key, File src, File dest) throws IOException {
         try (
                 FileInputStream fis = new FileInputStream(src);
                 FileOutputStream fos = new FileOutputStream(dest)
         ) {
-            decrypt(key, fis, fos);
+            encrypt(key, fis, fos);
         }
     }
 
     @Override
-    public void decrypt(XKey key, InputStream in, OutputStream out) throws IOException {
+    public void encrypt(XKey key, InputStream in, OutputStream out) throws IOException {
         JarArchiveInputStream zis = null;
         JarArchiveOutputStream zos = null;
+        Set<String> indexes = new LinkedHashSet<>();
         try {
             zis = new JarArchiveInputStream(in);
             zos = new JarArchiveOutputStream(out);
             zos.setLevel(level);
-            NoCloseInputStream nis = new NoCloseInputStream(zis);
-            NoCloseOutputStream nos = new NoCloseOutputStream(zos);
+            XUnclosedInputStream nis = new XUnclosedInputStream(zis);
+            XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
             JarArchiveEntry entry;
+            Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
                         || entry.getName().endsWith(XJAR_INF_DIR)
@@ -69,12 +74,12 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                 } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    Manifest manifest = new Manifest(nis);
+                    manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
-                    String mainClass = attributes.getValue("Jar-Main-Class");
+                    String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
-                        attributes.putValue("Main-Class", mainClass);
-                        attributes.remove(new Attributes.Name("Jar-Main-Class"));
+                        attributes.putValue("Jar-Main-Class", mainClass);
+                        attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -85,12 +90,34 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                     boolean filtered = filtrate(entry);
-                    XDecryptor decryptor = filtered ? xDecryptor : xNopDecryptor;
-                    try (OutputStream eos = decryptor.decrypt(key, nos)) {
+                    if (filtered) indexes.add(entry.getName());
+                    XEncryptor encryptor = filtered ? xEncryptor : xNopEncryptor;
+                    try (OutputStream eos = encryptor.encrypt(key, nos)) {
                         XKit.transfer(nis, eos);
                     }
                 }
                 zos.closeArchiveEntry();
+            }
+
+            if (!indexes.isEmpty()) {
+                JarArchiveEntry XJAR_INF = new JarArchiveEntry(XJAR_INF_DIR);
+                XJAR_INF.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(XJAR_INF);
+                zos.closeArchiveEntry();
+
+                JarArchiveEntry IDX = new JarArchiveEntry(XJAR_INF_DIR + XJAR_INF_IDX);
+                IDX.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(IDX);
+                for (String index : indexes) {
+                    zos.write(index.getBytes());
+                    zos.write(CRLF.getBytes());
+                }
+                zos.closeArchiveEntry();
+
+                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+                if (mainClass != null) {
+                    XInjector.inject(zos);
+                }
             }
 
             zos.finish();
@@ -100,4 +127,8 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
+    @Override
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && !entry.getName().equals(META_INF_MANIFEST);
+    }
 }
