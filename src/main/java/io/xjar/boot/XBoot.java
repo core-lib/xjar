@@ -1,6 +1,7 @@
 package io.xjar.boot;
 
 import io.xjar.*;
+import io.xjar.jar.XJarAntEntryFilter;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
@@ -13,6 +14,15 @@ import java.io.*;
  * 2018/11/26 11:11
  */
 public class XBoot implements XConstants {
+
+    public static void main(String... args) throws Exception {
+        XBoot.encrypt(
+                "C:\\Users\\Chang\\Desktop\\regent-service-mr-web-0.0.1-SNAPSHOT.jar",
+                "C:\\Users\\Chang\\Desktop\\regent-service-mr-web-0.0.1-SNAPSHOT.zip",
+                "io.xjar",
+                new XJarAntEntryFilter("BOOT-INF/classes/**")
+        );
+    }
 
     /**
      * 加密 Spring-Boot JAR 包

@@ -83,6 +83,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     boolean filtered = filtrate(entry);
+                    if (filtered) indexes.add(entry.getName());
                     XEncryptor encryptor = filtered ? xJarEncryptor : xNopEncryptor;
                     encryptor.encrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());

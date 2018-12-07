@@ -79,6 +79,7 @@ public class XWarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     jar.setTime(entry.getTime());
                     zos.putArchiveEntry(jar);
                     boolean filtered = filtrate(entry);
+                    if (filtered) indexes.add(entry.getName());
                     XEncryptor encryptor = filtered ? xJarEncryptor : xNopEncryptor;
                     encryptor.encrypt(key, nis, nos);
                 } else {

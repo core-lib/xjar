@@ -335,7 +335,7 @@ public abstract class XKit implements XConstants {
     }
 
     /**
-     * 创建非门逻辑过滤器，实际上就是将委派过滤器的过滤结果取反
+     * 创建非门逻辑运算过滤器，实际上就是将委派过滤器的过滤结果取反
      *
      * @param filter 委派过滤器
      * @param <E>    记录类型
