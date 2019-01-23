@@ -101,4 +101,8 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
+    @Override
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && !entry.getName().equals(META_INF_MANIFEST);
+    }
 }

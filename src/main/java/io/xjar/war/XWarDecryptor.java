@@ -17,12 +17,10 @@ import java.util.zip.Deflater;
  * 2018/11/22 15:27
  */
 public class XWarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
-    // 安全过滤器，避免由于用户自定义过滤器时把其他无关资源加密了造成无法运行
-    private final XEntryFilter<JarArchiveEntry> safeFilter = new XWarAllFilter();
     private final int level;
 
     public XWarDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, null);
+        this(xEncryptor, new XWarClassesFilter());
     }
 
     public XWarDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -30,7 +28,7 @@ public class XWarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     }
 
     public XWarDecryptor(XDecryptor xEncryptor, int level) {
-        this(xEncryptor, level, null);
+        this(xEncryptor, level, new XWarClassesFilter());
     }
 
     public XWarDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
@@ -98,8 +96,4 @@ public class XWarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
-    @Override
-    public boolean filtrate(JarArchiveEntry entry) {
-        return super.filtrate(entry) && safeFilter.filtrate(entry);
-    }
 }
