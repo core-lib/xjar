@@ -26,7 +26,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     private final int level;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, new XBootClassesFilter());
+        this(xEncryptor, null);
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -34,11 +34,11 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, new XBootClassesFilter());
+        this(xEncryptor, level, null);
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
-        super(xEncryptor, filter);
+        super(xEncryptor, filter != null ? XKit.<JarArchiveEntry>all().mix(filter).mix(new XBootAllFilter()) : null);
         this.level = level;
     }
 
@@ -65,7 +65,6 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
             XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level);
             JarArchiveEntry entry;
-            Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
                         || entry.getName().endsWith(XJAR_INF_DIR)
@@ -93,7 +92,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, nos);
                 } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    manifest = new Manifest(nis);
+                    Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
@@ -134,12 +133,9 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     nos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
-
-                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
-                if (mainClass != null) {
-                    XInjector.inject(zos);
-                }
             }
+
+            XInjector.inject(zos);
 
             zos.finish();
         } finally {

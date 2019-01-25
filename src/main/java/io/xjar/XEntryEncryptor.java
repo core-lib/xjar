@@ -21,6 +21,6 @@ public abstract class XEntryEncryptor<E> extends XWrappedEncryptor implements XE
 
     @Override
     public boolean filtrate(E entry) {
-        return filter == null || filter.filtrate(entry);
+        return filter != null && filter.filtrate(entry);
     }
 }
