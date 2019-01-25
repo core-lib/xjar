@@ -211,6 +211,8 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v1.1.2
+    1. 避免用户由于过滤器使用不当造成无法启动的风险
 * v1.1.1
     1. 修复bug
 * v1.1.0
