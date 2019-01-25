@@ -145,6 +145,12 @@ XEntryFilter not  = XKit.not(and);
 </plugin>
 ```
 
+## Spring Boot + JPA(Hibernate) 问题
+如果项目中使用了 JPA 且实现为Hibernate时，由于Hibernate自己解析加密后的Jar文件，所以无法正常启动，
+可以采用以下解决方案
+1. clone [XJar-Agent-Hibernate](https://github.com/core-lib/xjar-agent-hibernate) ，使用 mvn clean package 编译出 xjar-agent-hibernate-${version}.jar 文件
+2. 采用 java -javaagent:xjar-agent-hibernate-${version}.jar -jar your-spring-boot-app.jar 命令启动
+
 ## 插件集成
 [XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 GitHub: https://github.com/core-lib/xjar-maven-plugin
