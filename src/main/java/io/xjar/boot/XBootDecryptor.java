@@ -119,4 +119,8 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
         }
     }
 
+    @Override
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && (entry.getName().startsWith(BOOT_INF_CLASSES) || entry.getName().startsWith(BOOT_INF_LIB));
+    }
 }

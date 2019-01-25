@@ -119,18 +119,23 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             }
 
             if (!indexes.isEmpty()) {
-                String classpath = "BOOT-INF/classes/";
-                JarArchiveEntry XJAR_INF = new JarArchiveEntry(classpath + XJAR_INF_DIR);
+                JarArchiveEntry XJAR_INF = new JarArchiveEntry(BOOT_INF_CLASSES + XJAR_INF_DIR);
                 XJAR_INF.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(XJAR_INF);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry IDX = new JarArchiveEntry(classpath + XJAR_INF_DIR + XJAR_INF_IDX);
+                JarArchiveEntry IDX = new JarArchiveEntry(BOOT_INF_CLASSES + XJAR_INF_DIR + XJAR_INF_IDX);
                 IDX.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(IDX);
-                int idx = classpath.length();
+
                 for (String index : indexes) {
-                    nos.write(index.substring(idx).getBytes());
+                    if (index.startsWith(BOOT_INF_CLASSES)) {
+                        nos.write(index.substring(BOOT_INF_CLASSES.length()).getBytes());
+                    } else if (index.startsWith(BOOT_INF_LIB)) {
+                        nos.write(index.substring(BOOT_INF_LIB.length()).getBytes());
+                    } else {
+                        nos.write(index.getBytes());
+                    }
                     nos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
@@ -148,4 +153,8 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
         }
     }
 
+    @Override
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && (entry.getName().startsWith(BOOT_INF_CLASSES) || entry.getName().startsWith(BOOT_INF_LIB));
+    }
 }

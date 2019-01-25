@@ -7,6 +7,9 @@ package io.xjar;
  * 2018/11/24 9:17
  */
 public interface XConstants {
+    String BOOT_INF_CLASSES = "BOOT-INF/classes/";
+    String BOOT_INF_LIB = "BOOT-INF/lib/";
+
     String META_INF_MANIFEST = "META-INF/MANIFEST.MF";
     String XJAR_SRC_DIR = XConstants.class.getPackage().getName().replace('.', '/') + "/";
     String XJAR_INF_DIR = "XJAR-INF/";
