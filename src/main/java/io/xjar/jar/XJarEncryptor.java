@@ -61,6 +61,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
             JarArchiveEntry entry;
+            Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
                         || entry.getName().endsWith(XJAR_INF_DIR)
@@ -73,7 +74,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                 } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    Manifest manifest = new Manifest(nis);
+                    manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
@@ -112,9 +113,12 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     zos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
-            }
 
-            XInjector.inject(zos);
+                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+                if (mainClass != null) {
+                    XInjector.inject(zos);
+                }
+            }
 
             zos.finish();
         } finally {

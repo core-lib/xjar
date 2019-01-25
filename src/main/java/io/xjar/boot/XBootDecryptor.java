@@ -24,7 +24,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     private final int level;
 
     public XBootDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, null);
+        this(xEncryptor, new XBootClassesFilter());
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -32,11 +32,11 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     }
 
     public XBootDecryptor(XDecryptor xEncryptor, int level) {
-        this(xEncryptor, level, null);
+        this(xEncryptor, level, new XBootClassesFilter());
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
-        super(xDecryptor, filter != null ? XKit.<JarArchiveEntry>all().mix(filter).mix(new XBootAllFilter()) : null);
+        super(xDecryptor, filter);
         this.level = level;
     }
 
