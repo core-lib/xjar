@@ -96,4 +96,8 @@ public class XWarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
+    @Override
+    public boolean filtrate(JarArchiveEntry entry) {
+        return super.filtrate(entry) && (entry.getName().startsWith(WEB_INF_CLASSES) || entry.getName().startsWith(WEB_INF_LIB));
+    }
 }
