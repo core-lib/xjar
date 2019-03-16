@@ -24,6 +24,7 @@ import java.util.zip.Deflater;
  */
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
+    private final int mode;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
         this(xEncryptor, new XBootClassesFilter());
@@ -38,8 +39,17 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+        this(xEncryptor, level, MODE_NORMAL, filter);
+    }
+
+    public XBootEncryptor(XEncryptor xEncryptor, int level, int mode) {
+        this(xEncryptor, level, mode, new XBootClassesFilter());
+    }
+
+    public XBootEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
         super(xEncryptor, filter);
         this.level = level;
+        this.mode = mode;
     }
 
     @Override
@@ -99,6 +109,12 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     if (mainClass != null) {
                         attributes.putValue("Boot-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "io.xjar.boot.XBootLauncher");
+                    }
+                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
+                        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
+                        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
+                        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
+                        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());

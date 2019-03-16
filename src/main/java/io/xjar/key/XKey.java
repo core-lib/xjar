@@ -16,7 +16,17 @@ public interface XKey {
     /**
      * @return 密钥长度
      */
-    int getSize();
+    int getKeysize();
+
+    /**
+     * @return 向量长度
+     */
+    int getIvsize();
+
+    /**
+     * @return 密码
+     */
+    String getPassword();
 
     /**
      * @return 加密密钥

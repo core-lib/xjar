@@ -255,7 +255,7 @@ public abstract class XKit implements XConstants {
         SecretKey key = generator.generateKey();
         generator.init(ivsize, random);
         SecretKey iv = generator.generateKey();
-        return new XSymmetricSecureKey(algorithm, keysize, key.getEncoded(), iv.getEncoded());
+        return new XSymmetricSecureKey(algorithm, keysize, ivsize, password, key.getEncoded(), iv.getEncoded());
     }
 
     /**

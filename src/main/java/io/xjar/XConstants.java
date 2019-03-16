@@ -24,8 +24,20 @@ public interface XConstants {
     String XJAR_IVSIZE = "--xjar.ivsize=";
     String XJAR_PASSWORD = "--xjar.password=";
 
+    String XJAR_ALGORITHM_KEY = "XJar-Algorithm";
+    String XJAR_KEYSIZE_KEY = "XJar-Keysize";
+    String XJAR_IVSIZE_KEY = "XJar-Ivsize";
+    String XJAR_PASSWORD_KEY = "XJar-Password";
+
     String DEFAULT_ALGORITHM = "AES";
     int DEFAULT_KEYSIZE = 128;
     int DEFAULT_IVSIZE = 128;
+
+    // 保留密钥在 META-INF/MANIFEST.MF 中，启动时无需输入密钥。
+    int FLAG_DANGER = 1 << 1;
+    // 危险模式：保留密钥
+    int MODE_DANGER = FLAG_DANGER;
+    // 普通模式
+    int MODE_NORMAL = 0;
 
 }

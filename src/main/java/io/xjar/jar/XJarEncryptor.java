@@ -1,6 +1,7 @@
 package io.xjar.jar;
 
 import io.xjar.*;
+import io.xjar.boot.XBootClassesFilter;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -21,6 +22,7 @@ import java.util.zip.Deflater;
  */
 public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
+    private final int mode;
 
     public XJarEncryptor(XEncryptor xEncryptor) {
         this(xEncryptor, null);
@@ -35,8 +37,17 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+        this(xEncryptor, level, MODE_NORMAL, filter);
+    }
+
+    public XJarEncryptor(XEncryptor xEncryptor, int level, int mode) {
+        this(xEncryptor, level, mode, new XBootClassesFilter());
+    }
+
+    public XJarEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
         super(xEncryptor, filter);
         this.level = level;
+        this.mode = mode;
     }
 
     @Override
@@ -80,6 +91,12 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     if (mainClass != null) {
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
+                    }
+                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
+                        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
+                        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
+                        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
+                        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());

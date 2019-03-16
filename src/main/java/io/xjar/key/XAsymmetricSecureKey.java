@@ -12,8 +12,8 @@ public final class XAsymmetricSecureKey extends XSecureKey implements XAsymmetri
     private final byte[] publicKey;
     private final byte[] privateKey;
 
-    public XAsymmetricSecureKey(String algorithm, int size, byte[] publicKey, byte[] privateKey) {
-        super(algorithm, size);
+    public XAsymmetricSecureKey(String algorithm, int keysize, int ivsize, String password, byte[] publicKey, byte[] privateKey) {
+        super(algorithm, keysize, ivsize, password);
         this.publicKey = publicKey;
         this.privateKey = privateKey;
     }

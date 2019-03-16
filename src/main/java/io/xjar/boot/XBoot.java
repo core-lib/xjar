@@ -5,6 +5,7 @@ import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 import java.io.*;
+import java.util.zip.Deflater;
 
 /**
  * Spring-Boot JAR包加解密工具类，在不提供过滤器的情况下会加密BOOT-INF/下的所有资源，及包括项目本身的资源和依赖jar资源。
@@ -13,6 +14,50 @@ import java.io.*;
  * 2018/11/26 11:11
  */
 public class XBoot implements XConstants {
+
+    public static void main(String... args) throws Exception {
+        encrypt(
+                "G:\\regent-platform-eureka-0.0.1-SNAPSHOT.jar",
+                "G:\\regent-platform-eureka-0.0.1-SNAPSHOT.xjar",
+                XKit.key("io.xjar")
+        );
+    }
+
+    public static void encrypt(String src, String dest, XKey xKey) throws Exception {
+        encrypt(new File(src), new File(dest), xKey);
+    }
+
+    public static void encrypt(String src, String dest, XKey xKey, int mode) throws Exception {
+        encrypt(new File(src), new File(dest), xKey, mode);
+    }
+
+    public static void encrypt(File src, File dest, XKey xKey) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            encrypt(in, out, xKey);
+        }
+    }
+
+    public static void encrypt(File src, File dest, XKey xKey, int mode) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            encrypt(in, out, xKey, mode);
+        }
+    }
+
+    public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
+        xBootEncryptor.encrypt(xKey, in, out);
+    }
+
+    public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
+        xBootEncryptor.encrypt(xKey, in, out);
+    }
 
     /**
      * 加密 Spring-Boot JAR 包
