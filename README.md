@@ -41,7 +41,7 @@ XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", pass
 ```
 
 ```java
-// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥用于启动时实现无需输入密码，请谨慎使用！
+// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
 String password = "io.xjar";
 XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", XKit.key(password), XConstants.MODE_DANGER);
 ```
@@ -59,7 +59,7 @@ XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", passw
 ```
 
 ```java
-// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥用于启动时实现无需输入密码，请谨慎使用！
+// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
 String password = "io.xjar";
 XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", XKit.key(password), XConstants.MODE_DANGER);
 ```
