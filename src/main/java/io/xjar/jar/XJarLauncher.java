@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import java.util.Scanner;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -46,10 +47,33 @@ public class XJarLauncher implements XConstants {
                 password = arg.substring(XJAR_PASSWORD.length());
             }
         }
-        if (password == null) {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL url = classLoader.getResource(META_INF_MANIFEST);
+        if (url != null) {
+            Manifest manifest = new Manifest(url.openStream());
+            Attributes attributes = manifest.getMainAttributes();
+            if (attributes.getValue(XJAR_ALGORITHM_KEY) != null) {
+                algorithm = attributes.getValue(XJAR_ALGORITHM_KEY);
+            }
+            if (attributes.getValue(XJAR_KEYSIZE_KEY) != null) {
+                keysize = Integer.valueOf(attributes.getValue(XJAR_KEYSIZE_KEY));
+            }
+            if (attributes.getValue(XJAR_IVSIZE_KEY) != null) {
+                ivsize = Integer.valueOf(attributes.getValue(XJAR_IVSIZE_KEY));
+            }
+            if (attributes.getValue(XJAR_PASSWORD_KEY) != null) {
+                password = attributes.getValue(XJAR_PASSWORD_KEY);
+            }
+        }
+        if (password == null && System.console() != null) {
             Console console = System.console();
             char[] chars = console.readPassword("password:");
             password = new String(chars);
+        }
+        if (password == null) {
+            System.out.print("password:");
+            Scanner scanner = new Scanner(System.in);
+            password = scanner.nextLine();
         }
         this.xDecryptor = new XJdkDecryptor(algorithm);
         this.xEncryptor = new XJdkEncryptor(algorithm);

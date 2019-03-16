@@ -41,6 +41,12 @@ XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", pass
 ```
 
 ```java
+// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥用于启动时实现无需输入密码，请谨慎使用！
+String password = "io.xjar";
+XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", XKit.key(password), XConstants.MODE_DANGER);
+```
+
+```java
 // Spring-Boot Jar包解密
 String password = "io.xjar";
 XBoot.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", password);
@@ -50,6 +56,12 @@ XBoot.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", pass
 // Jar包加密
 String password = "io.xjar";
 XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", password);
+```
+
+```java
+// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥用于启动时实现无需输入密码，请谨慎使用！
+String password = "io.xjar";
+XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", XKit.key(password), XConstants.MODE_DANGER);
 ```
 
 ```java
@@ -206,6 +218,7 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 | algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES | JDK内置加密算法，如：AES / DES |
 | keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定，56，128，256 |
 | ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定，128 |
+| mode | -Dxjar.mode | 加密模式 | int | 0 | 0：普通模式 1：危险模式（免密码启动）|
 | sourceDir | -Dxjar.sourceDir | 源jar所在目录 | File | ${project.build.directory} | 文件目录 |
 | sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
 | targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |
@@ -217,6 +230,9 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v1.1.3
+    1. 实现危险模式加密启动，即不需要输入密码！
+    2. 修复无法使用 System.console(); 时用 new Scanner(System.in) 替代。
 * v1.1.2
     1. 避免用户由于过滤器使用不当造成无法启动的风险
 * v1.1.1

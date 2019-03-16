@@ -1,10 +1,12 @@
 package io.xjar.jar;
 
 import io.xjar.*;
+import io.xjar.boot.XBootEncryptor;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 import java.io.*;
+import java.util.zip.Deflater;
 
 /**
  * 普通JAR包加解密工具类
@@ -15,15 +17,90 @@ import java.io.*;
 public class XJar implements XConstants {
 
     /**
-     * 加密普通JAR 包
+     * 加密 普通JAR 包
      *
-     * @param src      原文包
-     * @param dest     加密包
-     * @param password 密码
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password) throws Exception {
-        encrypt(src, dest, password, DEFAULT_ALGORITHM);
+    public static void encrypt(String src, String dest, XKey xKey) throws Exception {
+        encrypt(new File(src), new File(dest), xKey);
+    }
+
+    /**
+     * 加密 普通JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @param mode 加密模式
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(String src, String dest, XKey xKey, int mode) throws Exception {
+        encrypt(new File(src), new File(dest), xKey, mode);
+    }
+
+    /**
+     * 加密 普通JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(File src, File dest, XKey xKey) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            encrypt(in, out, xKey);
+        }
+    }
+
+    /**
+     * 加密 普通JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @param mode 加密模式
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(File src, File dest, XKey xKey, int mode) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            encrypt(in, out, xKey, mode);
+        }
+    }
+
+    /**
+     * 加密 普通JAR 包
+     *
+     * @param in   原文包输入流
+     * @param out  加密包输出流
+     * @param xKey 密钥
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
+        xBootEncryptor.encrypt(xKey, in, out);
+    }
+
+    /**
+     * 加密 普通JAR 包
+     *
+     * @param in   原文包输入流
+     * @param out  加密包输出流
+     * @param xKey 密钥
+     * @param mode 加密模式
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
+        xBootEncryptor.encrypt(xKey, in, out);
     }
 
     /**

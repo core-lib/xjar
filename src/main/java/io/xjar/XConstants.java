@@ -34,7 +34,7 @@ public interface XConstants {
     int DEFAULT_IVSIZE = 128;
 
     // 保留密钥在 META-INF/MANIFEST.MF 中，启动时无需输入密钥。
-    int FLAG_DANGER = 1 << 1;
+    int FLAG_DANGER = 1;
     // 危险模式：保留密钥
     int MODE_DANGER = FLAG_DANGER;
     // 普通模式

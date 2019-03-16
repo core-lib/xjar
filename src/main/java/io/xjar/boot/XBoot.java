@@ -15,22 +15,39 @@ import java.util.zip.Deflater;
  */
 public class XBoot implements XConstants {
 
-    public static void main(String... args) throws Exception {
-        encrypt(
-                "G:\\regent-platform-eureka-0.0.1-SNAPSHOT.jar",
-                "G:\\regent-platform-eureka-0.0.1-SNAPSHOT.xjar",
-                XKit.key("io.xjar")
-        );
-    }
-
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @throws Exception 加密异常
+     */
     public static void encrypt(String src, String dest, XKey xKey) throws Exception {
         encrypt(new File(src), new File(dest), xKey);
     }
 
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @param mode 加密模式
+     * @throws Exception 加密异常
+     */
     public static void encrypt(String src, String dest, XKey xKey, int mode) throws Exception {
         encrypt(new File(src), new File(dest), xKey, mode);
     }
 
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @throws Exception 加密异常
+     */
     public static void encrypt(File src, File dest, XKey xKey) throws Exception {
         try (
                 InputStream in = new FileInputStream(src);
@@ -40,6 +57,15 @@ public class XBoot implements XConstants {
         }
     }
 
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src  原文包
+     * @param dest 加密包
+     * @param xKey 密钥
+     * @param mode 加密模式
+     * @throws Exception 加密异常
+     */
     public static void encrypt(File src, File dest, XKey xKey, int mode) throws Exception {
         try (
                 InputStream in = new FileInputStream(src);
@@ -49,11 +75,28 @@ public class XBoot implements XConstants {
         }
     }
 
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param in   原文包输入流
+     * @param out  加密包输出流
+     * @param xKey 密钥
+     * @throws Exception 加密异常
+     */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
         XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
         xBootEncryptor.encrypt(xKey, in, out);
     }
 
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param in   原文包输入流
+     * @param out  加密包输出流
+     * @param xKey 密钥
+     * @param mode 加密模式
+     * @throws Exception 加密异常
+     */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
         XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
         xBootEncryptor.encrypt(xKey, in, out);
