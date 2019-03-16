@@ -105,6 +105,99 @@ public class XBoot implements XConstants {
     /**
      * 加密 Spring-Boot JAR 包
      *
+     * @param src    原文包
+     * @param dest   加密包
+     * @param xKey   密钥
+     * @param filter 过滤器
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(String src, String dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(new File(src), new File(dest), xKey, filter);
+    }
+
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src    原文包
+     * @param dest   加密包
+     * @param xKey   密钥
+     * @param mode   加密模式
+     * @param filter 过滤器
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(String src, String dest, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        encrypt(new File(src), new File(dest), xKey, mode, filter);
+    }
+
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src    原文包
+     * @param dest   加密包
+     * @param xKey   密钥
+     * @param filter 过滤器
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(File src, File dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            encrypt(in, out, xKey, filter);
+        }
+    }
+
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param src    原文包
+     * @param dest   加密包
+     * @param xKey   密钥
+     * @param mode   加密模式
+     * @param filter 过滤器
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(File src, File dest, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            encrypt(in, out, xKey, mode, filter);
+        }
+    }
+
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param in     原文包输入流
+     * @param out    加密包输出流
+     * @param xKey   密钥
+     * @param filter 过滤器
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
+        xBootEncryptor.encrypt(xKey, in, out);
+    }
+
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
+     * @param in     原文包输入流
+     * @param out    加密包输出流
+     * @param xKey   密钥
+     * @param mode   加密模式
+     * @param filter 过滤器
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
+        xBootEncryptor.encrypt(xKey, in, out);
+    }
+
+    /**
+     * 加密 Spring-Boot JAR 包
+     *
      * @param src      原文包
      * @param dest     加密包
      * @param password 密码
