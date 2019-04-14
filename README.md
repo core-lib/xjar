@@ -232,6 +232,9 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v1.1.4
+    1. 支持 Spring-Boot 以ZIP方式打包，即依赖外部化方式启动。
+    2. 修复无加密资源时无法启动问题
 * v1.1.3
     1. 实现危险模式加密启动，即不需要输入密码！
     2. 修复无法使用 System.console(); 时用 new Scanner(System.in) 替代。
