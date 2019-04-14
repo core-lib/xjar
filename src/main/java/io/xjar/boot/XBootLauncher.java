@@ -2,7 +2,6 @@ package io.xjar.boot;
 
 import io.xjar.*;
 import io.xjar.key.XKey;
-import org.springframework.boot.loader.JarLauncher;
 
 import java.io.Console;
 import java.net.URL;
@@ -11,16 +10,16 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 /**
- * Spring-Boot启动器
+ * Spring-Boot 启动器
  *
  * @author Payne 646742615@qq.com
- * 2018/11/23 23:06
+ * 2019/4/14 10:28
  */
-public class XBootLauncher extends JarLauncher implements XConstants {
-    private final String[] args;
-    private final XDecryptor xDecryptor;
-    private final XEncryptor xEncryptor;
-    private final XKey xKey;
+public class XBootLauncher implements XConstants {
+    final String[] args;
+    final XDecryptor xDecryptor;
+    final XEncryptor xEncryptor;
+    final XKey xKey;
 
     public XBootLauncher(String... args) throws Exception {
         this.args = args;
@@ -75,17 +74,19 @@ public class XBootLauncher extends JarLauncher implements XConstants {
         this.xKey = XKit.key(algorithm, keysize, ivsize, password);
     }
 
-    public static void main(String[] args) throws Exception {
-        new XBootLauncher(args).launch();
+    public String[] getArgs() {
+        return args;
     }
 
-    public void launch() throws Exception {
-        launch(args);
+    public XDecryptor getDecryptor() {
+        return xDecryptor;
     }
 
-    @Override
-    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xDecryptor, xEncryptor, xKey);
+    public XEncryptor getEncryptor() {
+        return xEncryptor;
     }
 
+    public XKey getKey() {
+        return xKey;
+    }
 }

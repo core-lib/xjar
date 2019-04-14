@@ -23,6 +23,10 @@ import java.util.zip.Deflater;
  * 2018/11/22 15:27
  */
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
+    private final static String JAR_LAUNCHER = "org.springframework.boot.loader.JarLauncher";
+    private final static String WAR_LAUNCHER = "org.springframework.boot.loader.WarLauncher";
+    private final static String EXT_LAUNCHER = "org.springframework.boot.loader.PropertiesLauncher";
+
     private final int level;
     private final int mode;
 
@@ -108,7 +112,19 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     String mainClass = attributes.getValue("Main-Class");
                     if (mainClass != null) {
                         attributes.putValue("Boot-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", "io.xjar.boot.XBootLauncher");
+                        switch (mainClass) {
+                            case JAR_LAUNCHER:
+                                attributes.putValue("Main-Class", "io.xjar.boot.XJarLauncher");
+                                break;
+                            case WAR_LAUNCHER:
+                                attributes.putValue("Main-Class", "io.xjar.boot.XWarLauncher");
+                                break;
+                            case EXT_LAUNCHER:
+                                attributes.putValue("Main-Class", "io.xjar.boot.XExtLauncher");
+                                break;
+                            default:
+                                throw new IllegalStateException("unsupported spring boot launcher: " + mainClass);
+                        }
                     }
                     if ((mode & FLAG_DANGER) == FLAG_DANGER) {
                         attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
@@ -155,11 +171,11 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     nos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
+            }
 
-                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
-                if (mainClass != null) {
-                    XInjector.inject(zos);
-                }
+            String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            if (mainClass != null) {
+                XInjector.inject(zos);
             }
 
             zos.finish();
