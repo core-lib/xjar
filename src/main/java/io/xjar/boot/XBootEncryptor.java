@@ -103,7 +103,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                 }
-                // MANIFEST.MF
+                // META-INF/MANIFEST.MF
                 else if (entry.getName().equals(META_INF_MANIFEST)) {
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
