@@ -15,14 +15,6 @@ import java.util.zip.Deflater;
  */
 public class XBoot implements XConstants {
 
-    public static void main(String... args) throws Exception {
-        encrypt(
-                "D:\\workspace\\regent-service\\regent-service-yalu\\regent-service-yalu-web\\target\\regent-service-yalu-web-1.0.0.jar",
-                "D:\\workspace\\regent-service\\regent-service-yalu\\regent-service-yalu-web\\target\\regent-service-yalu-web-1.0.0.xjar",
-                "io.xjar"
-        );
-    }
-
     /**
      * 加密 Spring-Boot JAR 包
      *
