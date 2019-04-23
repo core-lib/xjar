@@ -1,7 +1,6 @@
 package io.xjar.jar;
 
 import io.xjar.*;
-import io.xjar.boot.XBootClassesFilter;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -25,7 +24,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     private final int mode;
 
     public XJarEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, null);
+        this(xEncryptor, new XJarAllEntryFilter());
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -33,7 +32,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, null);
+        this(xEncryptor, level, new XJarAllEntryFilter());
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
@@ -41,7 +40,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, int mode) {
-        this(xEncryptor, level, mode, new XBootClassesFilter());
+        this(xEncryptor, level, mode, new XJarAllEntryFilter());
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
@@ -93,10 +92,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                         attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
                     }
                     if ((mode & FLAG_DANGER) == FLAG_DANGER) {
-                        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
-                        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
-                        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
-                        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
+                        XKit.retainKey(key, attributes);
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -107,7 +103,9 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                     boolean filtered = filtrate(entry);
-                    if (filtered) indexes.add(entry.getName());
+                    if (filtered) {
+                        indexes.add(entry.getName());
+                    }
                     XEncryptor encryptor = filtered ? xEncryptor : xNopEncryptor;
                     try (OutputStream eos = encryptor.encrypt(key, nos)) {
                         XKit.transfer(nis, eos);
@@ -117,24 +115,24 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
             }
 
             if (!indexes.isEmpty()) {
-                JarArchiveEntry XJAR_INF = new JarArchiveEntry(XJAR_INF_DIR);
-                XJAR_INF.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(XJAR_INF);
+                JarArchiveEntry xjarInfDir = new JarArchiveEntry(XJAR_INF_DIR);
+                xjarInfDir.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(xjarInfDir);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry IDX = new JarArchiveEntry(XJAR_INF_DIR + XJAR_INF_IDX);
-                IDX.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(IDX);
+                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(XJAR_INF_DIR + XJAR_INF_IDX);
+                xjarInfIdx.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(xjarInfIdx);
                 for (String index : indexes) {
                     zos.write(index.getBytes());
                     zos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
+            }
 
-                String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
-                if (mainClass != null) {
-                    XInjector.inject(zos);
-                }
+            String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            if (mainClass != null) {
+                XInjector.inject(zos);
             }
 
             zos.finish();
@@ -144,8 +142,4 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
         }
     }
 
-    @Override
-    public boolean filtrate(JarArchiveEntry entry) {
-        return super.filtrate(entry) && !entry.getName().equals(META_INF_MANIFEST);
-    }
 }

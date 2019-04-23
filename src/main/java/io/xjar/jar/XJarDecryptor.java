@@ -21,7 +21,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     private final int level;
 
     public XJarDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, null);
+        this(xEncryptor, new XJarAllEntryFilter());
     }
 
     public XJarDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -29,7 +29,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     }
 
     public XJarDecryptor(XDecryptor xEncryptor, int level) {
-        this(xEncryptor, level, null);
+        this(xEncryptor, level, new XJarAllEntryFilter());
     }
 
     public XJarDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
@@ -77,6 +77,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Jar-Main-Class"));
                     }
+                    XKit.removeKey(attributes);
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -101,8 +102,4 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
-    @Override
-    public boolean filtrate(JarArchiveEntry entry) {
-        return super.filtrate(entry) && !entry.getName().equals(META_INF_MANIFEST);
-    }
 }

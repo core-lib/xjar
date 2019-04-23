@@ -13,6 +13,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.jar.Attributes;
 
 /**
  * XJar 工具类，包含I/O，密钥，过滤器的工具方法。
@@ -256,6 +257,20 @@ public abstract class XKit implements XConstants {
         generator.init(ivsize, random);
         SecretKey iv = generator.generateKey();
         return new XSymmetricSecureKey(algorithm, keysize, ivsize, password, key.getEncoded(), iv.getEncoded());
+    }
+
+    public static void retainKey(XKey key, Attributes attributes) {
+        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
+        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
+        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
+        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
+    }
+
+    public static void removeKey(Attributes attributes) {
+        attributes.remove(XJAR_ALGORITHM_KEY);
+        attributes.remove(XJAR_KEYSIZE_KEY);
+        attributes.remove(XJAR_IVSIZE_KEY);
+        attributes.remove(XJAR_PASSWORD_KEY);
     }
 
     /**

@@ -1,19 +1,18 @@
-package io.xjar.boot;
+package io.xjar.jar;
 
 import io.xjar.XEntryFilter;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 /**
- * Spring-Boot项目lib依赖过滤器
+ * Spring-Boot 所有资源加密过滤器
  *
  * @author Payne 646742615@qq.com
- * 2018/11/29 9:40
+ * 2019/4/23 13:03
  */
-public class XBootLibFilter implements XEntryFilter<JarArchiveEntry> {
+public class XJarAllEntryFilter implements XEntryFilter<JarArchiveEntry> {
 
     @Override
     public boolean filtrate(JarArchiveEntry entry) {
-        return entry.getName().startsWith("BOOT-INF/lib/");
+        return true;
     }
-
 }

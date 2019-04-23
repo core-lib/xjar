@@ -1,6 +1,7 @@
 package io.xjar.boot;
 
 import io.xjar.*;
+import io.xjar.jar.XJarAllEntryFilter;
 import io.xjar.jar.XJarEncryptor;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -8,7 +9,9 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -23,15 +26,22 @@ import java.util.zip.Deflater;
  * 2018/11/22 15:27
  */
 public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
-    private final static String JAR_LAUNCHER = "org.springframework.boot.loader.JarLauncher";
-    private final static String WAR_LAUNCHER = "org.springframework.boot.loader.WarLauncher";
-    private final static String EXT_LAUNCHER = "org.springframework.boot.loader.PropertiesLauncher";
+    private final Map<String, String> map = new HashMap<>();
+
+    {
+        final String jarLauncher = "org.springframework.boot.loader.JarLauncher";
+        final String warLauncher = "org.springframework.boot.loader.WarLauncher";
+        final String extLauncher = "org.springframework.boot.loader.PropertiesLauncher";
+        map.put(jarLauncher, "io.xjar.boot.XJarLauncher");
+        map.put(warLauncher, "io.xjar.boot.XWarLauncher");
+        map.put(extLauncher, "io.xjar.boot.XExtLauncher");
+    }
 
     private final int level;
     private final int mode;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, new XBootClassesFilter());
+        this(xEncryptor, new XJarAllEntryFilter());
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -39,7 +49,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, new XBootClassesFilter());
+        this(xEncryptor, level, new XJarAllEntryFilter());
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
@@ -47,7 +57,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, int mode) {
-        this(xEncryptor, level, mode, new XBootClassesFilter());
+        this(xEncryptor, level, mode, new XJarAllEntryFilter());
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
@@ -77,7 +87,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level);
+            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level, filter);
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
@@ -87,17 +97,49 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                 ) {
                     continue;
                 }
+                // DIR ENTRY
                 if (entry.isDirectory()) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().endsWith(".jar")) {
+                }
+                // MANIFEST.MF
+                else if (entry.getName().equals(META_INF_MANIFEST)) {
+                    manifest = new Manifest(nis);
+                    Attributes attributes = manifest.getMainAttributes();
+                    String mainClass = attributes.getValue("Main-Class");
+                    if (mainClass != null) {
+                        attributes.putValue("Boot-Main-Class", mainClass);
+                        attributes.putValue("Main-Class", map.get(mainClass));
+                    }
+                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
+                        XKit.retainKey(key, attributes);
+                    }
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    manifest.write(nos);
+                }
+                // BOOT-INF/classes/**
+                else if (entry.getName().startsWith(BOOT_INF_CLASSES)) {
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    XBootJarArchiveEntry xBootJarArchiveEntry = new XBootJarArchiveEntry(entry);
+                    boolean filtered = filtrate(xBootJarArchiveEntry);
+                    if (filtered) {
+                        indexes.add(xBootJarArchiveEntry.getName());
+                    }
+                    XEncryptor encryptor = filtered ? xEncryptor : xNopEncryptor;
+                    try (OutputStream eos = encryptor.encrypt(key, nos)) {
+                        XKit.transfer(nis, eos);
+                    }
+                }
+                // BOOT-INF/lib/**
+                else if (entry.getName().startsWith(BOOT_INF_LIB)) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    boolean filtered = filtrate(entry);
-                    if (filtered) indexes.add(entry.getName());
-                    XEncryptor encryptor = filtered ? xJarEncryptor : xNopEncryptor;
-                    encryptor.encrypt(key, nis, cos);
+                    xJarEncryptor.encrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);
                     jar.setSize(bos.size());
@@ -106,69 +148,29 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, nos);
-                } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    manifest = new Manifest(nis);
-                    Attributes attributes = manifest.getMainAttributes();
-                    String mainClass = attributes.getValue("Main-Class");
-                    if (mainClass != null) {
-                        attributes.putValue("Boot-Main-Class", mainClass);
-                        switch (mainClass) {
-                            case JAR_LAUNCHER:
-                                attributes.putValue("Main-Class", "io.xjar.boot.XJarLauncher");
-                                break;
-                            case WAR_LAUNCHER:
-                                attributes.putValue("Main-Class", "io.xjar.boot.XWarLauncher");
-                                break;
-                            case EXT_LAUNCHER:
-                                attributes.putValue("Main-Class", "io.xjar.boot.XExtLauncher");
-                                break;
-                            default:
-                                throw new IllegalStateException("unsupported spring boot launcher: " + mainClass);
-                        }
-                    }
-                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
-                        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
-                        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
-                        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
-                        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
-                    }
+                }
+                // OTHER
+                else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    manifest.write(nos);
-                } else {
-                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
-                    jarArchiveEntry.setTime(entry.getTime());
-                    zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filtrate(entry);
-                    if (filtered) indexes.add(entry.getName());
-                    XEncryptor encryptor = filtered ? this : xNopEncryptor;
-                    try (OutputStream eos = encryptor.encrypt(key, nos)) {
-                        XKit.transfer(nis, eos);
-                    }
+                    XKit.transfer(nis, nos);
                 }
                 zos.closeArchiveEntry();
             }
 
             if (!indexes.isEmpty()) {
-                JarArchiveEntry XJAR_INF = new JarArchiveEntry(BOOT_INF_CLASSES + XJAR_INF_DIR);
-                XJAR_INF.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(XJAR_INF);
+                JarArchiveEntry xjarInfDir = new JarArchiveEntry(BOOT_INF_CLASSES + XJAR_INF_DIR);
+                xjarInfDir.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(xjarInfDir);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry IDX = new JarArchiveEntry(BOOT_INF_CLASSES + XJAR_INF_DIR + XJAR_INF_IDX);
-                IDX.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(IDX);
-
+                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(BOOT_INF_CLASSES + XJAR_INF_DIR + XJAR_INF_IDX);
+                xjarInfIdx.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(xjarInfIdx);
                 for (String index : indexes) {
-                    if (index.startsWith(BOOT_INF_CLASSES)) {
-                        nos.write(index.substring(BOOT_INF_CLASSES.length()).getBytes());
-                    } else if (index.startsWith(BOOT_INF_LIB)) {
-                        nos.write(index.substring(BOOT_INF_LIB.length()).getBytes());
-                    } else {
-                        nos.write(index.getBytes());
-                    }
-                    nos.write(CRLF.getBytes());
+                    zos.write(index.getBytes());
+                    zos.write(CRLF.getBytes());
                 }
                 zos.closeArchiveEntry();
             }
@@ -185,8 +187,4 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
         }
     }
 
-    @Override
-    public boolean filtrate(JarArchiveEntry entry) {
-        return super.filtrate(entry) && (entry.getName().startsWith(BOOT_INF_CLASSES) || entry.getName().startsWith(BOOT_INF_LIB));
-    }
 }

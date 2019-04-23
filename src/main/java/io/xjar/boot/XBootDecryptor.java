@@ -1,6 +1,7 @@
 package io.xjar.boot;
 
 import io.xjar.*;
+import io.xjar.jar.XJarAllEntryFilter;
 import io.xjar.jar.XJarDecryptor;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -24,7 +25,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     private final int level;
 
     public XBootDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, new XBootClassesFilter());
+        this(xEncryptor, new XJarAllEntryFilter());
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
@@ -32,7 +33,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     }
 
     public XBootDecryptor(XDecryptor xEncryptor, int level) {
-        this(xEncryptor, level, new XBootClassesFilter());
+        this(xEncryptor, level, new XJarAllEntryFilter());
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
@@ -60,7 +61,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level);
+            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, filter);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
@@ -69,16 +70,44 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                 ) {
                     continue;
                 }
+                // DIR ENTRY
                 if (entry.isDirectory()) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().endsWith(".jar")) {
+                }
+                // MANIFEST.MF
+                else if (entry.getName().equals(META_INF_MANIFEST)) {
+                    Manifest manifest = new Manifest(nis);
+                    Attributes attributes = manifest.getMainAttributes();
+                    String mainClass = attributes.getValue("Boot-Main-Class");
+                    if (mainClass != null) {
+                        attributes.putValue("Main-Class", mainClass);
+                        attributes.remove(new Attributes.Name("Boot-Main-Class"));
+                    }
+                    XKit.removeKey(attributes);
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    manifest.write(nos);
+                }
+                // BOOT-INF/classes/**
+                else if (entry.getName().startsWith(BOOT_INF_CLASSES)) {
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    zos.putArchiveEntry(jarArchiveEntry);
+                    XBootJarArchiveEntry xBootJarArchiveEntry = new XBootJarArchiveEntry(entry);
+                    boolean filtered = filtrate(xBootJarArchiveEntry);
+                    XDecryptor decryptor = filtered ? xDecryptor : xNopDecryptor;
+                    try (OutputStream eos = decryptor.decrypt(key, nos)) {
+                        XKit.transfer(nis, eos);
+                    }
+                }
+                // BOOT-INF/lib/**
+                else if (entry.getName().startsWith(BOOT_INF_LIB)) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    boolean filtered = filtrate(entry);
-                    XDecryptor decryptor = filtered ? xJarDecryptor : xNopDecryptor;
-                    decryptor.decrypt(key, nis, cos);
+                    xJarDecryptor.decrypt(key, nis, cos);
                     JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
                     jar.setMethod(JarArchiveEntry.STORED);
                     jar.setSize(bos.size());
@@ -87,27 +116,13 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, nos);
-                } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    Manifest manifest = new Manifest(nis);
-                    Attributes attributes = manifest.getMainAttributes();
-                    String mainClass = attributes.getValue("Boot-Main-Class");
-                    if (mainClass != null) {
-                        attributes.putValue("Main-Class", mainClass);
-                        attributes.remove(new Attributes.Name("Boot-Main-Class"));
-                    }
+                }
+                // OTHER
+                else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    manifest.write(nos);
-                } else {
-                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
-                    jarArchiveEntry.setTime(entry.getTime());
-                    zos.putArchiveEntry(jarArchiveEntry);
-                    boolean filtered = filtrate(entry);
-                    XDecryptor decryptor = filtered ? this : xNopDecryptor;
-                    try (OutputStream eos = decryptor.decrypt(key, nos)) {
-                        XKit.transfer(nis, eos);
-                    }
+                    XKit.transfer(nis, nos);
                 }
                 zos.closeArchiveEntry();
             }
@@ -119,8 +134,4 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
         }
     }
 
-    @Override
-    public boolean filtrate(JarArchiveEntry entry) {
-        return super.filtrate(entry) && (entry.getName().startsWith(BOOT_INF_CLASSES) || entry.getName().startsWith(BOOT_INF_LIB));
-    }
 }
