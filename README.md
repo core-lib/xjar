@@ -181,6 +181,32 @@ XKit.not(
             .mix(new XJarAntEntryFilter("META-INF/resources/**"))
 );
 ```
+或通过插件配置排除
+```xml
+<plugin>
+    <groupId>com.github.core-lib</groupId>
+    <artifactId>xjar-maven-plugin</artifactId>
+    <version>LATEST_VERSION</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>build</goal>
+            </goals>
+            <phase>package</phase>
+            <!-- 或使用
+            <phase>install</phase>
+            -->
+            <configuration>
+                <password>io.xjar</password>
+                <excludes>
+                    <exclude>static/**</exclude>
+                    <exclude>META-INF/resources/**</exclude>
+                </excludes>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
 
 ## 插件集成
 [XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
@@ -216,6 +242,10 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
                         -->
                         <configuration>
                             <password>io.xjar</password>
+                            <includes>
+                                <include>com/company/project/**</include>
+                                <include>mapper/*Mapper.xml</include>
+                            </includes>
                         </configuration>
                     </execution>
                 </executions>
