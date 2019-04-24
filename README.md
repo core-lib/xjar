@@ -145,7 +145,6 @@ XEntryFilter not  = XKit.not(
         XKit.or()
             .mix(new XJarAntEntryFilter("static/**"))
             .mix(new XJarAntEntryFilter("META-INF/resources/**"))
-            .mix(new XJarAntEntryFilter("templates/**"))
 );
 ```
 
