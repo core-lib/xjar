@@ -91,7 +91,7 @@ java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 
 * #### 硬编码方式
 ```java
-// 对于Spring Boot JAR，只加密自身项目及相关模块的源码不加密第三方依赖，可以通过过滤器来过滤需要加密的项目公共包名路径。
+// 假如项目所有类的包名都以 com.company.project 开头，那只加密自身项目的字节码即可采用以下方式。
 XBoot.encrypt(
         "/path/to/read/plaintext.jar", 
         "/path/to/save/encrypted.jar", 
