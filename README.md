@@ -113,11 +113,11 @@ XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("mapper/*Ma
 XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**/*API.class"));
 
 // 2. 采用更精确的正则表达式过滤器。
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/.+?"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("mapper/(.*?)Mapper.xml"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("mapper/(.+)Mapper.xml"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/.+?/(\\w+)API.class"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)/(.+)API.class"));
 ```
 * #### 混合方式
 当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 XKit 工具类提供的多个过滤器混合方法混合成一个，XKit 提供 “与” “或” “非” 三种逻辑运算的混合。
