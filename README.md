@@ -86,63 +86,67 @@ java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 * --xjar.password   密码
 
 ## 进阶用法
-默认情况下，即没有提供过滤器的时候，对于Spring Boot JAR包只加密本项目即 BOOT-INF/classes/ 下的资源，
-而对于普通JAR则除了META-INF/MANIFEST.MF 之外的所有资源。
+默认情况下，即没有提供过滤器的时候，将会加密所有资源其中也包括项目其他依赖模块以及第三方依赖的 JAR 包资源，
 框架提供使用过滤器的方式来灵活指定需要加密的资源或排除不需要加密的资源。
 
 * #### 硬编码方式
 ```java
-// 对于Spring Boot JAR，只加密自身项目及相关模块的源码不加密第三方依赖，可以通过XEntryFilter来指定需要加密的JAR包内资源。
+// 对于Spring Boot JAR，只加密自身项目及相关模块的源码不加密第三方依赖，可以通过过滤器来过滤需要加密的项目公共包名路径。
 XBoot.encrypt(
         "/path/to/read/plaintext.jar", 
         "/path/to/save/encrypted.jar", 
         "io.xjar", 
         (entry) -> {
             String name = entry.getName();
-            return name.startsWith("BOOT-INF/classes/") || name.startsWith("BOOT-INF/lib/io-xjar-");
+            String pkg = "com/company/project/";
+            return name.startsWith(pkg);
         }
     );
 ```
 * #### 表达式方式
 ```java
 // 1. 采用Ant表达式过滤器更简洁地来指定需要加密的资源。
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("BOOT-INF/classes/**"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("mapper/*Mapper.xml"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-???.jar"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**/*API.class"));
 
 // 2. 采用更精确的正则表达式过滤器。
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("BOOT-INF/classes/.+?"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/.+?"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("BOOT-INF/lib/io-xjar-.+?.jar"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("mapper/(.*?)Mapper.xml"));
 
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("BOOT-INF/lib/io-xjar-\\w{3}.jar"));
+XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/.+?/(\\w+)API.class"));
 ```
 * #### 混合方式
 当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 XKit 工具类提供的多个过滤器混合方法混合成一个，XKit 提供 “与” “或” “非” 三种逻辑运算的混合。
 ```java
 // 1. 与运算，即所有过滤器都满足的情况下才满足，mix() 方法返回的是this，可以继续拼接。
 XEntryFilter and = XKit.and()
-    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
-    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+    .mix(new XJarAntEntryFilter("com/company/project/**"))
+    .mix(new XJarAntEntryFilter("*/**.class"));
 
 XEntryFilter all = XKit.all()
-    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
-    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+    .mix(new XJarAntEntryFilter("com/company/project/**"))
+    .mix(new XJarAntEntryFilter("*/**.class"));
 
 // 2. 或运算，即任意一个过滤器满足的情况下就满足，mix() 方法返回的是this，可以继续拼接。
 XEntryFilter or = XKit.or()
-    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
-    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+    .mix(new XJarAntEntryFilter("com/company/project/**"))
+    .mix(new XJarAntEntryFilter("mapper/*Mapper.xml"));
 
 XEntryFilter any = XKit.any()
-    .mix(new XJarAntEntryFilter("BOOT-INF/classes/**"))
-    .mix(new XJarAntEntryFilter("BOOT-INF/lib/io-xjar-*.jar"));
+    .mix(new XJarAntEntryFilter("com/company/project/**"))
+    .mix(new XJarAntEntryFilter("mapper/*Mapper.xml"));
 
-// 3. 非运算，即除此之外都满足。该例子中即表示除了满足 BOOT-INF/classes/** 和 BOOT-INF/lib/io-xjar-*.jar 之外的资源，
-//    也就是非项目相关的资源，其实没有意义只是举个例子，因为我们自己的资源才需要加密对吧。
-XEntryFilter not  = XKit.not(and);
+// 3. 非运算，即除此之外都满足，该例子中即排除项目或其他模块和第三方依赖jar中的静态文件。
+XEntryFilter not  = XKit.not(
+        XKit.or()
+            .mix(new XJarAntEntryFilter("static/**"))
+            .mix(new XJarAntEntryFilter("META-INF/resources/**"))
+            .mix(new XJarAntEntryFilter("templates/**"))
+);
 ```
 
 ## 注意事项
@@ -164,6 +168,21 @@ XEntryFilter not  = XKit.not(and);
 可以采用以下解决方案
 1. clone [XJar-Agent-Hibernate](https://github.com/core-lib/xjar-agent-hibernate) ，使用 mvn clean package 编译出 xjar-agent-hibernate-${version}.jar 文件
 2. 采用 java -javaagent:xjar-agent-hibernate-${version}.jar -jar your-spring-boot-app.jar 命令启动
+
+## 静态文件浏览器无法加载完成问题
+由于静态文件被加密后文件体积变大，Spring Boot 会采用文件的大小作为 Content-Length 头返回给浏览器，
+但实际上通过 XJar 加载解密后文件大小恢复了原本的大小，所以浏览器认为还没接收完导致一直等待服务端。
+由此我们需要在加密时忽略静态文件的加密，实际上静态文件也没加密的必要，因为即便加密了用户在浏览器
+查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 目录下，我们只需要在加密时
+通过过滤器排除这些资源即可，可以采用以下的过滤器：
+```java
+XKit.not(
+        XKit.or()
+            .mix(new XJarAntEntryFilter("static/**"))
+            .mix(new XJarAntEntryFilter("META-INF/resources/**"))
+            .mix(new XJarAntEntryFilter("templates/**"))
+);
+```
 
 ## 插件集成
 [XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
@@ -225,8 +244,8 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 | sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
 | targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |
 | targetJar | -Dxjar.targetJar | 目标jar名称 | String | ${project.build.finalName}.xjar | 文件名称 |
-| includes | -Dxjar.includes | 需要加密的包内资源 | String[] | 无 | BOOT-INF/classes/** , BOOT-INF/lib/xjar-*.jar , 支持Ant表达式 |
-| excludes | -Dxjar.excludes | 无需加密的包内资源 | String[] | 无 | BOOT-INF/classes/** , BOOT-INF/lib/xjar-*.jar , 支持Ant表达式 |
+| includes | -Dxjar.includes | 需要加密的资源路径表达式 | String[] | 无 | com/company/project/** , mapper/*Mapper.xml , 支持Ant表达式 |
+| excludes | -Dxjar.excludes | 无需加密的资源路径表达式 | String[] | 无 | static/** , META-INF/resources/** , 支持Ant表达式 |
 
 #### 注意：
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
