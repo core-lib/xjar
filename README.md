@@ -173,14 +173,13 @@ XEntryFilter not  = XKit.not(
 由于静态文件被加密后文件体积变大，Spring Boot 会采用文件的大小作为 Content-Length 头返回给浏览器，
 但实际上通过 XJar 加载解密后文件大小恢复了原本的大小，所以浏览器认为还没接收完导致一直等待服务端。
 由此我们需要在加密时忽略静态文件的加密，实际上静态文件也没加密的必要，因为即便加密了用户在浏览器
-查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 目录下，我们只需要在加密时
-通过过滤器排除这些资源即可，可以采用以下的过滤器：
+查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下，
+我们只需要在加密时通过过滤器排除这些资源即可，可以采用以下的过滤器：
 ```java
 XKit.not(
         XKit.or()
             .mix(new XJarAntEntryFilter("static/**"))
             .mix(new XJarAntEntryFilter("META-INF/resources/**"))
-            .mix(new XJarAntEntryFilter("templates/**"))
 );
 ```
 
