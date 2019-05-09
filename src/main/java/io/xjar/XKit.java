@@ -267,10 +267,10 @@ public abstract class XKit implements XConstants {
     }
 
     public static void removeKey(Attributes attributes) {
-        attributes.remove(XJAR_ALGORITHM_KEY);
-        attributes.remove(XJAR_KEYSIZE_KEY);
-        attributes.remove(XJAR_IVSIZE_KEY);
-        attributes.remove(XJAR_PASSWORD_KEY);
+        attributes.remove(new Attributes.Name(XJAR_ALGORITHM_KEY));
+        attributes.remove(new Attributes.Name(XJAR_KEYSIZE_KEY));
+        attributes.remove(new Attributes.Name(XJAR_IVSIZE_KEY));
+        attributes.remove(new Attributes.Name(XJAR_PASSWORD_KEY));
     }
 
     /**
