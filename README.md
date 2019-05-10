@@ -353,5 +353,5 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 ## 协议声明
 [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-## 联系作者
-QQ 646742615 不会钓鱼的兔子
+## 加入群聊
+[![](https://pub.idqqimg.com/wpa/images/group.png)](https://shang.qq.com/wpa/qunwpa?idkey=e567db1c32de4b02da480d895566757b3df73e3f8827ed6c9149e2859e4cdc93)
