@@ -354,4 +354,4 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## 加入群聊
-[![](https://pub.idqqimg.com/wpa/images/group.png)](https://shang.qq.com/wpa/qunwpa?idkey=e567db1c32de4b02da480d895566757b3df73e3f8827ed6c9149e2859e4cdc93)
+QQ 950956093 [![](https://pub.idqqimg.com/wpa/images/group.png)](https://shang.qq.com/wpa/qunwpa?idkey=e567db1c32de4b02da480d895566757b3df73e3f8827ed6c9149e2859e4cdc93)
