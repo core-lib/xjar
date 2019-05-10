@@ -13,6 +13,9 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.Attributes;
 
 /**
@@ -358,6 +361,31 @@ public abstract class XKit implements XConstants {
      */
     public static <E> XEntryFilter<E> not(XEntryFilter<E> filter) {
         return new XNotEntryFilter<>(filter);
+    }
+
+    public static boolean isRelative(String path) {
+        return !isAbsolute(path);
+    }
+
+    public static boolean isAbsolute(String path) {
+        if (path.startsWith("/")) {
+            return true;
+        }
+        Set<File> roots = new HashSet<>();
+        Collections.addAll(roots, File.listRoots());
+        File root = new File(path);
+        while (root.getParentFile() != null) {
+            root = root.getParentFile();
+        }
+        return roots.contains(root);
+    }
+
+    public static String absolutize(String path) {
+        return normalize(isAbsolute(path) ? path : System.getProperty("user.dir") + File.separator + path);
+    }
+
+    public static String normalize(String path) {
+        return path.replaceAll("[/\\\\]+", "/");
     }
 
 }

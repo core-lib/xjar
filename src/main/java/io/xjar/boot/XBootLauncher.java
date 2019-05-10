@@ -3,9 +3,12 @@ package io.xjar.boot;
 import io.xjar.*;
 import io.xjar.key.XKey;
 
-import java.io.Console;
+import java.io.*;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -27,6 +30,7 @@ public class XBootLauncher implements XConstants {
         int keysize = DEFAULT_KEYSIZE;
         int ivsize = DEFAULT_IVSIZE;
         String password = null;
+        String keypath = null;
         for (String arg : args) {
             if (arg.toLowerCase().startsWith(XJAR_ALGORITHM)) {
                 algorithm = arg.substring(XJAR_ALGORITHM.length());
@@ -39,6 +43,9 @@ public class XBootLauncher implements XConstants {
             }
             if (arg.toLowerCase().startsWith(XJAR_PASSWORD)) {
                 password = arg.substring(XJAR_PASSWORD.length());
+            }
+            if (arg.toLowerCase().startsWith(XJAR_KEYFILE)) {
+                keypath = arg.substring(XJAR_KEYFILE.length());
             }
         }
         ClassLoader classLoader = this.getClass().getClassLoader();
@@ -59,6 +66,65 @@ public class XBootLauncher implements XConstants {
                 password = attributes.getValue(XJAR_PASSWORD_KEY);
             }
         }
+
+        Properties key = null;
+        File keyfile = null;
+        if (keypath != null) {
+            String path = XKit.absolutize(keypath);
+            File file = new File(path);
+            if (file.exists() && file.isFile()) {
+                keyfile = file;
+                try (InputStream in = new FileInputStream(file)) {
+                    key = new Properties();
+                    key.load(in);
+                }
+            } else {
+                throw new FileNotFoundException("could not find key file at path: " + file.getCanonicalPath());
+            }
+        } else {
+            String path = XKit.absolutize("xjar.key");
+            File file = new File(path);
+            if (file.exists() && file.isFile()) {
+                keyfile = file;
+                try (InputStream in = new FileInputStream(file)) {
+                    key = new Properties();
+                    key.load(in);
+                }
+            }
+        }
+
+        String hold = null;
+        if (key != null) {
+            Set<String> names = key.stringPropertyNames();
+            for (String name : names) {
+                switch (name.toLowerCase()) {
+                    case XJAR_KEY_ALGORITHM:
+                        algorithm = key.getProperty(name);
+                        break;
+                    case XJAR_KEY_KEYSIZE:
+                        keysize = Integer.valueOf(key.getProperty(name));
+                        break;
+                    case XJAR_KEY_IVSIZE:
+                        ivsize = Integer.valueOf(key.getProperty(name));
+                        break;
+                    case XJAR_KEY_PASSWORD:
+                        password = key.getProperty(name);
+                        break;
+                    case XJAR_KEY_HOLD:
+                        hold = key.getProperty(name);
+                    default:
+                        break;
+                }
+            }
+        }
+
+        // 不保留密钥文件
+        if (hold == null || !Arrays.asList("true", "1", "yes", "y").contains(hold.trim().toLowerCase())) {
+            if (keyfile != null && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
+                throw new IOException("could not delete key file: " + keyfile.getCanonicalPath());
+            }
+        }
+
         if (password == null && System.console() != null) {
             Console console = System.console();
             char[] chars = console.readPassword("password:");

@@ -72,18 +72,48 @@ String password = "io.xjar";
 XJar.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", password);
 ```
 
+## 启动命令
 ```text
 // 命令行运行JAR 然后在提示输入密码的时候输入密码后按回车即可正常启动
 java -jar /path/to/encrypted.jar
+```
+```text
 // 也可以通过传参的方式直接启动，不太推荐这种方式，因为泄露的可能性更大！
 java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
 ```
+```text
+// 对于 nohup 或 javaw 这种后台启动方式，无法使用控制台来输入密码，推荐使用指定密钥文件的方式启动
+nohup java -jar /path/to/encrypted.jar --xjar.keyfile=/path/to/xjar.key
+```
 
 ## 参数说明
-* --xjar.algorithm  加解密算法名称，缺省为AES，支持JDK所有内置算法，如AES / DES ...
-* --xjar.keysize    密钥长度，缺省为128，根据不同的算法选取不同的密钥长度。
-* --xjar.ivsize     向量长度，缺省为128，根据不同的算法选取不同的向量长度。
-* --xjar.password   密码
+| 参数名称 | 参数含义 | 缺省值 | 说明 |
+| :------- | :------- | :----- | :--- |
+| --xjar.password |  密码 |
+| --xjar.algorithm | 密钥算法 | AES | 支持JDK所有内置算法，如AES / DES ... |
+| --xjar.keysize |   密钥长度 | 128 | 根据不同的算法选取不同的密钥长度。|
+| --xjar.ivsize |    向量长度 | 128 | 根据不同的算法选取不同的向量长度。|
+| --xjar.keyfile |   密钥文件 | ./xjar.key | 密钥文件相对或绝对路径。|
+
+## 密钥文件
+密钥文件采用properties的书写格式：
+```properties
+password: PASSWORD
+algorithm: ALGORITHM
+keysize: KEYSIZE
+ivsize: IVSIZE
+hold: HOLD
+```
+
+其中 algorithm/keysize/ivsize/hold 均有缺省值，当 hold 值不为 true | 1 | yes | y 时，密钥文件在读取后将马上删除。
+
+| 参数名称 | 参数含义 | 缺省值 | 说明 |
+| :------- | :------- | :----- | :--- |
+| password |  密码 | 无 | 密码字符串 |
+| algorithm | 密钥算法 | AES | 支持JDK所有内置算法，如AES / DES ... |
+| keysize |   密钥长度 | 128 | 根据不同的算法选取不同的密钥长度。|
+| ivsize |    向量长度 | 128 | 根据不同的算法选取不同的向量长度。|
+| hold | 是否保留 | false | 读取后是否保留密钥文件。|
 
 ## 进阶用法
 默认情况下，即没有提供过滤器的时候，将会加密所有资源其中也包括项目其他依赖模块以及第三方依赖的 JAR 包资源，
@@ -279,6 +309,9 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v2.0.1
+    1. 增加密钥文件的启动方式，解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
+    2. 修复解密后没有删除危险模式中在MANIFEST.MF中保留的密钥信息
 * v2.0.0
     1. 支持内嵌JAR包资源的过滤加解密
     2. 不兼容v1.x.x的过滤器表达式，统一采用相对于 classpath 资源URL的过滤表达式

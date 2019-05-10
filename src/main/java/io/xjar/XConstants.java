@@ -23,11 +23,18 @@ public interface XConstants {
     String XJAR_KEYSIZE = "--xjar.keysize=";
     String XJAR_IVSIZE = "--xjar.ivsize=";
     String XJAR_PASSWORD = "--xjar.password=";
+    String XJAR_KEYFILE = "--xjar.keyfile=";
 
     String XJAR_ALGORITHM_KEY = "XJar-Algorithm";
     String XJAR_KEYSIZE_KEY = "XJar-Keysize";
     String XJAR_IVSIZE_KEY = "XJar-Ivsize";
     String XJAR_PASSWORD_KEY = "XJar-Password";
+
+    String XJAR_KEY_ALGORITHM = "algorithm";
+    String XJAR_KEY_KEYSIZE = "keysize";
+    String XJAR_KEY_IVSIZE = "ivsize";
+    String XJAR_KEY_PASSWORD = "password";
+    String XJAR_KEY_HOLD = "hold";
 
     String DEFAULT_ALGORITHM = "AES";
     int DEFAULT_KEYSIZE = 128;
