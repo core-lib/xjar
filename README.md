@@ -105,7 +105,7 @@ ivsize: IVSIZE
 hold: HOLD
 ```
 
-其中 algorithm/keysize/ivsize/hold 均有缺省值，当 hold 值不为 true | 1 | yes | y 时，密钥文件在读取后将马上删除。
+其中 algorithm/keysize/ivsize/hold 均有缺省值，当 hold 值不为 true | 1 | yes | y 时，密钥文件在读取后将自动删除。
 
 | 参数名称 | 参数含义 | 缺省值 | 说明 |
 | :------- | :------- | :----- | :--- |
