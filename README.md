@@ -28,7 +28,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>LATEST_VERSION</version>
+            <version>${xjar.version}</version>
         </dependency>
     </dependencies>
 </project>
@@ -216,7 +216,7 @@ XKit.not(
 <plugin>
     <groupId>com.github.core-lib</groupId>
     <artifactId>xjar-maven-plugin</artifactId>
-    <version>LATEST_VERSION</version>
+    <version>${xjar.maven.plugin.version}</version>
     <executions>
         <execution>
             <goals>
@@ -260,7 +260,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>LATEST_VERSION</version>
+                <version>${xjar.maven.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
