@@ -1,5 +1,6 @@
 package io.xjar.boot;
 
+import io.xjar.XLauncher;
 import org.springframework.boot.loader.PropertiesLauncher;
 import org.springframework.boot.loader.archive.Archive;
 
@@ -14,10 +15,10 @@ import java.util.List;
  * 2019/4/14 10:26
  */
 public class XExtLauncher extends PropertiesLauncher {
-    private final XBootLauncher xBootLauncher;
+    private final XLauncher xLauncher;
 
     public XExtLauncher(String... args) throws Exception {
-        this.xBootLauncher = new XBootLauncher(args);
+        this.xLauncher = new XLauncher(args);
     }
 
     public static void main(String[] args) throws Exception {
@@ -25,13 +26,13 @@ public class XExtLauncher extends PropertiesLauncher {
     }
 
     public void launch() throws Exception {
-        launch(xBootLauncher.args);
+        launch(xLauncher.args);
     }
 
     @Override
     protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
         URLClassLoader classLoader = (URLClassLoader) super.createClassLoader(archives);
         URL[] urls = classLoader.getURLs();
-        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xBootLauncher.xDecryptor, xBootLauncher.xEncryptor, xBootLauncher.xKey);
+        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
     }
 }

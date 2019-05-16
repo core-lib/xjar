@@ -1,5 +1,6 @@
 package io.xjar.boot;
 
+import io.xjar.XLauncher;
 import org.springframework.boot.loader.JarLauncher;
 
 import java.net.URL;
@@ -11,10 +12,10 @@ import java.net.URL;
  * 2018/11/23 23:06
  */
 public class XJarLauncher extends JarLauncher {
-    private final XBootLauncher xBootLauncher;
+    private final XLauncher xLauncher;
 
     public XJarLauncher(String... args) throws Exception {
-        this.xBootLauncher = new XBootLauncher(args);
+        this.xLauncher = new XLauncher(args);
     }
 
     public static void main(String[] args) throws Exception {
@@ -22,12 +23,12 @@ public class XJarLauncher extends JarLauncher {
     }
 
     public void launch() throws Exception {
-        launch(xBootLauncher.args);
+        launch(xLauncher.args);
     }
 
     @Override
     protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xBootLauncher.xDecryptor, xBootLauncher.xEncryptor, xBootLauncher.xKey);
+        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
     }
 
 }

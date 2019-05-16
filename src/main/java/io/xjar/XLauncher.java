@@ -1,6 +1,5 @@
-package io.xjar.boot;
+package io.xjar;
 
-import io.xjar.*;
 import io.xjar.key.XKey;
 
 import java.io.*;
@@ -18,13 +17,13 @@ import java.util.jar.Manifest;
  * @author Payne 646742615@qq.com
  * 2019/4/14 10:28
  */
-public class XBootLauncher implements XConstants {
-    final String[] args;
-    final XDecryptor xDecryptor;
-    final XEncryptor xEncryptor;
-    final XKey xKey;
+public class XLauncher implements XConstants {
+    public final String[] args;
+    public final XDecryptor xDecryptor;
+    public final XEncryptor xEncryptor;
+    public final XKey xKey;
 
-    public XBootLauncher(String... args) throws Exception {
+    public XLauncher(String... args) throws Exception {
         this.args = args;
         String algorithm = DEFAULT_ALGORITHM;
         int keysize = DEFAULT_KEYSIZE;
@@ -140,19 +139,4 @@ public class XBootLauncher implements XConstants {
         this.xKey = XKit.key(algorithm, keysize, ivsize, password);
     }
 
-    public String[] getArgs() {
-        return args;
-    }
-
-    public XDecryptor getDecryptor() {
-        return xDecryptor;
-    }
-
-    public XEncryptor getEncryptor() {
-        return xEncryptor;
-    }
-
-    public XKey getKey() {
-        return xKey;
-    }
 }
