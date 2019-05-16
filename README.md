@@ -20,7 +20,7 @@ JDK 1.7 +
     <repositories>
         <repository>
             <id>jitpack.io</id>
-            <url>https://www.jitpack.io</url>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
     <!-- 添加 XJar 依赖 -->
