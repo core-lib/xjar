@@ -15,7 +15,7 @@ import java.util.zip.Deflater;
  */
 public class XJar implements XConstants {
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -27,7 +27,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -40,7 +40,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -57,7 +57,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -75,7 +75,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in   原文包输入流
      * @param out  加密包输出流
@@ -88,7 +88,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in   原文包输入流
      * @param out  加密包输出流
@@ -102,7 +102,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -115,7 +115,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -129,7 +129,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -147,7 +147,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -166,7 +166,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in     原文包输入流
      * @param out    加密包输出流
@@ -180,7 +180,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in     原文包输入流
      * @param out    加密包输出流
@@ -195,7 +195,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -207,7 +207,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -220,7 +220,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -234,7 +234,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -249,7 +249,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -261,7 +261,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -274,7 +274,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -288,7 +288,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -308,7 +308,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in       原文包输入流
      * @param out      加密包输出流
@@ -320,7 +320,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -333,7 +333,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -347,7 +347,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -364,7 +364,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -377,7 +377,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -391,7 +391,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -406,7 +406,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -422,7 +422,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -435,7 +435,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -449,7 +449,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -464,7 +464,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -485,7 +485,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in       原文包输入流
      * @param out      加密包输出流
@@ -498,7 +498,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -512,7 +512,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -527,7 +527,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 Spring-Jar JAR 包
+     * 加密 普通 JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -545,7 +545,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src  加密包
      * @param dest 解密包
@@ -557,7 +557,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src  加密包
      * @param dest 解密包
@@ -574,7 +574,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in   加密包输入流
      * @param out  解密包输出流
@@ -587,7 +587,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src    加密包
      * @param dest   解密包
@@ -600,7 +600,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src    加密包
      * @param dest   解密包
@@ -618,7 +618,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in     加密包输入流
      * @param out    解密包输出流
@@ -632,7 +632,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -644,7 +644,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -657,7 +657,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -671,7 +671,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -686,7 +686,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -698,7 +698,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -711,7 +711,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -725,7 +725,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -745,7 +745,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in       加密包输入流
      * @param out      解密包输出流
@@ -757,7 +757,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -770,7 +770,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -784,7 +784,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -801,7 +801,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -814,7 +814,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -828,7 +828,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -843,7 +843,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -859,7 +859,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -872,7 +872,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -886,7 +886,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -901,7 +901,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -922,7 +922,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in       加密包输入流
      * @param out      解密包输出流
@@ -935,7 +935,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -949,7 +949,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -964,7 +964,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密 Spring-Jar JAR 包
+     * 解密 普通 JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
