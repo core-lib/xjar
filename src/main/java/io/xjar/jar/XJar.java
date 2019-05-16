@@ -84,8 +84,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
-        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
-        XJarEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
+        xJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
@@ -98,8 +98,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
-        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
-        XJarEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
+        xJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
@@ -176,8 +176,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
-        XJarEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
+        xJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
@@ -191,8 +191,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
-        XJarEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
+        xJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
