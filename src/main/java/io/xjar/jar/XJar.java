@@ -1,7 +1,6 @@
 package io.xjar.jar;
 
 import io.xjar.*;
-import io.xjar.boot.XBootEncryptor;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
@@ -85,8 +84,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
-        xBootEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
+        XJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
@@ -99,8 +98,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
-        xBootEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
+        XJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
@@ -177,8 +176,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
-        xBootEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
+        XJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
@@ -192,8 +191,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
-        xBootEncryptor.encrypt(xKey, in, out);
+        XJarEncryptor XJarEncryptor = new XJarEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
+        XJarEncryptor.encrypt(xKey, in, out);
     }
 
     /**
