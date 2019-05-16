@@ -14,9 +14,8 @@ import java.util.zip.Deflater;
  * 2018/11/26 11:11
  */
 public class XJar implements XConstants {
-
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -28,7 +27,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -41,7 +40,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -58,7 +57,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -76,7 +75,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in   原文包输入流
      * @param out  加密包输出流
@@ -89,7 +88,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in   原文包输入流
      * @param out  加密包输出流
@@ -103,7 +102,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -116,7 +115,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -130,7 +129,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -148,7 +147,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -167,7 +166,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in     原文包输入流
      * @param out    加密包输出流
@@ -181,7 +180,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in     原文包输入流
      * @param out    加密包输出流
@@ -196,7 +195,19 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
+     *
+     * @param src      原文包
+     * @param dest     加密包
+     * @param password 密码
+     * @throws Exception 加密异常
+     */
+    public static void encrypt(String src, String dest, String password) throws Exception {
+        encrypt(src, dest, password, DEFAULT_ALGORITHM);
+    }
+
+    /**
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -209,7 +220,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -223,7 +234,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -238,7 +249,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -250,7 +261,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -263,7 +274,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -277,7 +288,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -297,7 +308,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in       原文包输入流
      * @param out      加密包输出流
@@ -309,7 +320,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -322,7 +333,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -336,7 +347,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -353,176 +364,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
-     *
-     * @param src      加密包
-     * @param dest     解密包
-     * @param password 密码
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(String src, String dest, String password) throws Exception {
-        decrypt(src, dest, password, DEFAULT_ALGORITHM);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(String src, String dest, String password, String algorithm) throws Exception {
-        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize) throws Exception {
-        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        decrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src      加密包
-     * @param dest     解密包
-     * @param password 密码
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(File src, File dest, String password) throws Exception {
-        decrypt(src, dest, password, DEFAULT_ALGORITHM);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(File src, File dest, String password, String algorithm) throws Exception {
-        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize) throws Exception {
-        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
-            decrypt(in, out, password, algorithm, keysize, ivsize);
-        }
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param in       加密包输入流
-     * @param out      解密包输出流
-     * @param password 密码
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, String password) throws Exception {
-        decrypt(in, out, password, DEFAULT_ALGORITHM);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm) throws Exception {
-        decrypt(in, out, password, algorithm, DEFAULT_KEYSIZE);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize) throws Exception {
-        decrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE);
-    }
-
-    /**
-     * 解密普通JAR 包
-     *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm));
-        XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
-        xJarDecryptor.decrypt(xKey, in, out);
-    }
-
-    /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -535,7 +377,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -549,7 +391,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -564,7 +406,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -580,7 +422,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -593,7 +435,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -607,7 +449,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -622,7 +464,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param src       原文包
      * @param dest      加密包
@@ -643,7 +485,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in       原文包输入流
      * @param out      加密包输出流
@@ -656,7 +498,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -670,7 +512,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -685,7 +527,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密普通JAR 包
+     * 加密 Spring-Jar JAR 包
      *
      * @param in        原文包输入流
      * @param out       加密包输出流
@@ -703,7 +545,263 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src  加密包
+     * @param dest 解密包
+     * @param xKey 密钥
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(String src, String dest, XKey xKey) throws Exception {
+        decrypt(new File(src), new File(dest), xKey);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src  加密包
+     * @param dest 解密包
+     * @param xKey 密钥
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(File src, File dest, XKey xKey) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            decrypt(in, out, xKey);
+        }
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param in   加密包输入流
+     * @param out  解密包输出流
+     * @param xKey 密钥
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
+        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(xKey.getAlgorithm()));
+        xJarDecryptor.decrypt(xKey, in, out);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src    加密包
+     * @param dest   解密包
+     * @param xKey   密钥
+     * @param filter 过滤器
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(String src, String dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        decrypt(new File(src), new File(dest), xKey, filter);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src    加密包
+     * @param dest   解密包
+     * @param xKey   密钥
+     * @param filter 过滤器
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(File src, File dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            decrypt(in, out, xKey, filter);
+        }
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param in     加密包输入流
+     * @param out    解密包输出流
+     * @param xKey   密钥
+     * @param filter 过滤器
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
+        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(xKey.getAlgorithm()), filter);
+        xJarDecryptor.decrypt(xKey, in, out);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src      加密包
+     * @param dest     解密包
+     * @param password 密码
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(String src, String dest, String password) throws Exception {
+        decrypt(src, dest, password, DEFAULT_ALGORITHM);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(String src, String dest, String password, String algorithm) throws Exception {
+        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize) throws Exception {
+        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
+        decrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src      加密包
+     * @param dest     解密包
+     * @param password 密码
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(File src, File dest, String password) throws Exception {
+        decrypt(src, dest, password, DEFAULT_ALGORITHM);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(File src, File dest, String password, String algorithm) throws Exception {
+        decrypt(src, dest, password, algorithm, DEFAULT_KEYSIZE);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize) throws Exception {
+        decrypt(src, dest, password, algorithm, keysize, DEFAULT_IVSIZE);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param src       加密包
+     * @param dest      解密包
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
+        try (
+                InputStream in = new FileInputStream(src);
+                OutputStream out = new FileOutputStream(dest)
+        ) {
+            decrypt(in, out, password, algorithm, keysize, ivsize);
+        }
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param in       加密包输入流
+     * @param out      解密包输出流
+     * @param password 密码
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(InputStream in, OutputStream out, String password) throws Exception {
+        decrypt(in, out, password, DEFAULT_ALGORITHM);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param in        加密包输入流
+     * @param out       解密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm) throws Exception {
+        decrypt(in, out, password, algorithm, DEFAULT_KEYSIZE);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param in        加密包输入流
+     * @param out       解密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize) throws Exception {
+        decrypt(in, out, password, algorithm, keysize, DEFAULT_IVSIZE);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
+     *
+     * @param in        加密包输入流
+     * @param out       解密包输出流
+     * @param password  密码
+     * @param algorithm 加密算法
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @throws Exception 解密异常
+     */
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize) throws Exception {
+        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(algorithm));
+        XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
+        xJarDecryptor.decrypt(xKey, in, out);
+    }
+
+    /**
+     * 解密 Spring-Jar JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -716,7 +814,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -730,7 +828,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -745,7 +843,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -761,7 +859,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -774,7 +872,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -788,7 +886,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -803,7 +901,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param src       加密包
      * @param dest      解密包
@@ -824,7 +922,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param in       加密包输入流
      * @param out      解密包输出流
@@ -837,7 +935,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -851,7 +949,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流
@@ -866,7 +964,7 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 解密普通JAR 包
+     * 解密 Spring-Jar JAR 包
      *
      * @param in        加密包输入流
      * @param out       解密包输出流

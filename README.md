@@ -37,7 +37,8 @@ JDK 1.7 +
 ```java
 // Spring-Boot Jar包加密
 String password = "io.xjar";
-XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", password);
+XKey xKey = XKit.key(password);
+XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey);
 ```
 
 ```java
@@ -50,13 +51,15 @@ XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey
 ```java
 // Spring-Boot Jar包解密
 String password = "io.xjar";
-XBoot.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", password);
+XKey xKey = XKit.key(password);
+XBoot.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", xKey);
 ```
 
 ```java
 // Jar包加密
 String password = "io.xjar";
-XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", password);
+XKey xKey = XKit.key(password);
+XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey);
 ```
 
 ```java
@@ -69,7 +72,8 @@ XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey,
 ```java
 // Jar包解密
 String password = "io.xjar";
-XJar.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", password);
+XKey xKey = XKit.key(password);
+XJar.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", xKey);
 ```
 
 ## 启动命令
