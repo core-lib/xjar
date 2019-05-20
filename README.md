@@ -310,7 +310,9 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 | excludes | -Dxjar.excludes | 无需加密的资源路径表达式 | String[] | 无 | static/** , META-INF/resources/** , 支持Ant表达式 |
 
 #### 注意：
-当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
+当 includes 和 excludes 同时使用时即加密在includes的范围内且排除了excludes的资源。
+
+更多文档：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
 * v2.0.3
