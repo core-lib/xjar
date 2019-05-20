@@ -315,6 +315,7 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 ## 版本记录
 * v2.0.3
     1. 过滤器泛型协变支持
+    2. xjar-maven-plugin 支持 includes 与 excludes 同时起效，当同时设置时即加密在includes范围内但又不在excludes范围内的资源
 * v2.0.2
     1. 原生jar增加密钥文件的启动方式，解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
 * v2.0.1
