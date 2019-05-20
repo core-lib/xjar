@@ -16,12 +16,12 @@ public class XAnyEntryFilter<E> extends XMixEntryFilter<E> implements XEntryFilt
         super(null);
     }
 
-    public XAnyEntryFilter(Collection<? extends XEntryFilter<E>> filters) {
+    public XAnyEntryFilter(Collection<? extends XEntryFilter<? extends E>> filters) {
         super(filters);
     }
 
     @Override
-    public XAnyEntryFilter<E> mix(XEntryFilter<E> filter) {
+    public XAnyEntryFilter<E> mix(XEntryFilter<? extends E> filter) {
         add(filter);
         return this;
     }

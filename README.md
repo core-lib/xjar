@@ -28,7 +28,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>v2.0.2</version>
+            <version>v2.0.3</version>
         </dependency>
     </dependencies>
 </project>
@@ -220,7 +220,7 @@ XKit.not(
 <plugin>
     <groupId>com.github.core-lib</groupId>
     <artifactId>xjar-maven-plugin</artifactId>
-    <version>v2.0.2</version>
+    <version>v2.0.3</version>
     <executions>
         <execution>
             <goals>
@@ -264,7 +264,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>v2.0.2</version>
+                <version>v2.0.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -313,6 +313,8 @@ mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/targe
 当 includes 和 excludes 同时使用是，excludes 将会失效！更多文档请点击：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v2.0.3
+    1. 过滤器泛型协变支持
 * v2.0.2
     1. 原生jar增加密钥文件的启动方式，解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
 * v2.0.1

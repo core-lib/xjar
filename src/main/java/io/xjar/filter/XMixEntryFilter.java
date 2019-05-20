@@ -13,23 +13,23 @@ import java.util.Set;
  * 2018/12/4 15:20
  */
 public abstract class XMixEntryFilter<E> implements XEntryFilter<E> {
-    protected final Set<XEntryFilter<E>> filters;
+    protected final Set<XEntryFilter<? extends E>> filters;
 
     protected XMixEntryFilter() {
         this(null);
     }
 
-    protected XMixEntryFilter(Collection<? extends XEntryFilter<E>> filters) {
-        this.filters = filters != null ? new LinkedHashSet<>(filters) : new LinkedHashSet<XEntryFilter<E>>();
+    protected XMixEntryFilter(Collection<? extends XEntryFilter<? extends E>> filters) {
+        this.filters = filters != null ? new LinkedHashSet<>(filters) : new LinkedHashSet<XEntryFilter<? extends E>>();
     }
 
-    public boolean add(XEntryFilter<E> filter) {
+    public boolean add(XEntryFilter<? extends E> filter) {
         return filters.add(filter);
     }
 
-    public boolean remove(XEntryFilter<E> filter) {
+    public boolean remove(XEntryFilter<? extends E> filter) {
         return filters.remove(filter);
     }
 
-    public abstract XMixEntryFilter<E> mix(XEntryFilter<E> filter);
+    public abstract XMixEntryFilter<E> mix(XEntryFilter<? extends E> filter);
 }
