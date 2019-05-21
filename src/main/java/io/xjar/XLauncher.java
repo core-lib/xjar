@@ -3,12 +3,15 @@ package io.xjar;
 import io.xjar.key.XKey;
 
 import java.io.*;
-import java.net.URL;
+import java.net.URI;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**
@@ -47,10 +50,15 @@ public class XLauncher implements XConstants {
                 keypath = arg.substring(XJAR_KEYFILE.length());
             }
         }
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        URL url = classLoader.getResource(META_INF_MANIFEST);
-        if (url != null) {
-            Manifest manifest = new Manifest(url.openStream());
+
+        ProtectionDomain domain = this.getClass().getProtectionDomain();
+        CodeSource source = domain.getCodeSource();
+        URI location = (source == null ? null : source.getLocation().toURI());
+        String filepath = (location == null ? null : location.getSchemeSpecificPart());
+        if (filepath != null) {
+            File file = new File(filepath);
+            JarFile jar = new JarFile(file, false);
+            Manifest manifest = jar.getManifest();
             Attributes attributes = manifest.getMainAttributes();
             if (attributes.getValue(XJAR_ALGORITHM_KEY) != null) {
                 algorithm = attributes.getValue(XJAR_ALGORITHM_KEY);
