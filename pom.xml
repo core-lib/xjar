@@ -6,7 +6,7 @@
 
     <groupId>io.xjar</groupId>
     <artifactId>xjar</artifactId>
-    <version>v2.0.4</version>
+    <version>v2.0.5</version>
 
     <name>xjar</name>
 
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>loadkit</artifactId>
-            <version>v1.0.0</version>
+            <version>v1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

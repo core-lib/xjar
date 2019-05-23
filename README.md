@@ -28,7 +28,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>v2.0.4</version>
+            <version>v2.0.5</version>
         </dependency>
     </dependencies>
 </project>
@@ -220,7 +220,7 @@ XKit.not(
 <plugin>
     <groupId>com.github.core-lib</groupId>
     <artifactId>xjar-maven-plugin</artifactId>
-    <version>v2.0.4</version>
+    <version>v2.0.5</version>
     <executions>
         <execution>
             <goals>
@@ -264,7 +264,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>v2.0.4</version>
+                <version>v2.0.5</version>
                 <executions>
                     <execution>
                         <goals>
@@ -322,6 +322,9 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 更多文档：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* v2.0.5
+    1. 升级[LoadKit](https://github.com/core-lib/loadkit)依赖版本
+    2. 修复ANT表达式无法正确匹配**/*通配符的问题
 * v2.0.4
     1. 解决危险模式不支持ubuntu系统的问题
 * v2.0.3
