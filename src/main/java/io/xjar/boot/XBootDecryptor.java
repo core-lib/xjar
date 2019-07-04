@@ -21,7 +21,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
+public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
     private final int level;
 
     public XBootDecryptor(XDecryptor xEncryptor) {
@@ -39,16 +39,6 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     public XBootDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
         super(xDecryptor, filter);
         this.level = level;
-    }
-
-    @Override
-    public void decrypt(XKey key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
-            decrypt(key, fis, fos);
-        }
     }
 
     @Override

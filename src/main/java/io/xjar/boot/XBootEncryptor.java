@@ -25,7 +25,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
+public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final Map<String, String> map = new HashMap<>();
 
     {
@@ -64,16 +64,6 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
         super(xEncryptor, filter);
         this.level = level;
         this.mode = mode;
-    }
-
-    @Override
-    public void encrypt(XKey key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
-            encrypt(key, fis, fos);
-        }
     }
 
     @Override

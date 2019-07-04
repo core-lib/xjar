@@ -6,7 +6,9 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.zip.Deflater;
 
 /**
@@ -15,7 +17,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XZipEncryptor extends XEntryEncryptor<ZipArchiveEntry> implements XEncryptor {
+public class XZipEncryptor extends XArchiveEncryptor<ZipArchiveEntry> implements XEncryptor {
     private final int level;
 
     public XZipEncryptor(XEncryptor xEncryptor) {
@@ -33,16 +35,6 @@ public class XZipEncryptor extends XEntryEncryptor<ZipArchiveEntry> implements X
     public XZipEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<ZipArchiveEntry> filter) {
         super(xEncryptor, filter);
         this.level = level;
-    }
-
-    @Override
-    public void encrypt(XKey key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
-            encrypt(key, fis, fos);
-        }
     }
 
     @Override

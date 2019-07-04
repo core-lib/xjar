@@ -6,7 +6,9 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.Deflater;
@@ -17,7 +19,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
+public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
     private final int level;
 
     public XJarDecryptor(XDecryptor xDecryptor) {
@@ -39,11 +41,6 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
 
     public static XJarDecryptorBuilder builder() {
         return new XJarDecryptorBuilder();
-    }
-
-    @Override
-    public void decrypt(XKey key, String src, String dest) throws IOException {
-        decrypt(key, new File(src), new File(dest));
     }
 
     @Override
@@ -101,17 +98,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
-    @Override
-    public void decrypt(XKey key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
-            decrypt(key, fis, fos);
-        }
-    }
-
-    public static class XJarDecryptorBuilder extends XEntryDecryptorBuilder<JarArchiveEntry, XJarDecryptor, XJarDecryptorBuilder> {
+    public static class XJarDecryptorBuilder extends XArchiveDecryptorBuilder<JarArchiveEntry, XJarDecryptor, XJarDecryptorBuilder> {
         private int level = Deflater.DEFLATED;
 
         {

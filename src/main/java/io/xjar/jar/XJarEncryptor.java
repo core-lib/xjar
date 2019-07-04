@@ -6,7 +6,9 @@ import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -19,7 +21,7 @@ import java.util.zip.Deflater;
  * @author Payne 646742615@qq.com
  * 2018/11/22 15:27
  */
-public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
+public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
     private final int mode;
 
@@ -47,21 +49,6 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
         super(xEncryptor, filter);
         this.level = level;
         this.mode = mode;
-    }
-
-    @Override
-    public void encrypt(XKey key, String src, String dest) throws IOException {
-        encrypt(key, new File(src), new File(dest));
-    }
-
-    @Override
-    public void encrypt(XKey key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
-            encrypt(key, fis, fos);
-        }
     }
 
     @Override
@@ -151,7 +138,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
         return new XJarEncryptorBuilder();
     }
 
-    public static class XJarEncryptorBuilder extends XEntryEncryptorBuilder<JarArchiveEntry, XJarEncryptor, XJarEncryptorBuilder> {
+    public static class XJarEncryptorBuilder extends XArchiveEncryptorBuilder<JarArchiveEntry, XJarEncryptor, XJarEncryptorBuilder> {
         private int level = Deflater.DEFLATED;
         private int mode = MODE_NORMAL;
 
