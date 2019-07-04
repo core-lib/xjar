@@ -105,7 +105,7 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
     public static class XJarDecryptorBuilder extends XEntryDecryptorBuilder<JarArchiveEntry, XJarDecryptor, XJarDecryptorBuilder> {
         private int level;
 
-        public XJarDecryptor.XJarDecryptorBuilder level(int level) {
+        public XJarDecryptorBuilder level(int level) {
             this.level = level;
             return this;
         }
