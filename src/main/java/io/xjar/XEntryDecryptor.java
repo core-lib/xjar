@@ -23,4 +23,13 @@ public abstract class XEntryDecryptor<E> extends XWrappedDecryptor implements XD
     public boolean filtrate(E entry) {
         return filter == null || filter.filtrate(entry);
     }
+
+    protected static abstract class XEntryDecryptorBuilder<E, T extends XEntryDecryptor<E>, B extends XEntryDecryptorBuilder<E, T, B>> extends XWrappedDecryptorBuilder<T, B> {
+        protected XEntryFilter<E> filter;
+
+        public B filter(XEntryFilter<E> filter) {
+            this.filter = filter;
+            return (B) this;
+        }
+    }
 }

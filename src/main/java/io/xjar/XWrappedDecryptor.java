@@ -44,4 +44,15 @@ public abstract class XWrappedDecryptor implements XDecryptor {
     public OutputStream decrypt(XKey key, OutputStream out) throws IOException {
         return xDecryptor.decrypt(key, out);
     }
+
+    protected static abstract class XWrappedDecryptorBuilder<T extends XWrappedDecryptor, B extends XWrappedDecryptorBuilder<T, B>> {
+        protected XDecryptor decryptor;
+
+        public B decryptor(XDecryptor decryptor) {
+            this.decryptor = decryptor;
+            return (B) this;
+        }
+
+        public abstract T build();
+    }
 }

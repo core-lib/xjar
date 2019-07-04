@@ -44,4 +44,15 @@ public abstract class XWrappedEncryptor implements XEncryptor {
     public OutputStream encrypt(XKey key, OutputStream out) throws IOException {
         return xEncryptor.encrypt(key, out);
     }
+
+    protected static abstract class XWrappedEncryptorBuilder<T extends XWrappedEncryptor, B extends XWrappedEncryptorBuilder<T, B>> {
+        protected XEncryptor encryptor;
+
+        public B encryptor(XEncryptor encryptor) {
+            this.encryptor = encryptor;
+            return (B) this;
+        }
+
+        public abstract T build();
+    }
 }

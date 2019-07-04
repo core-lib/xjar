@@ -142,4 +142,27 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
         }
     }
 
+    public static XJarEncryptorBuilder builder() {
+        return new XJarEncryptorBuilder();
+    }
+
+    public static class XJarEncryptorBuilder extends XEntryEncryptorBuilder<JarArchiveEntry, XJarEncryptor, XJarEncryptorBuilder> {
+        private int level;
+        private int mode;
+
+        public XJarEncryptorBuilder level(int level) {
+            this.level = level;
+            return this;
+        }
+
+        public XJarEncryptorBuilder mode(int mode) {
+            this.mode = mode;
+            return this;
+        }
+
+        @Override
+        public XJarEncryptor build() {
+            return new XJarEncryptor(encryptor, level, mode, filter);
+        }
+    }
 }
