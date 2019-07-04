@@ -50,6 +50,11 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     @Override
+    public void encrypt(XKey key, String src, String dest) throws IOException {
+        encrypt(key, new File(src), new File(dest));
+    }
+
+    @Override
     public void encrypt(XKey key, File src, File dest) throws IOException {
         try (
                 FileInputStream fis = new FileInputStream(src);
@@ -147,8 +152,13 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public static class XJarEncryptorBuilder extends XEntryEncryptorBuilder<JarArchiveEntry, XJarEncryptor, XJarEncryptorBuilder> {
-        private int level;
-        private int mode;
+        private int level = Deflater.DEFLATED;
+        private int mode = MODE_NORMAL;
+
+        {
+            encryptor(new XSmtEncryptor());
+            filter(new XJarAllEntryFilter());
+        }
 
         public XJarEncryptorBuilder level(int level) {
             this.level = level;

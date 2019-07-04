@@ -37,14 +37,13 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         this.level = level;
     }
 
+    public static XJarDecryptorBuilder builder() {
+        return new XJarDecryptorBuilder();
+    }
+
     @Override
-    public void decrypt(XKey key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
-            decrypt(key, fis, fos);
-        }
+    public void decrypt(XKey key, String src, String dest) throws IOException {
+        decrypt(key, new File(src), new File(dest));
     }
 
     @Override
@@ -102,8 +101,23 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
+    @Override
+    public void decrypt(XKey key, File src, File dest) throws IOException {
+        try (
+                FileInputStream fis = new FileInputStream(src);
+                FileOutputStream fos = new FileOutputStream(dest)
+        ) {
+            decrypt(key, fis, fos);
+        }
+    }
+
     public static class XJarDecryptorBuilder extends XEntryDecryptorBuilder<JarArchiveEntry, XJarDecryptor, XJarDecryptorBuilder> {
-        private int level;
+        private int level = Deflater.DEFLATED;
+
+        {
+            decryptor(new XSmtDecryptor());
+            filter(new XJarAllEntryFilter());
+        }
 
         public XJarDecryptorBuilder level(int level) {
             this.level = level;
