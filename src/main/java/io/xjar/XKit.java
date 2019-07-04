@@ -380,11 +380,11 @@ public abstract class XKit implements XConstants {
         return roots.contains(root);
     }
 
-    public static String absolutize(String path) {
-        return normalize(isAbsolute(path) ? path : System.getProperty("user.dir") + File.separator + path);
+    public static String toAbsolute(String path) {
+        return toStandard(isAbsolute(path) ? path : System.getProperty("user.dir") + File.separator + path);
     }
 
-    public static String normalize(String path) {
+    public static String toStandard(String path) {
         return path.replaceAll("[/\\\\]+", "/");
     }
 

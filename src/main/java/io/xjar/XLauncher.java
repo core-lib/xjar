@@ -77,7 +77,7 @@ public class XLauncher implements XConstants {
         Properties key = null;
         File keyfile = null;
         if (keypath != null) {
-            String path = XKit.absolutize(keypath);
+            String path = XKit.toAbsolute(keypath);
             File file = new File(path);
             if (file.exists() && file.isFile()) {
                 keyfile = file;
@@ -89,7 +89,7 @@ public class XLauncher implements XConstants {
                 throw new FileNotFoundException("could not find key file at path: " + file.getCanonicalPath());
             }
         } else {
-            String path = XKit.absolutize("xjar.key");
+            String path = XKit.toAbsolute("xjar.key");
             File file = new File(path);
             if (file.exists() && file.isFile()) {
                 keyfile = file;
