@@ -26,7 +26,9 @@ public class XDigestedOutputStream extends JarArchiveOutputStream {
 
     @Override
     public void write(byte[] buffer, int offset, int length) throws IOException {
-        xDigest.digest(buffer, offset, length);
         super.write(buffer, offset, length);
+        if (length > 0) {
+            xDigest.digest(buffer, offset, length);
+        }
     }
 }
