@@ -22,9 +22,15 @@ public class XJdkEncryptor implements XEncryptor {
     }
 
     @Override
+    public void encrypt(XKey key, String src, String dest) throws IOException {
+        encrypt(key, new File(src), new File(dest));
+    }
+
+    @Override
     public void encrypt(XKey key, File src, File dest) throws IOException {
-        if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
-            throw new IOException("could not make directory: " + dest.getParentFile());
+        File dir = dest.getParentFile();
+        if (!dir.exists() && !dir.mkdirs() && !dir.exists()) {
+            throw new IOException("could not make directory: " + dir);
         }
         try (
                 InputStream in = new FileInputStream(src);

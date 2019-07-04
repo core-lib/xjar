@@ -13,6 +13,11 @@ import java.io.*;
 public class XNopDecryptor implements XDecryptor {
 
     @Override
+    public void decrypt(XKey key, String src, String dest) throws IOException {
+        decrypt(key, new File(src), new File(dest));
+    }
+
+    @Override
     public void decrypt(XKey key, File src, File dest) throws IOException {
         try (
                 FileInputStream fis = new FileInputStream(src);

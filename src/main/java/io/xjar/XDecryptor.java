@@ -23,6 +23,16 @@ public interface XDecryptor {
      * @param dest 目标文件
      * @throws IOException I/O 异常
      */
+    void decrypt(XKey key, String src, String dest) throws IOException;
+
+    /**
+     * 解密，将目标文件解密输出至目标文件。
+     *
+     * @param key  密钥
+     * @param src  源文件
+     * @param dest 目标文件
+     * @throws IOException I/O 异常
+     */
     void decrypt(XKey key, File src, File dest) throws IOException;
 
     /**

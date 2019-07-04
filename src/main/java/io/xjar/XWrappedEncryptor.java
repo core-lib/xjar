@@ -21,6 +21,11 @@ public abstract class XWrappedEncryptor implements XEncryptor {
     }
 
     @Override
+    public void encrypt(XKey key, String src, String dest) throws IOException {
+        xEncryptor.encrypt(key, src, dest);
+    }
+
+    @Override
     public void encrypt(XKey key, File src, File dest) throws IOException {
         xEncryptor.encrypt(key, src, dest);
     }

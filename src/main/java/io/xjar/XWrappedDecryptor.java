@@ -21,6 +21,11 @@ public abstract class XWrappedDecryptor implements XDecryptor {
     }
 
     @Override
+    public void decrypt(XKey key, String src, String dest) throws IOException {
+        xDecryptor.decrypt(key, src, dest);
+    }
+
+    @Override
     public void decrypt(XKey key, File src, File dest) throws IOException {
         xDecryptor.decrypt(key, src, dest);
     }
