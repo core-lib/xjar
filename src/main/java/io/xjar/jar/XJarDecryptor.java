@@ -39,10 +39,6 @@ public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements
         this.level = level;
     }
 
-    public static XJarDecryptorBuilder builder() {
-        return new XJarDecryptorBuilder();
-    }
-
     @Override
     public void decrypt(XKey key, InputStream in, OutputStream out) throws IOException {
         JarArchiveInputStream zis = null;
@@ -96,6 +92,10 @@ public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements
             XKit.close(zis);
             XKit.close(zos);
         }
+    }
+
+    public static XJarDecryptorBuilder builder() {
+        return new XJarDecryptorBuilder();
     }
 
     public static class XJarDecryptorBuilder extends XArchiveDecryptorBuilder<JarArchiveEntry, XJarDecryptor, XJarDecryptorBuilder> {
