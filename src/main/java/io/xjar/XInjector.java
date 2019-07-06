@@ -23,11 +23,12 @@ public class XInjector {
      * 往JAR包中注入XJar框架的classes
      *
      * @param zos jar包输出流
+     * @param ant 资源路径ANT表达式
      * @throws IOException I/O 异常
      */
-    public static void inject(JarArchiveOutputStream zos) throws IOException {
+    public static void inject(JarArchiveOutputStream zos, String ant) throws IOException {
         Set<String> directories = new HashSet<>();
-        Enumeration<Resource> resources = Loaders.ant().load("io/xjar/**");
+        Enumeration<Resource> resources = Loaders.ant().load(ant);
         while (resources.hasMoreElements()) {
             Resource resource = resources.nextElement();
             String name = resource.getName();
