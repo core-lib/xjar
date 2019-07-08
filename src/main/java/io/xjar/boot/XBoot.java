@@ -16,7 +16,7 @@ public class XBoot extends XKit {
      * @return 加密器建造器
      */
     public static XBootEncryptor.XBootEncryptorBuilder encryptor() {
-        return new XBootEncryptor.XBootEncryptorBuilder();
+        return XBootEncryptor.builder();
     }
 
     /**
@@ -25,6 +25,6 @@ public class XBoot extends XKit {
      * @return 解密器建造器
      */
     public static XBootDecryptor.XBootDecryptorBuilder decryptor() {
-        return new XBootDecryptor.XBootDecryptorBuilder();
+        return XBootDecryptor.builder();
     }
 }

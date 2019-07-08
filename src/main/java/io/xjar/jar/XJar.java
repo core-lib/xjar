@@ -16,7 +16,7 @@ public class XJar extends XKit {
      * @return 加密器建造器
      */
     public static XJarEncryptor.XJarEncryptorBuilder encryptor() {
-        return new XJarEncryptor.XJarEncryptorBuilder();
+        return XJarEncryptor.builder();
     }
 
     /**
@@ -25,7 +25,7 @@ public class XJar extends XKit {
      * @return 解密器建造器
      */
     public static XJarDecryptor.XJarDecryptorBuilder decryptor() {
-        return new XJarDecryptor.XJarDecryptorBuilder();
+        return XJarDecryptor.builder();
     }
 
 }
