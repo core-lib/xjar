@@ -15,10 +15,6 @@ import java.io.IOException;
  */
 public abstract class XArchiveEncryptor<E> extends XEntryEncryptor<E> implements XEncryptor, XEntryFilter<E> {
 
-    protected XArchiveEncryptor(XEncryptor xEncryptor) {
-        super(xEncryptor);
-    }
-
     protected XArchiveEncryptor(XEncryptor xEncryptor, XEntryFilter<E> filter) {
         super(xEncryptor, filter);
     }

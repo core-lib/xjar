@@ -10,10 +10,6 @@ public abstract class XEntryEncryptor<E> extends XWrappedEncryptor implements XE
     protected final XEntryFilter<E> filter;
     protected final XNopEncryptor xNopEncryptor = new XNopEncryptor();
 
-    protected XEntryEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, null);
-    }
-
     protected XEntryEncryptor(XEncryptor xEncryptor, XEntryFilter<E> filter) {
         super(xEncryptor);
         this.filter = filter;

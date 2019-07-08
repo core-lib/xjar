@@ -22,19 +22,7 @@ import java.util.zip.Deflater;
 public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
     private final int level;
 
-    public XJarDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, new XJarAllEntryFilter());
-    }
-
-    public XJarDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xDecryptor, Deflater.DEFLATED, filter);
-    }
-
-    public XJarDecryptor(XDecryptor xDecryptor, int level) {
-        this(xDecryptor, level, new XJarAllEntryFilter());
-    }
-
-    public XJarDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+    public XJarDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter, int level) {
         super(xDecryptor, filter);
         this.level = level;
     }
@@ -113,7 +101,7 @@ public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements
 
         @Override
         public XJarDecryptor build() {
-            return new XJarDecryptor(decryptor, level, filter);
+            return new XJarDecryptor(decryptor, filter, level);
         }
     }
 }

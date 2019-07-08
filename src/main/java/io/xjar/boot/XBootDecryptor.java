@@ -24,19 +24,7 @@ import java.util.zip.Deflater;
 public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
     private final int level;
 
-    public XBootDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, new XJarAllEntryFilter());
-    }
-
-    public XBootDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xDecryptor, Deflater.DEFLATED, filter);
-    }
-
-    public XBootDecryptor(XDecryptor xEncryptor, int level) {
-        this(xEncryptor, level, new XJarAllEntryFilter());
-    }
-
-    public XBootDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
+    public XBootDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter, int level) {
         super(xDecryptor, filter);
         this.level = level;
     }
@@ -51,7 +39,7 @@ public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implement
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, level, filter);
+            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, filter, level);
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
@@ -124,4 +112,26 @@ public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implement
         }
     }
 
+    public static XBootDecryptorBuilder builder() {
+        return new XBootDecryptorBuilder();
+    }
+
+    public static class XBootDecryptorBuilder extends XArchiveDecryptorBuilder<JarArchiveEntry, XBootDecryptor, XBootDecryptorBuilder> {
+        private int level = Deflater.DEFLATED;
+
+        {
+            decryptor(new XSmtDecryptor());
+            filter(new XJarAllEntryFilter());
+        }
+
+        public XBootDecryptorBuilder level(int level) {
+            this.level = level;
+            return this;
+        }
+
+        @Override
+        public XBootDecryptor build() {
+            return new XBootDecryptor(decryptor, filter, level);
+        }
+    }
 }

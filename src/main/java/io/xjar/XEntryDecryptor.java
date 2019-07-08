@@ -10,10 +10,6 @@ public abstract class XEntryDecryptor<E> extends XWrappedDecryptor implements XD
     protected final XEntryFilter<E> filter;
     protected final XNopDecryptor xNopDecryptor = new XNopDecryptor();
 
-    protected XEntryDecryptor(XDecryptor xDecryptor) {
-        this(xDecryptor, null);
-    }
-
     protected XEntryDecryptor(XDecryptor xDecryptor, XEntryFilter<E> filter) {
         super(xDecryptor);
         this.filter = filter;

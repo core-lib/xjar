@@ -38,32 +38,10 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
     }
 
     private final int level;
-    private final int mode;
 
-    public XBootEncryptor(XEncryptor xEncryptor) {
-        this(xEncryptor, new XJarAllEntryFilter());
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xEncryptor, Deflater.DEFLATED, filter);
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level) {
-        this(xEncryptor, level, new XJarAllEntryFilter());
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
-        this(xEncryptor, level, MODE_NORMAL, filter);
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level, int mode) {
-        this(xEncryptor, level, mode, new XJarAllEntryFilter());
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
+    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level) {
         super(xEncryptor, filter);
         this.level = level;
-        this.mode = mode;
     }
 
     @Override
@@ -77,7 +55,7 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, level, filter);
+            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, filter, level);
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
@@ -101,9 +79,6 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
                     if (mainClass != null) {
                         attributes.putValue("Boot-Main-Class", mainClass);
                         attributes.putValue("Main-Class", map.get(mainClass));
-                    }
-                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
-                        XKit.retainKey(key, attributes);
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
@@ -177,4 +152,26 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
         }
     }
 
+    public static XBootEncryptorBuilder builder() {
+        return new XBootEncryptorBuilder();
+    }
+
+    public static class XBootEncryptorBuilder extends XArchiveEncryptorBuilder<JarArchiveEntry, XBootEncryptor, XBootEncryptorBuilder> {
+        private int level = Deflater.DEFLATED;
+
+        {
+            encryptor(new XSmtEncryptor());
+            filter(new XJarAllEntryFilter());
+        }
+
+        public XBootEncryptorBuilder level(int level) {
+            this.level = level;
+            return this;
+        }
+
+        @Override
+        public XBootEncryptor build() {
+            return new XBootEncryptor(encryptor, filter, level);
+        }
+    }
 }
