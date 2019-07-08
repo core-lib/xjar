@@ -29,7 +29,7 @@ public class XNopDecryptor implements XDecryptor {
 
     @Override
     public void decrypt(XKey key, InputStream in, OutputStream out) throws IOException {
-        XKit.transfer(in, out);
+        XTool.transfer(in, out);
     }
 
     @Override

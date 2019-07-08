@@ -75,7 +75,7 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
                     }
                     XEncryptor encryptor = filtered ? xEncryptor : xNopEncryptor;
                     try (OutputStream eos = encryptor.encrypt(key, nos)) {
-                        XKit.transfer(nis, eos);
+                        XTool.transfer(nis, eos);
                     }
                 }
                 zos.closeArchiveEntry();
@@ -104,8 +104,8 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
 
             zos.finish();
         } finally {
-            XKit.close(zis);
-            XKit.close(zos);
+            XTool.close(zis);
+            XTool.close(zos);
         }
     }
 

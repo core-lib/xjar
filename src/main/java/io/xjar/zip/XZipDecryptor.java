@@ -54,14 +54,14 @@ public class XZipDecryptor extends XArchiveDecryptor<ZipArchiveEntry> implements
                 zos.putArchiveEntry(new ZipArchiveEntry(entry.getName()));
                 XDecryptor decryptor = filtrate(entry) ? this : xNopDecryptor;
                 try (OutputStream eos = decryptor.decrypt(key, nos)) {
-                    XKit.transfer(zis, eos);
+                    XTool.transfer(zis, eos);
                 }
                 zos.closeArchiveEntry();
             }
             zos.finish();
         } finally {
-            XKit.close(zis);
-            XKit.close(zos);
+            XTool.close(zis);
+            XTool.close(zos);
         }
     }
 

@@ -57,7 +57,6 @@ public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Jar-Main-Class"));
                     }
-                    XKit.removeKey(attributes);
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -69,7 +68,7 @@ public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements
                     boolean filtered = filtrate(entry);
                     XDecryptor decryptor = filtered ? xDecryptor : xNopDecryptor;
                     try (OutputStream eos = decryptor.decrypt(key, nos)) {
-                        XKit.transfer(nis, eos);
+                        XTool.transfer(nis, eos);
                     }
                 }
                 zos.closeArchiveEntry();
@@ -77,8 +76,8 @@ public class XJarDecryptor extends XArchiveDecryptor<JarArchiveEntry> implements
 
             zos.finish();
         } finally {
-            XKit.close(zis);
-            XKit.close(zos);
+            XTool.close(zis);
+            XTool.close(zos);
         }
     }
 

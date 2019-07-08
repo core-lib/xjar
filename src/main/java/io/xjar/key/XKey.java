@@ -1,12 +1,14 @@
 package io.xjar.key;
 
+import io.xjar.XConstants;
+
 /**
  * 密钥
  *
  * @author 杨昌沛 646742615@qq.com
  * 2018-11-22 14:54:10
  */
-public interface XKey {
+public interface XKey extends XConstants {
 
     /**
      * @return 密钥算法名称

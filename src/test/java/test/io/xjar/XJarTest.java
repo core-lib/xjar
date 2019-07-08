@@ -1,6 +1,6 @@
 package test.io.xjar;
 
-import io.xjar.XKit;
+import io.xjar.XTool;
 import io.xjar.jar.XJarEncryptor;
 import org.junit.Test;
 
@@ -11,11 +11,11 @@ import org.junit.Test;
 public class XJarTest {
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         XJarEncryptor.builder()
                 .build()
                 .encrypt(
-                        XKit.key("io.xjar"),
+                        XTool.key("io.xjar"),
                         "C:\\Users\\Chang\\Downloads\\Android-SDK\\target\\nwhs-sdk-v5.3.0-alpha.2.jar",
                         "C:\\Users\\Chang\\Downloads\\Android-SDK\\target\\nwhs-sdk-v5.3.0-alpha.2.xjar"
                 );

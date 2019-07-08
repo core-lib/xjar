@@ -2,7 +2,7 @@ package io.xjar.boot;
 
 import io.xjar.XDecryptor;
 import io.xjar.XEncryptor;
-import io.xjar.XKit;
+import io.xjar.XTool;
 import io.xjar.key.XKey;
 import org.springframework.boot.loader.LaunchedURLClassLoader;
 
@@ -64,7 +64,7 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
             }
             try (InputStream in = resource.openStream()) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                XKit.transfer(in, bos);
+                XTool.transfer(in, bos);
                 byte[] bytes = bos.toByteArray();
                 return defineClass(name, bytes, 0, bytes.length);
             } catch (Throwable t) {

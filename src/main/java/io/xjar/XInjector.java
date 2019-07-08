@@ -43,7 +43,7 @@ public class XInjector {
             xJarEntry.setTime(System.currentTimeMillis());
             zos.putArchiveEntry(xJarEntry);
             try (InputStream ris = resource.getInputStream()) {
-                XKit.transfer(ris, zos);
+                XTool.transfer(ris, zos);
             }
             zos.closeArchiveEntry();
         }

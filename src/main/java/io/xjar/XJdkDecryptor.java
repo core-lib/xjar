@@ -47,11 +47,11 @@ public class XJdkDecryptor implements XDecryptor {
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm));
             cis = new CipherInputStream(in, cipher);
-            XKit.transfer(cis, out);
+            XTool.transfer(cis, out);
         } catch (Exception e) {
             throw new IOException(e);
         } finally {
-            XKit.close(cis);
+            XTool.close(cis);
         }
     }
 

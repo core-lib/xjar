@@ -29,7 +29,7 @@ public class XNopEncryptor implements XEncryptor {
 
     @Override
     public void encrypt(XKey key, InputStream in, OutputStream out) throws IOException {
-        XKit.transfer(in, out);
+        XTool.transfer(in, out);
     }
 
     @Override

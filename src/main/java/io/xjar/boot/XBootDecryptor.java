@@ -63,7 +63,6 @@ public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implement
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Boot-Main-Class"));
                     }
-                    XKit.removeKey(attributes);
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -78,7 +77,7 @@ public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implement
                     boolean filtered = filtrate(xBootJarArchiveEntry);
                     XDecryptor decryptor = filtered ? xDecryptor : xNopDecryptor;
                     try (OutputStream eos = decryptor.decrypt(key, nos)) {
-                        XKit.transfer(nis, eos);
+                        XTool.transfer(nis, eos);
                     }
                 }
                 // BOOT-INF/lib/**
@@ -93,22 +92,22 @@ public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implement
                     jar.setCrc(cos.getChecksum().getValue());
                     zos.putArchiveEntry(jar);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    XKit.transfer(bis, nos);
+                    XTool.transfer(bis, nos);
                 }
                 // OTHER
                 else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    XKit.transfer(nis, nos);
+                    XTool.transfer(nis, nos);
                 }
                 zos.closeArchiveEntry();
             }
 
             zos.finish();
         } finally {
-            XKit.close(zis);
-            XKit.close(zos);
+            XTool.close(zis);
+            XTool.close(zos);
         }
     }
 
