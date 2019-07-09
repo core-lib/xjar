@@ -11,10 +11,10 @@ import java.security.NoSuchAlgorithmException;
  * @author Payne 646742615@qq.com
  * 2019/7/5 10:22
  */
-public class XJdkDigestFactory implements XDigestFactory {
+public class XJdkDigestFactory extends XRecycledDigestFactory implements XDigestFactory {
 
     @Override
-    public XDigest produce(String algorithm) throws NoSuchAlgorithmException {
+    protected XDigest produce(String algorithm) throws NoSuchAlgorithmException {
         return new XJdkDigest(algorithm);
     }
 }

@@ -15,7 +15,16 @@ public interface XDigestFactory {
      *
      * @param algorithm 摘要算法
      * @return 摘要算法对象
+     * @throws NoSuchAlgorithmException 摘要算法不支持
      */
-    XDigest produce(String algorithm) throws NoSuchAlgorithmException;
+    XDigest acquire(String algorithm) throws NoSuchAlgorithmException;
+
+    /**
+     * 回收摘要算法对象
+     *
+     * @param algorithm 摘要算法
+     * @param digest    摘要算法对象
+     */
+    void release(String algorithm, XDigest digest);
 
 }

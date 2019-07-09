@@ -1,6 +1,7 @@
 package io.xjar.jar;
 
 import io.xjar.*;
+import io.xjar.digest.XJdkDigestFactory;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -23,10 +24,14 @@ import java.util.zip.Deflater;
  */
 public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
+    private final XDigestFactory digestFactory;
+    private final String digestAlgorithm;
 
-    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level) {
+    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level, XDigestFactory digestFactory, String digestAlgorithm) {
         super(xEncryptor, filter);
         this.level = level;
+        this.digestFactory = digestFactory;
+        this.digestAlgorithm = digestAlgorithm;
     }
 
     @Override
@@ -36,7 +41,8 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
         Set<String> indexes = new LinkedHashSet<>();
         try {
             zis = new JarArchiveInputStream(in);
-            zos = new JarArchiveOutputStream(out);
+            XDigest xDigest = digestFactory.acquire(digestAlgorithm);
+            zos = new XDigestedOutputStream(out, xDigest);
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
@@ -102,7 +108,14 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
                 XInjector.inject(zos, "io/xjar/**");
             }
 
+            byte[] digest = xDigest.finish();
+            System.out.write(digest);
+
             zos.finish();
+        } catch (IOException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new IOException(ex);
         } finally {
             XTool.close(zis);
             XTool.close(zos);
@@ -115,6 +128,8 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
 
     public static class XJarEncryptorBuilder extends XArchiveEncryptorBuilder<JarArchiveEntry, XJarEncryptor, XJarEncryptorBuilder> {
         private int level = Deflater.DEFLATED;
+        private XDigestFactory digestFactory = new XJdkDigestFactory();
+        private String digestAlgorithm = "MD5";
 
         {
             encryptor(new XSmtEncryptor());
@@ -126,9 +141,19 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
             return this;
         }
 
+        public XJarEncryptorBuilder digestFactory(XDigestFactory digestFactory) {
+            this.digestFactory = digestFactory;
+            return this;
+        }
+
+        public XJarEncryptorBuilder digestAlgorithm(String digestAlgorithm) {
+            this.digestAlgorithm = digestAlgorithm;
+            return this;
+        }
+
         @Override
         public XJarEncryptor build() {
-            return new XJarEncryptor(encryptor, filter, level);
+            return new XJarEncryptor(encryptor, filter, level, digestFactory, digestAlgorithm);
         }
     }
 }
