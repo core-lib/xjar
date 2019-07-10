@@ -1,7 +1,6 @@
 package io.xjar.boot;
 
 import io.xjar.*;
-import io.xjar.digest.XJdkDigestFactory;
 import io.xjar.jar.XJarAllEntryFilter;
 import io.xjar.jar.XJarEncryptor;
 import io.xjar.key.XKey;
@@ -39,14 +38,10 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
     }
 
     private final int level;
-    private final XDigestFactory digestFactory;
-    private final String digestAlgorithm;
 
-    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level, XDigestFactory digestFactory, String digestAlgorithm) {
+    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level) {
         super(xEncryptor, filter);
         this.level = level;
-        this.digestFactory = digestFactory;
-        this.digestAlgorithm = digestAlgorithm;
     }
 
     @Override
@@ -60,7 +55,7 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarEncryptor xJarEncryptor = new XJarEncryptor(xEncryptor, filter, level, digestFactory, digestAlgorithm);
+            XJarEncryptor xJarEncryptor = XJarEncryptor.builder().build();
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {
@@ -163,8 +158,6 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
 
     public static class XBootEncryptorBuilder extends XArchiveEncryptorBuilder<JarArchiveEntry, XBootEncryptor, XBootEncryptorBuilder> {
         private int level = Deflater.DEFLATED;
-        private XDigestFactory digestFactory = new XJdkDigestFactory();
-        private String digestAlgorithm = "MD5";
 
         {
             encryptor(new XSmtEncryptor());
@@ -176,19 +169,9 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
             return this;
         }
 
-        public XBootEncryptorBuilder digestFactory(XDigestFactory digestFactory) {
-            this.digestFactory = digestFactory;
-            return this;
-        }
-
-        public XBootEncryptorBuilder digestAlgorithm(String digestAlgorithm) {
-            this.digestAlgorithm = digestAlgorithm;
-            return this;
-        }
-
         @Override
         public XBootEncryptor build() {
-            return new XBootEncryptor(encryptor, filter, level, digestFactory, digestAlgorithm);
+            return new XBootEncryptor(encryptor, filter, level);
         }
     }
 }
