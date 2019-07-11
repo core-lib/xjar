@@ -2,7 +2,6 @@ package io.xjar.jar;
 
 import io.xjar.*;
 import io.xjar.digest.XJdkDigestFactory;
-import io.xjar.jni.XJni;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
@@ -113,9 +112,6 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
             String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
             if (mainClass != null) {
                 XInjector.inject(zos, "io/xjar/**");
-                XJni xJni = XJni.getInstance();
-                xJni.compile(key);
-
             }
 
             zos.finish();
