@@ -162,6 +162,29 @@ public abstract class XTool implements XConstants {
         }
     }
 
+    public static long transfer(File file, OutputStream out) throws IOException {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            return transfer(in, out);
+        } finally {
+            close(in);
+        }
+    }
+
+    public static long transfer(File file, Writer writer) throws IOException {
+        InputStream in = null;
+        Reader reader = null;
+        try {
+            in = new FileInputStream(file);
+            reader = new InputStreamReader(in);
+            return transfer(reader, writer);
+        } finally {
+            close(reader);
+            close(in);
+        }
+    }
+
     /**
      * 删除文件，如果是目录将不递归删除子文件或目录，等效于delete(file, false);
      *

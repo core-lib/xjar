@@ -27,28 +27,11 @@ import java.util.UUID;
  * 2019/7/15 10:42
  */
 public class XStdCompiler implements XCompiler {
+    private String gccPath = "g++";
+    private String libName = "XJar.so";
     private String srcRoot = "io/xjar/jni";
-    private String gccRoot = "";
     private String jdkRoot = new File(System.getProperty("java.home")).getParent();
     private String tmpRoot = System.getProperty("java.io.tmpdir");
-
-    public XStdCompiler() {
-    }
-
-    public XStdCompiler(String gccRoot) {
-        this.gccRoot = gccRoot;
-    }
-
-    public XStdCompiler(String gccRoot, String jdkRoot) {
-        this.gccRoot = gccRoot;
-        this.jdkRoot = jdkRoot;
-    }
-
-    public XStdCompiler(String gccRoot, String jdkRoot, String tmpRoot) {
-        this.gccRoot = gccRoot;
-        this.jdkRoot = jdkRoot;
-        this.tmpRoot = tmpRoot;
-    }
 
     @Override
     public File compile(XKey xKey, XSignature xSignature) throws IOException {
@@ -63,7 +46,7 @@ public class XStdCompiler implements XCompiler {
         ResourceLoader resourceLoader = new ClasspathResourceLoader();
         Configuration configuration = Configuration.defaultConfiguration();
         GroupTemplate groupTemplate = new GroupTemplate(resourceLoader, configuration);
-        Enumeration<Resource> resources = Loaders.ant().load("io/xjar/jni/**/*");
+        Enumeration<Resource> resources = Loaders.ant().load(srcRoot + "/**/*");
         while (resources.hasMoreElements()) {
             Resource src = resources.nextElement();
             String name = src.getName();
@@ -81,19 +64,23 @@ public class XStdCompiler implements XCompiler {
             }
         }
 
+        File lib = new File(dir, libName);
+
         // 编译源码
-        StringBuilder cmd = new StringBuilder();
-        cmd.append(gccRoot);
-        cmd.append(" ").append("g++");
-        cmd.append(" ").append("-fPIC -shared -o XJar.so");
+        StringBuilder command = new StringBuilder();
+        command.append("\"").append(gccPath).append("\"");
+        command.append(" ").append("-fPIC");
+        command.append(" ").append("-shared");
+        command.append(" ").append("-o");
+        command.append(" ").append("\"").append(dir.toURI().relativize(lib.toURI())).append("\"");
         for (String src : srcs) {
-            cmd.append(" ").append(src);
+            command.append(" ").append("\"").append(src).append("\"");
         }
-        cmd.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append("\"");
-        cmd.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("win32").append("\"");
+        command.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append("\"");
+        command.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("win32").append("\"");
 
         try {
-            Process process = Runtime.getRuntime().exec(cmd.toString(), null, dir);
+            Process process = Runtime.getRuntime().exec(command.toString(), null, dir);
             int code = process.waitFor();
             if (code != 0) {
                 throw new IllegalStateException("error occurred while compiling c++ lib with code: " + code);
@@ -102,15 +89,31 @@ public class XStdCompiler implements XCompiler {
             throw new IOException(e);
         }
 
-        return null;
+        return lib;
     }
 
-    public String getGccRoot() {
-        return gccRoot;
+    public String getGccPath() {
+        return gccPath;
     }
 
-    public void setGccRoot(String gccRoot) {
-        this.gccRoot = gccRoot;
+    public void setGccPath(String gccPath) {
+        this.gccPath = gccPath;
+    }
+
+    public String getLibName() {
+        return libName;
+    }
+
+    public void setLibName(String libName) {
+        this.libName = libName;
+    }
+
+    public String getSrcRoot() {
+        return srcRoot;
+    }
+
+    public void setSrcRoot(String srcRoot) {
+        this.srcRoot = srcRoot;
     }
 
     public String getJdkRoot() {
