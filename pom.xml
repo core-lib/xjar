@@ -40,6 +40,11 @@
             <version>2.0.1.RELEASE</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl</artifactId>
+            <version>3.0.8.RELEASE</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

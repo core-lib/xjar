@@ -1,6 +1,7 @@
 package io.xjar.jar;
 
 import io.xjar.*;
+import io.xjar.compiler.XStdCompiler;
 import io.xjar.digest.XJdkDigestFactory;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -25,20 +27,24 @@ import java.util.zip.Deflater;
  */
 public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
-    private final String jdkLocation;
-    private final String gccLocation;
-    private final String tmpLocation;
     private final XDigestFactory digestFactory;
     private final String digestAlgorithm;
+    private final XCompiler compiler;
 
-    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level, String jdkLocation, String gccLocation, String tmpLocation, XDigestFactory digestFactory, String digestAlgorithm) {
+    public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level, XDigestFactory digestFactory, String digestAlgorithm, XCompiler compiler) {
         super(xEncryptor, filter);
         this.level = level;
-        this.jdkLocation = jdkLocation;
-        this.gccLocation = gccLocation;
-        this.tmpLocation = tmpLocation;
         this.digestFactory = digestFactory;
         this.digestAlgorithm = digestAlgorithm;
+        this.compiler = compiler;
+    }
+
+    public static void main(String... args) throws Exception {
+        XJarEncryptor.builder().build().encrypt(
+                XJar.key("io.xjar"),
+                "D:\\workspace\\xjar-demo\\target\\xjar-demo-1.0-SNAPSHOT.jar",
+                "D:\\workspace\\xjar-demo\\target\\xjar-demo-1.0-SNAPSHOT.xjar"
+        );
     }
 
     @Override
@@ -46,9 +52,11 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
         JarArchiveInputStream zis = null;
         JarArchiveOutputStream zos = null;
         Set<String> indexes = new LinkedHashSet<>();
+        XDigest digest = null;
         try {
+            digest = digestFactory.acquire(digestAlgorithm);
             zis = new JarArchiveInputStream(in);
-            zos = new JarArchiveOutputStream(out);
+            zos = new XDigestedOutputStream(out, digest);
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
@@ -112,12 +120,21 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
             String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
             if (mainClass != null) {
                 XInjector.inject(zos, "io/xjar/**");
+                byte[] signature = digest.finish();
+                XSignature xSignature = new XSignature(digestAlgorithm, signature);
+                File library = compiler.compile(key, xSignature);
+
             }
 
             zos.finish();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
         } finally {
             XTool.close(zis);
             XTool.close(zos);
+            if (digest != null) {
+                digestFactory.release(digestAlgorithm, digest);
+            }
         }
     }
 
@@ -127,11 +144,9 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
 
     public static class XJarEncryptorBuilder extends XArchiveEncryptorBuilder<JarArchiveEntry, XJarEncryptor, XJarEncryptorBuilder> {
         private int level = Deflater.DEFLATED;
-        private String jdkLocation = new File(System.getProperty("java.home")).getParent();
-        private String gccLocation = "g++";
-        private String tmpLocation = System.getProperty("java.io.tmpdir");
         private XDigestFactory digestFactory = new XJdkDigestFactory();
         private String digestAlgorithm = "MD5";
+        private XCompiler compiler = new XStdCompiler();
 
         {
             encryptor(new XSmtEncryptor());
@@ -140,21 +155,6 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
 
         public XJarEncryptorBuilder level(int level) {
             this.level = level;
-            return this;
-        }
-
-        public XJarEncryptorBuilder jdkLocation(String jdkLocation) {
-            this.jdkLocation = jdkLocation;
-            return this;
-        }
-
-        public XJarEncryptorBuilder gccLocation(String gccLocation) {
-            this.gccLocation = gccLocation;
-            return this;
-        }
-
-        public XJarEncryptorBuilder tmpLocation(String tmpLocation) {
-            this.tmpLocation = tmpLocation;
             return this;
         }
 
@@ -168,9 +168,14 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
             return this;
         }
 
+        public XJarEncryptorBuilder compiler(XCompiler compiler) {
+            this.compiler = compiler;
+            return this;
+        }
+
         @Override
         public XJarEncryptor build() {
-            return new XJarEncryptor(encryptor, filter, level, jdkLocation, gccLocation, tmpLocation, digestFactory, digestAlgorithm);
+            return new XJarEncryptor(encryptor, filter, level, digestFactory, digestAlgorithm, compiler);
         }
     }
 }
