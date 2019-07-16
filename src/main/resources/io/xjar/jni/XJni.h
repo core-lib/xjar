@@ -12,7 +12,7 @@ extern "C" {
  * Method:    call
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_io_xjar_XJni_call(JNIEnv *, jobject);
+JNIEXPORT jobject JNICALL Java_io_xjar_XJni_call(JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }
