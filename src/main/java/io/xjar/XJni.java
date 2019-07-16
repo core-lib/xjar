@@ -23,7 +23,7 @@ public class XJni {
             throw new IllegalStateException("xjar library not found");
         }
         final File lib = File.createTempFile("XJAR", ".SO");
-        try (InputStream in = url.openStream()) {
+        try (final InputStream in = url.openStream()) {
             XTool.transfer(in, lib);
         }
         System.load(lib.getCanonicalPath());
