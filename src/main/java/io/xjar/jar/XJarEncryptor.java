@@ -1,7 +1,7 @@
 package io.xjar.jar;
 
 import io.xjar.*;
-import io.xjar.compiler.XStdCompiler;
+import io.xjar.compiler.XAwareCompiler;
 import io.xjar.digest.XJdkDigestFactory;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -150,7 +150,7 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
         private int level = Deflater.DEFLATED;
         private XDigestFactory digestFactory = new XJdkDigestFactory();
         private String digestAlgorithm = "MD5";
-        private XCompiler compiler = new XStdCompiler();
+        private XCompiler compiler = new XAwareCompiler();
 
         {
             encryptor(new XSmtEncryptor());
