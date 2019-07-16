@@ -1,6 +1,6 @@
 #include "XJni.h"
 
-JNIEXPORT jbyteArray JNICALL Java_io_xjar_jni_XJni_call(JNIEnv* env, jobject thiz)
+JNIEXPORT jbyteArray JNICALL Java_io_xjar_XJni_call(JNIEnv* env, jobject thiz)
 {
 	const jbyte bytes[] = {<%
 	for (k in xKey.decryptKey) {

@@ -2,8 +2,6 @@ package io.xjar;
 
 import io.xjar.key.XKey;
 
-import java.security.NoSuchAlgorithmException;
-
 /**
  * Spring-Boot 启动器
  *
@@ -16,9 +14,9 @@ public class XLauncher implements XConstants {
     public final XEncryptor xEncryptor;
     public final XKey xKey;
 
-    public XLauncher(String... args) throws NoSuchAlgorithmException {
+    public XLauncher(String... args) throws Exception {
         this.args = args;
-        XKey xKey = XKit.key("io.xjar");
+        XKey xKey = XJni.getInstance().call();
         String algorithm = xKey.getAlgorithm();
         this.xDecryptor = new XJdkDecryptor(algorithm);
         this.xEncryptor = new XJdkEncryptor(algorithm);

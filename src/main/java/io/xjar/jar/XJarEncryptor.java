@@ -123,7 +123,7 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
                 byte[] signature = digest.finish();
                 XSignature xSignature = new XSignature(digestAlgorithm, signature);
                 File lib = compiler.compile(key, xSignature);
-                JarArchiveEntry xLibEntry = new JarArchiveEntry("XJar.so");
+                JarArchiveEntry xLibEntry = new JarArchiveEntry("XJAR.SO");
                 xLibEntry.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(xLibEntry);
                 XTool.transfer(lib, zos);

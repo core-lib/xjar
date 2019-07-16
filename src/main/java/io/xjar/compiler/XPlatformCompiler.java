@@ -27,7 +27,7 @@ import java.util.UUID;
  * 2019/7/15 10:42
  */
 public abstract class XPlatformCompiler implements XCompiler {
-    protected String libName = "xjar.so";
+    protected String libName = "XJAR.SO";
     protected String srcRoot = "io/xjar/jni";
     protected String tmpRoot = System.getProperty("java.io.tmpdir");
 
