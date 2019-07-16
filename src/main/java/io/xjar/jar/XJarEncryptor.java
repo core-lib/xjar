@@ -39,14 +39,6 @@ public class XJarEncryptor extends XArchiveEncryptor<JarArchiveEntry> implements
         this.compiler = compiler;
     }
 
-    public static void main(String... args) throws Exception {
-        XJarEncryptor.builder().build().encrypt(
-                XJar.key("io.xjar"),
-                "D:\\workspace\\xjar-demo\\target\\xjar-demo-1.0-SNAPSHOT.jar",
-                "D:\\workspace\\xjar-demo\\target\\xjar-demo-1.0-SNAPSHOT.xjar"
-        );
-    }
-
     @Override
     public void encrypt(XKey key, InputStream in, OutputStream out) throws IOException {
         JarArchiveInputStream zis = null;

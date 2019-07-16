@@ -13,7 +13,7 @@ JNIEXPORT jobject JNICALL Java_io_xjar_XJni_call(JNIEnv* env, jobject thiz)
 	const char* algorithm = "${xKey.algorithm}";
     jint keysize = ${xKey.keysize};
     jint ivsize = ${xKey.ivsize};
-    const char* password = "${xKey.password}";
+    const char* password = "";
     const jbyte secretKey[] = { <%
     for (k in xKey.secretKey) {
         print(k);
