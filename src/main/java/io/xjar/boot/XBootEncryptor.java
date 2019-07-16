@@ -1,6 +1,8 @@
 package io.xjar.boot;
 
 import io.xjar.*;
+import io.xjar.compiler.XAwareCompiler;
+import io.xjar.digest.XJdkDigestFactory;
 import io.xjar.jar.XJarAllEntryFilter;
 import io.xjar.jar.XJarEncryptor;
 import io.xjar.key.XKey;
@@ -9,6 +11,7 @@ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -38,10 +41,16 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
     }
 
     private final int level;
+    private final XDigestFactory digestFactory;
+    private final String digestAlgorithm;
+    private final XCompiler compiler;
 
-    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level) {
+    public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter, int level, XDigestFactory digestFactory, String digestAlgorithm, XCompiler compiler) {
         super(xEncryptor, filter);
         this.level = level;
+        this.digestFactory = digestFactory;
+        this.digestAlgorithm = digestAlgorithm;
+        this.compiler = compiler;
     }
 
     @Override
@@ -49,9 +58,11 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
         JarArchiveInputStream zis = null;
         JarArchiveOutputStream zos = null;
         Set<String> indexes = new LinkedHashSet<>();
+        XDigest digest = null;
         try {
+            digest = digestFactory.acquire(digestAlgorithm);
             zis = new JarArchiveInputStream(in);
-            zos = new JarArchiveOutputStream(out);
+            zos = new XDigestedOutputStream(out, digest);
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
@@ -143,9 +154,19 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
             String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
             if (mainClass != null) {
                 XInjector.inject(zos, "io/xjar/**");
+                byte[] signature = digest.finish();
+                XSignature xSignature = new XSignature(digestAlgorithm, signature);
+                File lib = compiler.compile(key, xSignature);
+                JarArchiveEntry xLibEntry = new JarArchiveEntry("XJAR.SO");
+                xLibEntry.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(xLibEntry);
+                XTool.transfer(lib, zos);
+                zos.closeArchiveEntry();
             }
 
             zos.finish();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
         } finally {
             XTool.close(zis);
             XTool.close(zos);
@@ -158,6 +179,9 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
 
     public static class XBootEncryptorBuilder extends XArchiveEncryptorBuilder<JarArchiveEntry, XBootEncryptor, XBootEncryptorBuilder> {
         private int level = Deflater.DEFLATED;
+        private XDigestFactory digestFactory = new XJdkDigestFactory();
+        private String digestAlgorithm = "MD5";
+        private XCompiler compiler = new XAwareCompiler();
 
         {
             encryptor(new XSmtEncryptor());
@@ -169,9 +193,24 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
             return this;
         }
 
+        public XBootEncryptorBuilder digestFactory(XDigestFactory digestFactory) {
+            this.digestFactory = digestFactory;
+            return this;
+        }
+
+        public XBootEncryptorBuilder digestAlgorithm(String digestAlgorithm) {
+            this.digestAlgorithm = digestAlgorithm;
+            return this;
+        }
+
+        public XBootEncryptorBuilder compiler(XCompiler compiler) {
+            this.compiler = compiler;
+            return this;
+        }
+
         @Override
         public XBootEncryptor build() {
-            return new XBootEncryptor(encryptor, filter, level);
+            return new XBootEncryptor(encryptor, filter, level, digestFactory, digestAlgorithm, compiler);
         }
     }
 }
