@@ -2,14 +2,6 @@
 
 JNIEXPORT jobject JNICALL Java_io_xjar_XJni_call(JNIEnv* env, jobject thiz)
 {
-	const jbyte bytes[] = {<%
-	for (k in xKey.decryptKey) {
-	    print(k);
-	    if (!kLP.last) {
-	        print(', ');
-	    }
-	}
-	%>};
 	const char* algorithm = "${xKey.algorithm}";
     jint keysize = ${xKey.keysize};
     jint ivsize = ${xKey.ivsize};

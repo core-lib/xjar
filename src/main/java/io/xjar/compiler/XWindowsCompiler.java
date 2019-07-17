@@ -28,4 +28,20 @@ public class XWindowsCompiler extends XPlatformCompiler {
         command.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("win32").append("\"");
         return command.toString();
     }
+
+    public String getGccPath() {
+        return gccPath;
+    }
+
+    public void setGccPath(String gccPath) {
+        this.gccPath = gccPath;
+    }
+
+    public String getJdkRoot() {
+        return jdkRoot;
+    }
+
+    public void setJdkRoot(String jdkRoot) {
+        this.jdkRoot = jdkRoot;
+    }
 }
