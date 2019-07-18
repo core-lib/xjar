@@ -4,7 +4,6 @@ import io.xjar.XConstants;
 import io.xjar.XLauncher;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
@@ -12,6 +11,7 @@ import java.net.URLClassLoader;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**
@@ -52,15 +52,18 @@ public class XJarLauncher implements XConstants {
         }
 
         Thread.currentThread().setContextClassLoader(xJarClassLoader);
-        URL resource = xJarClassLoader.findResource(META_INF_MANIFEST);
-        try (InputStream in = resource.openStream()) {
-            Manifest manifest = new Manifest(in);
-            Attributes attributes = manifest.getMainAttributes();
-            String jarMainClass = attributes.getValue("Jar-Main-Class");
-            Class<?> mainClass = xJarClassLoader.loadClass(jarMainClass);
-            Method mainMethod = mainClass.getMethod("main", String[].class);
-            mainMethod.invoke(null, new Object[]{xLauncher.args});
-        }
+        ProtectionDomain domain = this.getClass().getProtectionDomain();
+        CodeSource source = domain.getCodeSource();
+        URI location = source.getLocation().toURI();
+        String filepath = location.getSchemeSpecificPart();
+        File file = new File(filepath);
+        JarFile jar = new JarFile(file, false);
+        Manifest manifest = jar.getManifest();
+        Attributes attributes = manifest.getMainAttributes();
+        String jarMainClass = attributes.getValue("Jar-Main-Class");
+        Class<?> mainClass = xJarClassLoader.loadClass(jarMainClass);
+        Method mainMethod = mainClass.getMethod("main", String[].class);
+        mainMethod.invoke(null, new Object[]{xLauncher.args});
     }
 
 }
