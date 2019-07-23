@@ -4,6 +4,7 @@ import io.loadkit.Loaders;
 import io.loadkit.Resource;
 import io.xjar.XCompiler;
 import io.xjar.XSignature;
+import io.xjar.XTool;
 import io.xjar.key.XKey;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
@@ -45,6 +46,7 @@ public abstract class XPlatformCompiler implements XCompiler {
             Process process = Runtime.getRuntime().exec(cmd, null, dir);
             int code = process.waitFor();
             if (code != 0) {
+                XTool.transfer(process.getErrorStream(), System.err);
                 throw new IllegalStateException("error occurred while compiling c++ lib with code: " + code);
             }
 
