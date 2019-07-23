@@ -84,7 +84,9 @@ public abstract class XPlatformCompiler implements XCompiler {
         while (resources.hasMoreElements()) {
             Resource resource = resources.nextElement();
             String name = resource.getName();
-            sources.add(name);
+            if (name.endsWith(".cpp")) {
+                sources.add(name);
+            }
             File file = new File(dir, name);
             File folder = file.getParentFile();
             if (!folder.exists() && !folder.mkdirs() && !folder.exists()) {
