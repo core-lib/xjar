@@ -16,16 +16,16 @@ public class XMacCompiler extends XPlatformCompiler {
     @Override
     protected String convert(List<String> src, String lib) {
         StringBuilder command = new StringBuilder();
-        command.append(gccPath);
+        command.append("\'").append(gccPath).append("\'");
         command.append(" ").append("-fPIC");
         command.append(" ").append("-shared");
         command.append(" ").append("-o");
-        command.append(" ").append(lib);
+        command.append(" ").append("\'").append(lib).append("\'");
         for (String path : src) {
-            command.append(" ").append(path);
+            command.append(" ").append("\'").append(path).append("\'");
         }
-        command.append(" ").append("-I ").append(jdkRoot).append(File.separator).append("include");
-        command.append(" ").append("-I ").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("darwin");
+        command.append(" ").append("-I \'").append(jdkRoot).append(File.separator).append("include").append("\'");
+        command.append(" ").append("-I \'").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("darwin").append("\'");
         return command.toString();
     }
 
