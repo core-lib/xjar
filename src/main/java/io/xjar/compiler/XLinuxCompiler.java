@@ -16,16 +16,16 @@ public class XLinuxCompiler extends XPlatformCompiler {
     @Override
     protected String convert(List<String> src, String lib) {
         StringBuilder command = new StringBuilder();
-        command.append("\"").append(gccPath).append("\"");
+        command.append(gccPath);
         command.append(" ").append("-fPIC");
         command.append(" ").append("-shared");
         command.append(" ").append("-o");
-        command.append(" ").append("\"").append(lib).append("\"");
+        command.append(" ").append(lib);
         for (String path : src) {
-            command.append(" ").append("\"").append(path).append("\"");
+            command.append(" ").append(path);
         }
-        command.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append("\"");
-        command.append(" ").append("-I \"").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("linux").append("\"");
+        command.append(" ").append("-I ").append(jdkRoot).append(File.separator).append("include");
+        command.append(" ").append("-I ").append(jdkRoot).append(File.separator).append("include").append(File.separator).append("linux");
         return command.toString();
     }
 
