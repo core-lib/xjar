@@ -170,6 +170,9 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
         } finally {
             XTool.close(zis);
             XTool.close(zos);
+            if (digest != null) {
+                digestFactory.release(digestAlgorithm, digest);
+            }
         }
     }
 
