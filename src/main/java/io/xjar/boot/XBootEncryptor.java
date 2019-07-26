@@ -66,7 +66,14 @@ public class XBootEncryptor extends XArchiveEncryptor<JarArchiveEntry> implement
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarEncryptor xJarEncryptor = XJarEncryptor.builder().build();
+            XJarEncryptor xJarEncryptor = XJarEncryptor.builder()
+                    .encryptor(xEncryptor)
+                    .filter(filter)
+                    .level(level)
+                    .digestFactory(digestFactory)
+                    .digestAlgorithm(digestAlgorithm)
+                    .compiler(compiler)
+                    .build();
             JarArchiveEntry entry;
             Manifest manifest = null;
             while ((entry = zis.getNextJarEntry()) != null) {

@@ -39,7 +39,11 @@ public class XBootDecryptor extends XArchiveDecryptor<JarArchiveEntry> implement
             zos.setLevel(level);
             XUnclosedInputStream nis = new XUnclosedInputStream(zis);
             XUnclosedOutputStream nos = new XUnclosedOutputStream(zos);
-            XJarDecryptor xJarDecryptor = new XJarDecryptor(xDecryptor, filter, level);
+            XJarDecryptor xJarDecryptor = XJarDecryptor.builder()
+                    .decryptor(xDecryptor)
+                    .filter(filter)
+                    .level(level)
+                    .build();
             JarArchiveEntry entry;
             while ((entry = zis.getNextJarEntry()) != null) {
                 if (entry.getName().startsWith(XJAR_SRC_DIR)
