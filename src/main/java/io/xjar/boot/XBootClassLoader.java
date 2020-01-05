@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.Enumeration;
+import sun.misc.Resource;
+import sun.misc.URLClassPath;
 
 /**
  * X类加载器
@@ -20,6 +23,7 @@ import java.util.Enumeration;
  * 2018/11/23 23:04
  */
 public class XBootClassLoader extends LaunchedURLClassLoader {
+    private final URLClassPath ucp;
     private final XBootURLHandler xBootURLHandler;
 
     static {
@@ -28,6 +32,7 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
 
     public XBootClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
+        this.ucp = new URLClassPath(urls);
         this.xBootURLHandler = new XBootURLHandler(xDecryptor, xEncryptor, xKey, this);
     }
 
@@ -58,7 +63,8 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
-            URL resource = findResource(name.replace('.', '/') + ".class");
+            String path = name.replace('.',  '/').concat(".class");
+            URL resource = findResource(path);
             if (resource == null) {
                 throw new ClassNotFoundException(name, e);
             }
@@ -66,7 +72,9 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 XKit.transfer(in, bos);
                 byte[] bytes = bos.toByteArray();
-                return defineClass(name, bytes, 0, bytes.length);
+                Resource res = ucp.getResource(path, false);
+                CodeSource cs = new CodeSource(res.getCodeSourceURL(), res.getCodeSigners());
+                return defineClass(name, bytes, 0, bytes.length, cs);
             } catch (Throwable t) {
                 throw new ClassNotFoundException(name, t);
             }
