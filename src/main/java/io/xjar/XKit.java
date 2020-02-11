@@ -10,6 +10,7 @@ import io.xjar.key.XSymmetricSecureKey;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
@@ -252,7 +253,7 @@ public abstract class XKit implements XConstants {
      */
     public static XKey key(String algorithm, int keysize, int ivsize, String password) throws NoSuchAlgorithmException {
         MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
-        byte[] seed = sha512.digest(password.getBytes());
+        byte[] seed = sha512.digest(password.getBytes(StandardCharsets.UTF_8));
         KeyGenerator generator = KeyGenerator.getInstance(algorithm.split("[/]")[0]);
         XSecureRandom random = new XSecureRandom(seed);
         generator.init(keysize, random);
