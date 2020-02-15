@@ -4,8 +4,10 @@ import io.xjar.XDecryptor;
 import io.xjar.XEncryptor;
 import io.xjar.XKit;
 import io.xjar.key.XKey;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
 import org.springframework.boot.loader.LaunchedURLClassLoader;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +57,13 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if ("org.hibernate.boot.archive.internal.JarFileBasedArchiveDescriptor".equals(name)){
+            return findJarFileBasedArchiveDescriptor(name);
+        }
+        if ("org.hibernate.boot.archive.spi.AbstractArchiveDescriptor".equals(name)){
+            return findAbstractArchiveDescriptor(name);
+        }
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
@@ -70,6 +79,73 @@ public class XBootClassLoader extends LaunchedURLClassLoader {
             } catch (Throwable t) {
                 throw new ClassNotFoundException(name, t);
             }
+        }
+    }
+
+    /**
+     * 加载该类后将该类缓存到classPool，注入的源码要用
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     */
+    private Class findAbstractArchiveDescriptor(String name) throws ClassNotFoundException{
+        URL resource = findResource(name.replace('.', '/') + ".class");
+        try {
+            InputStream in = resource.openStream();
+            ClassPool classPool = ClassPool.getDefault();
+            CtClass ctClass = classPool.makeClass(in);
+            return ctClass.toClass();
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new ClassNotFoundException(name);
+        }
+    }
+
+    /**
+     * 加载hibernate的org.hibernate.boot.archive.internal.JarFileBasedArchiveDescriptor类
+     * 之后动态修改resolveJarFileReference实现兼容访问加密的xjar
+     * @param name
+     * @return
+     * @throws Exception
+     */
+    private Class findJarFileBasedArchiveDescriptor(String name) throws ClassNotFoundException{
+        String methodName = "resolveJarFileReference";
+//        Thread.currentThread().setContextClassLoader(this.getParent());
+        try {
+            /**
+             * 这里的ClassPool类和动态注入源码中的class可能是不同的classloader加载，
+             * 导致classNotFound,所以在这手动使用本classLoader加载
+             */
+            loadClass("org.hibernate.boot.archive.spi.ArchiveDescriptor");
+            loadClass("org.hibernate.boot.archive.spi.AbstractArchiveDescriptor");
+            loadClass("java.util.jar.JarFile");
+            loadClass("io.xjar.XJarFile");
+            loadClass("java.lang.Exception");
+            URL resource = findResource(name.replace('.', '/') + ".class");
+            InputStream in = resource.openStream();
+            ClassPool classPool = ClassPool.getDefault();
+            CtClass ctClass = classPool.makeClass(in);
+            CtMethod resolveJarFileReferenceMethod = ctClass.getDeclaredMethod(methodName);
+            resolveJarFileReferenceMethod.setBody(""
+                    + "{try {\n" +
+                    "final String filePart = super.getArchiveUrl().getFile();\n" +
+                    "if ( filePart != null && filePart.indexOf( ' ' ) != -1 ) {\n" +
+                    "java.util.jar.JarFile jarFile = new java.util.jar.JarFile( super.getArchiveUrl().getFile() );" +
+                    "return new io.xjar.XJarFile(jarFile.getName(), ((Object)this).getClass().getClassLoader());\n" +
+                    "}\n" +
+                    "else {\n" +
+                    "java.util.jar.JarFile jarFile = new java.util.jar.JarFile( super.getArchiveUrl().toURI().getSchemeSpecificPart() );" +
+                    "return new io.xjar.XJarFile(jarFile.getName(), ((Object)this).getClass().getClassLoader());\n" +
+                    "}\n" +
+                    "}\n" +
+                    "catch (Exception e) {\n" +
+                    "e.printStackTrace();\n" +
+                    "}\n" +
+                    "return null;}");
+            return ctClass.toClass();
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new ClassNotFoundException(name);
         }
     }
 

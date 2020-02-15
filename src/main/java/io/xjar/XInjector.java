@@ -4,7 +4,6 @@ import io.loadkit.Loaders;
 import io.loadkit.Resource;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -20,14 +19,23 @@ import java.util.Set;
 public class XInjector {
 
     /**
-     * 往JAR包中注入XJar框架的classes
-     *
+     * 往JAR包中注入XJar框架、以及XJar依赖的classes
      * @param zos jar包输出流
      * @throws IOException I/O 异常
      */
     public static void inject(JarArchiveOutputStream zos) throws IOException {
+        inject(Loaders.ant().load("io/xjar/**"), zos);
+        inject(Loaders.ant().load("javassist/**"), zos);
+    }
+
+    /**
+     * 往JAR包中注入Resource
+     * @param resources
+     * @param zos
+     * @throws IOException
+     */
+    private static void inject(Enumeration<Resource> resources, JarArchiveOutputStream zos) throws IOException{
         Set<String> directories = new HashSet<>();
-        Enumeration<Resource> resources = Loaders.ant().load("io/xjar/**");
         while (resources.hasMoreElements()) {
             Resource resource = resources.nextElement();
             String name = resource.getName();
@@ -47,5 +55,4 @@ public class XInjector {
             zos.closeArchiveEntry();
         }
     }
-
 }
