@@ -264,7 +264,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>v2.0.9</version>
+                <version>2.0.9</version>
                 <executions>
                     <execution>
                         <goals>
