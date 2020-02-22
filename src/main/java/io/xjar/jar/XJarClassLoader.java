@@ -4,13 +4,17 @@ import io.xjar.XDecryptor;
 import io.xjar.XEncryptor;
 import io.xjar.XKit;
 import io.xjar.key.XKey;
+import sun.misc.Resource;
+import sun.misc.URLClassPath;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.CodeSource;
 import java.util.Enumeration;
 
 /**
@@ -21,6 +25,7 @@ import java.util.Enumeration;
  */
 public class XJarClassLoader extends URLClassLoader {
     private final XJarURLHandler xJarURLHandler;
+    private final URLClassPath urlClassPath;
 
     static {
         ClassLoader.registerAsParallelCapable();
@@ -29,6 +34,9 @@ public class XJarClassLoader extends URLClassLoader {
     public XJarClassLoader(URL[] urls, ClassLoader parent, XDecryptor xDecryptor, XEncryptor xEncryptor, XKey xKey) throws Exception {
         super(urls, parent);
         this.xJarURLHandler = new XJarURLHandler(xDecryptor, xEncryptor, xKey, this);
+        Field ucpField = URLClassLoader.class.getDeclaredField("ucp");
+        ucpField.setAccessible(true);
+        this.urlClassPath = (URLClassPath) ucpField.get(this);
     }
 
     @Override
@@ -58,15 +66,18 @@ public class XJarClassLoader extends URLClassLoader {
         try {
             return super.findClass(name);
         } catch (ClassFormatError e) {
-            URL resource = findResource(name.replace('.', '/') + ".class");
-            if (resource == null) {
+            String path = name.replace('.', '/').concat(".class");
+            URL url = findResource(path);
+            if (url == null) {
                 throw new ClassNotFoundException(name, e);
             }
-            try (InputStream in = resource.openStream()) {
+            try (InputStream in = url.openStream()) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 XKit.transfer(in, bos);
                 byte[] bytes = bos.toByteArray();
-                return defineClass(name, bytes, 0, bytes.length);
+                Resource resource = urlClassPath.getResource(path);
+                CodeSource codeSource = new CodeSource(resource.getCodeSourceURL(), resource.getCodeSigners());
+                return defineClass(name, bytes, 0, bytes.length, codeSource);
             } catch (Throwable t) {
                 throw new ClassNotFoundException(name, t);
             }
