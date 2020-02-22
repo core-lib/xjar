@@ -28,7 +28,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>v2.0.9</version>
+            <version>2.0.9</version>
         </dependency>
     </dependencies>
 </project>
@@ -220,7 +220,7 @@ XKit.not(
 <plugin>
     <groupId>com.github.core-lib</groupId>
     <artifactId>xjar-maven-plugin</artifactId>
-    <version>v2.0.9</version>
+    <version>2.0.9</version>
     <executions>
         <execution>
             <goals>
@@ -322,8 +322,9 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 更多文档：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
-* v2.0.9
+* 2.0.9
     1. 修复XJar类加载器加载的类没有 ProtectionDomain 以及 CodeSource 的问题
+    2. 去除版本号前置的"v"
 * v2.0.7
     1. 修复不同字符集机器间加密与运行的问题
 * v2.0.6
