@@ -73,6 +73,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                 FileOutputStream fos = new FileOutputStream(dest)
         ) {
             encrypt(key, fis, fos);
+            XGo.make(dest, key);
         }
     }
 

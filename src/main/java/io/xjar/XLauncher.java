@@ -134,11 +134,10 @@ public class XLauncher implements XConstants {
 
         if (password == null && System.console() != null) {
             Console console = System.console();
-            char[] chars = console.readPassword("password:");
+            char[] chars = console.readPassword();
             password = new String(chars);
         }
         if (password == null) {
-            System.out.print("password:");
             Scanner scanner = new Scanner(System.in);
             password = scanner.nextLine();
         }

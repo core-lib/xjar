@@ -56,6 +56,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                 FileOutputStream fos = new FileOutputStream(dest)
         ) {
             encrypt(key, fis, fos);
+            XGo.make(dest, key);
         }
     }
 

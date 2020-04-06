@@ -389,4 +389,33 @@ public abstract class XKit implements XConstants {
         return path.replaceAll("[/\\\\]+", "/");
     }
 
+    public static byte[] md5(File file) throws IOException {
+        try {
+            return hash(file, MessageDigest.getInstance("MD5"));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public static byte[] sha1(File file) throws IOException {
+        try {
+            return hash(file, MessageDigest.getInstance("SHA-1"));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+    }
+
+    public static byte[] hash(File file, MessageDigest hash) throws IOException {
+        try (
+                FileInputStream fis = new FileInputStream(file)
+        ) {
+            byte[] buf = new byte[8 * 1024];
+            int len;
+            while ((len = fis.read(buf)) != -1) {
+                hash.update(buf, 0, len);
+            }
+            return hash.digest();
+        }
+    }
+
 }
