@@ -5,6 +5,7 @@ import io.xjar.key.XKey;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 
@@ -39,7 +40,7 @@ public class XJdkDecryptor implements XDecryptor {
         CipherInputStream cis = null;
         try {
             Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm));
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm.split("[/]")[0]), new IvParameterSpec(key.getIvParameter()));
             cis = new CipherInputStream(in, cipher);
             XKit.transfer(cis, out);
         } catch (Exception e) {
@@ -53,7 +54,7 @@ public class XJdkDecryptor implements XDecryptor {
     public InputStream decrypt(XKey key, InputStream in) throws IOException {
         try {
             Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm));
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm.split("[/]")[0]), new IvParameterSpec(key.getIvParameter()));
             return new CipherInputStream(in, cipher);
         } catch (Exception e) {
             throw new IOException(e);
@@ -64,7 +65,7 @@ public class XJdkDecryptor implements XDecryptor {
     public OutputStream decrypt(XKey key, OutputStream out) throws IOException {
         try {
             Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm));
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.getDecryptKey(), algorithm.split("[/]")[0]), new IvParameterSpec(key.getIvParameter()));
             return new CipherOutputStream(out, cipher);
         } catch (Exception e) {
             throw new IOException(e);

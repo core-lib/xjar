@@ -36,7 +36,7 @@ public interface XConstants {
     String XJAR_KEY_PASSWORD = "password";
     String XJAR_KEY_HOLD = "hold";
 
-    String DEFAULT_ALGORITHM = "AES";
+    String DEFAULT_ALGORITHM = "AES/CBC/PKCS5Padding";
     int DEFAULT_KEYSIZE = 128;
     int DEFAULT_IVSIZE = 128;
 
