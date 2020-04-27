@@ -21,7 +21,6 @@ import java.util.zip.Deflater;
  */
 public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements XEncryptor, XConstants {
     private final int level;
-    private final int mode;
 
     public XJarEncryptor(XEncryptor xEncryptor) {
         this(xEncryptor, new XJarAllEntryFilter());
@@ -36,17 +35,8 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
-        this(xEncryptor, level, MODE_NORMAL, filter);
-    }
-
-    public XJarEncryptor(XEncryptor xEncryptor, int level, int mode) {
-        this(xEncryptor, level, mode, new XJarAllEntryFilter());
-    }
-
-    public XJarEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
         super(xEncryptor, filter);
         this.level = level;
-        this.mode = mode;
     }
 
     @Override
@@ -91,9 +81,6 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     if (mainClass != null) {
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
-                    }
-                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
-                        XKit.retainKey(key, attributes);
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());

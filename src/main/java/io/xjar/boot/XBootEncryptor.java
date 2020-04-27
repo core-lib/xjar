@@ -38,7 +38,6 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     private final int level;
-    private final int mode;
 
     public XBootEncryptor(XEncryptor xEncryptor) {
         this(xEncryptor, new XJarAllEntryFilter());
@@ -53,17 +52,8 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
-        this(xEncryptor, level, MODE_NORMAL, filter);
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level, int mode) {
-        this(xEncryptor, level, mode, new XJarAllEntryFilter());
-    }
-
-    public XBootEncryptor(XEncryptor xEncryptor, int level, int mode, XEntryFilter<JarArchiveEntry> filter) {
         super(xEncryptor, filter);
         this.level = level;
-        this.mode = mode;
     }
 
     @Override
@@ -112,9 +102,6 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
                     if (mainClass != null) {
                         attributes.putValue("Boot-Main-Class", mainClass);
                         attributes.putValue("Main-Class", map.get(mainClass));
-                    }
-                    if ((mode & FLAG_DANGER) == FLAG_DANGER) {
-                        XKit.retainKey(key, attributes);
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());

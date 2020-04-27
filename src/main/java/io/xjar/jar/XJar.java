@@ -5,7 +5,6 @@ import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 import java.io.*;
-import java.util.zip.Deflater;
 
 /**
  * 普通JAR包加解密工具类
@@ -41,37 +40,10 @@ public class XJar implements XConstants {
      * @param src  原文包
      * @param dest 加密包
      * @param xKey 密钥
-     * @param mode 加密模式
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(String src, String dest, XKey xKey, int mode) throws Exception {
-        encrypt(new File(src), new File(dest), xKey, mode);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param src  原文包
-     * @param dest 加密包
-     * @param xKey 密钥
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey) throws Exception {
         XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor());
-        xJarEncryptor.encrypt(xKey, src, dest);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param src  原文包
-     * @param dest 加密包
-     * @param xKey 密钥
-     * @param mode 加密模式
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(File src, File dest, XKey xKey, int mode) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode);
         xJarEncryptor.encrypt(xKey, src, dest);
     }
 
@@ -85,20 +57,6 @@ public class XJar implements XConstants {
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
         XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor());
-        xJarEncryptor.encrypt(xKey, in, out);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param in   原文包输入流
-     * @param out  加密包输出流
-     * @param xKey 密钥
-     * @param mode 加密模式
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode);
         xJarEncryptor.encrypt(xKey, in, out);
     }
 
@@ -121,40 +79,11 @@ public class XJar implements XConstants {
      * @param src    原文包
      * @param dest   加密包
      * @param xKey   密钥
-     * @param mode   加密模式
-     * @param filter 过滤器
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(String src, String dest, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        encrypt(new File(src), new File(dest), xKey, mode, filter);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param src    原文包
-     * @param dest   加密包
-     * @param xKey   密钥
      * @param filter 过滤器
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
         XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), filter);
-        xJarEncryptor.encrypt(xKey, src, dest);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param src    原文包
-     * @param dest   加密包
-     * @param xKey   密钥
-     * @param mode   加密模式
-     * @param filter 过滤器
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(File src, File dest, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode, filter);
         xJarEncryptor.encrypt(xKey, src, dest);
     }
 
@@ -169,21 +98,6 @@ public class XJar implements XConstants {
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
         XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), filter);
-        xJarEncryptor.encrypt(xKey, in, out);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param in     原文包输入流
-     * @param out    加密包输出流
-     * @param xKey   密钥
-     * @param mode   加密模式
-     * @param filter 过滤器
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode, filter);
         xJarEncryptor.encrypt(xKey, in, out);
     }
 

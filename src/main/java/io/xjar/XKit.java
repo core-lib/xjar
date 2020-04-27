@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.jar.Attributes;
 
 /**
  * XJar 工具类，包含I/O，密钥，过滤器的工具方法。
@@ -236,20 +235,6 @@ public abstract class XKit implements XConstants {
         generator.init(ivsize, random);
         SecretKey iv = generator.generateKey();
         return new XSymmetricSecureKey(algorithm, keysize, ivsize, password, key.getEncoded(), iv.getEncoded());
-    }
-
-    public static void retainKey(XKey key, Attributes attributes) {
-        attributes.putValue(XJAR_ALGORITHM_KEY, key.getAlgorithm());
-        attributes.putValue(XJAR_KEYSIZE_KEY, String.valueOf(key.getKeysize()));
-        attributes.putValue(XJAR_IVSIZE_KEY, String.valueOf(key.getIvsize()));
-        attributes.putValue(XJAR_PASSWORD_KEY, key.getPassword());
-    }
-
-    public static void removeKey(Attributes attributes) {
-        attributes.remove(new Attributes.Name(XJAR_ALGORITHM_KEY));
-        attributes.remove(new Attributes.Name(XJAR_KEYSIZE_KEY));
-        attributes.remove(new Attributes.Name(XJAR_IVSIZE_KEY));
-        attributes.remove(new Attributes.Name(XJAR_PASSWORD_KEY));
     }
 
     /**

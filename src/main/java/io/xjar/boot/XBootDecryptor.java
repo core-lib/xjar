@@ -24,16 +24,16 @@ import java.util.zip.Deflater;
 public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements XDecryptor, XConstants {
     private final int level;
 
-    public XBootDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, new XJarAllEntryFilter());
+    public XBootDecryptor(XDecryptor xDecryptor) {
+        this(xDecryptor, new XJarAllEntryFilter());
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
         this(xDecryptor, Deflater.DEFLATED, filter);
     }
 
-    public XBootDecryptor(XDecryptor xEncryptor, int level) {
-        this(xEncryptor, level, new XJarAllEntryFilter());
+    public XBootDecryptor(XDecryptor xDecryptor, int level) {
+        this(xDecryptor, level, new XJarAllEntryFilter());
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, int level, XEntryFilter<JarArchiveEntry> filter) {
@@ -85,7 +85,6 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Boot-Main-Class"));
                     }
-                    XKit.removeKey(attributes);
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
