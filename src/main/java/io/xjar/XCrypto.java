@@ -1,20 +1,25 @@
-package io.xjar.jar;
+package io.xjar;
 
-import io.xjar.*;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
- * 普通JAR包加解密工具类
+ * 智能加密/解密器
  *
  * @author Payne 646742615@qq.com
- * 2018/11/26 11:11
+ * 2020/4/27 15:46
  */
-public class XJar implements XConstants {
+public class XCrypto {
+
+    public static void main(String[] args) throws Exception {
+        XCrypto.encrypt(
+                "C:\\Users\\Payne\\IdeaProjects\\test\\target\\test-1.0-SNAPSHOT.jar",
+                "C:\\Users\\Payne\\IdeaProjects\\test\\target\\test-1.0-SNAPSHOT.xjar",
+                XKit.key("DES/CBC/PKCS5Padding", 56, 56, "io.xjar")
+        );
+    }
 
     /**
      * 加密 普通 JAR 包
@@ -37,21 +42,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor());
-        xJarEncryptor.encrypt(xKey, src, dest);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param in   原文包输入流
-     * @param out  加密包输出流
-     * @param xKey 密钥
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor());
-        xJarEncryptor.encrypt(xKey, in, out);
+        XSmartEncryptor xSmartEncryptor = new XSmartEncryptor(new XJdkEncryptor());
+        xSmartEncryptor.encrypt(xKey, src, dest);
     }
 
     /**
@@ -77,22 +69,8 @@ public class XJar implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), filter);
-        xJarEncryptor.encrypt(xKey, src, dest);
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
-     * @param in     原文包输入流
-     * @param out    加密包输出流
-     * @param xKey   密钥
-     * @param filter 过滤器
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarEncryptor xJarEncryptor = new XJarEncryptor(new XJdkEncryptor(), filter);
-        xJarEncryptor.encrypt(xKey, in, out);
+        XSmartEncryptor xSmartEncryptor = new XSmartEncryptor(new XJdkEncryptor(), filter);
+        xSmartEncryptor.encrypt(xKey, src, dest);
     }
 
     /**
@@ -122,18 +100,6 @@ public class XJar implements XConstants {
     /**
      * 加密 普通 JAR 包
      *
-     * @param in       原文包输入流
-     * @param out      加密包输出流
-     * @param password 密码
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(InputStream in, OutputStream out, String password) throws Exception {
-        encrypt(in, out, XKit.key(password));
-    }
-
-    /**
-     * 加密 普通 JAR 包
-     *
      * @param src      原文包
      * @param dest     加密包
      * @param password 密码
@@ -158,19 +124,6 @@ public class XJar implements XConstants {
     }
 
     /**
-     * 加密 普通 JAR 包
-     *
-     * @param in       原文包输入流
-     * @param out      加密包输出流
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 加密异常
-     */
-    public static void encrypt(InputStream in, OutputStream out, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        encrypt(in, out, XKit.key(password), filter);
-    }
-
-    /**
      * 解密 普通 JAR 包
      *
      * @param src  加密包
@@ -191,21 +144,8 @@ public class XJar implements XConstants {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, XKey xKey) throws Exception {
-        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor());
-        xJarDecryptor.decrypt(xKey, src, dest);
-    }
-
-    /**
-     * 解密 普通 JAR 包
-     *
-     * @param in   加密包输入流
-     * @param out  解密包输出流
-     * @param xKey 密钥
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
-        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor());
-        xJarDecryptor.decrypt(xKey, in, out);
+        XSmartDecryptor xSmartDecryptor = new XSmartDecryptor(new XJdkDecryptor());
+        xSmartDecryptor.decrypt(xKey, src, dest);
     }
 
     /**
@@ -231,22 +171,8 @@ public class XJar implements XConstants {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(), filter);
-        xJarDecryptor.decrypt(xKey, src, dest);
-    }
-
-    /**
-     * 解密 普通 JAR 包
-     *
-     * @param in     加密包输入流
-     * @param out    解密包输出流
-     * @param xKey   密钥
-     * @param filter 过滤器
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XJarDecryptor xJarDecryptor = new XJarDecryptor(new XJdkDecryptor(), filter);
-        xJarDecryptor.decrypt(xKey, in, out);
+        XSmartDecryptor xSmartDecryptor = new XSmartDecryptor(new XJdkDecryptor(), filter);
+        xSmartDecryptor.decrypt(xKey, src, dest);
     }
 
     /**
@@ -276,18 +202,6 @@ public class XJar implements XConstants {
     /**
      * 解密 普通 JAR 包
      *
-     * @param in       加密包输入流
-     * @param out      解密包输出流
-     * @param password 密码
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, String password) throws Exception {
-        decrypt(in, out, XKit.key(password));
-    }
-
-    /**
-     * 解密 普通 JAR 包
-     *
      * @param src      加密包
      * @param dest     解密包
      * @param password 密码
@@ -309,19 +223,6 @@ public class XJar implements XConstants {
      */
     public static void decrypt(File src, File dest, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
         decrypt(src, dest, XKit.key(password), filter);
-    }
-
-    /**
-     * 解密 普通 JAR 包
-     *
-     * @param in       加密包输入流
-     * @param out      解密包输出流
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 解密异常
-     */
-    public static void decrypt(InputStream in, OutputStream out, String password, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        decrypt(in, out, XKit.key(password), filter);
     }
 
 }
