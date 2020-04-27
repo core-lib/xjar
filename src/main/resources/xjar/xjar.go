@@ -12,10 +12,17 @@ import (
 	"path/filepath"
 )
 
-var jarMD5 = []byte{#{jarMD5}}
-var jarSHA1 = []byte{#{jarSHA1}}
-var jarKEY = []byte{#{jarKEY}}
-var CLRF = []byte{13, 10}
+var xJar = XJar{
+	md5:  []byte{#{xJar.md5}},
+	sha1: []byte{#{xJar.sha1}},
+}
+
+var xKey = XKey{
+	algorithm: []byte{#{xKey.algorithm}},
+	keysize:   []byte{#{xKey.keysize}},
+	ivsize:    []byte{#{xKey.ivsize}},
+	password:  []byte{#{xKey.password}},
+}
 
 func main() {
 	// search the jar to start
@@ -35,7 +42,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if bytes.Compare(MD5, jarMD5) != 0 {
+	if bytes.Compare(MD5, xJar.md5) != 0 {
 		panic(errors.New("invalid jar with MD5"))
 	}
 
@@ -44,14 +51,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if bytes.Compare(SHA1, jarSHA1) != 0 {
+	if bytes.Compare(SHA1, xJar.sha1) != 0 {
 		panic(errors.New("invalid jar with SHA-1"))
 	}
 
-    // start java application
+	// start java application
 	java := os.Args[1]
 	args := os.Args[2:]
-	key := bytes.Join([][]byte{jarKEY, CLRF}, []byte{})
+	key := bytes.Join([][]byte{
+		xKey.algorithm, {13, 10},
+		xKey.keysize, {13, 10},
+		xKey.ivsize, {13, 10},
+		xKey.password, {13, 10},
+	}, []byte{})
 	cmd := exec.Command(java, args...)
 	cmd.Stdin = bytes.NewReader(key)
 	cmd.Stdout = os.Stdout
@@ -107,4 +119,16 @@ func HASH(path string, hash hash.Hash) ([]byte, error) {
 	sum := hash.Sum(nil)
 
 	return sum, nil
+}
+
+type XJar struct {
+	md5  []byte
+	sha1 []byte
+}
+
+type XKey struct {
+	algorithm []byte
+	keysize   []byte
+	ivsize    []byte
+	password  []byte
 }

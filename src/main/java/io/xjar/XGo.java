@@ -19,36 +19,20 @@ public class XGo {
 
     public static void make(File xJar, XKey xKey) throws IOException {
         byte[] md5 = XKit.md5(xJar);
-        StringBuilder jarMD5 = new StringBuilder();
-        for (byte b : md5) {
-            if (jarMD5.length() > 0) {
-                jarMD5.append(", ");
-            }
-            jarMD5.append(b & 0xFF);
-        }
         byte[] sha1 = XKit.sha1(xJar);
 
-        StringBuilder jarSHA1 = new StringBuilder();
-        for (byte b : sha1) {
-            if (jarSHA1.length() > 0) {
-                jarSHA1.append(", ");
-            }
-            jarSHA1.append(b & 0xFF);
-        }
-
-        byte[] key = xKey.getPassword().getBytes(StandardCharsets.UTF_8);
-        StringBuilder jarKEY = new StringBuilder();
-        for (byte b : key) {
-            if (jarKEY.length() > 0) {
-                jarKEY.append(", ");
-            }
-            jarKEY.append(b & 0xFF);
-        }
+        byte[] algorithm = xKey.getAlgorithm().getBytes(StandardCharsets.UTF_8);
+        byte[] keysize = String.valueOf(xKey.getKeysize()).getBytes(StandardCharsets.UTF_8);
+        byte[] ivsize = String.valueOf(xKey.getIvsize()).getBytes(StandardCharsets.UTF_8);
+        byte[] password = xKey.getPassword().getBytes(StandardCharsets.UTF_8);
 
         Map<String, String> variables = new HashMap<>();
-        variables.put("jarMD5", jarMD5.toString());
-        variables.put("jarSHA1", jarSHA1.toString());
-        variables.put("jarKEY", jarKEY.toString());
+        variables.put("xJar.md5", convert(md5));
+        variables.put("xJar.sha1", convert(sha1));
+        variables.put("xKey.algorithm", convert(algorithm));
+        variables.put("xKey.keysize", convert(keysize));
+        variables.put("xKey.ivsize", convert(ivsize));
+        variables.put("xKey.password", convert(password));
 
         URL url = XGo.class.getClassLoader().getResource("xjar/xjar.go");
         if (url == null) {
@@ -76,6 +60,17 @@ public class XGo {
             writer.flush();
             out.flush();
         }
+    }
+
+    private static String convert(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : bytes) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append(b & 0xFF);
+        }
+        return builder.toString();
     }
 
 }

@@ -48,7 +48,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor());
         xBootEncryptor.encrypt(xKey, src, dest);
     }
 
@@ -62,7 +62,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey, int mode) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode);
         xBootEncryptor.encrypt(xKey, src, dest);
     }
 
@@ -75,7 +75,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()));
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor());
         xBootEncryptor.encrypt(xKey, in, out);
     }
 
@@ -89,7 +89,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode);
         xBootEncryptor.encrypt(xKey, in, out);
     }
 
@@ -130,7 +130,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), filter);
         xBootEncryptor.encrypt(xKey, src, dest);
     }
 
@@ -145,7 +145,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode, filter);
         xBootEncryptor.encrypt(xKey, src, dest);
     }
 
@@ -159,7 +159,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), filter);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), filter);
         xBootEncryptor.encrypt(xKey, in, out);
     }
 
@@ -174,7 +174,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, XKey xKey, int mode, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(xKey.getAlgorithm()), Deflater.DEFLATED, mode, filter);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), Deflater.DEFLATED, mode, filter);
         xBootEncryptor.encrypt(xKey, in, out);
     }
 
@@ -283,7 +283,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm));
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor());
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootEncryptor.encrypt(xKey, src, dest);
     }
@@ -339,7 +339,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm));
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor());
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootEncryptor.encrypt(xKey, in, out);
     }
@@ -457,7 +457,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm), filter);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), filter);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootEncryptor.encrypt(xKey, src, dest);
     }
@@ -517,7 +517,7 @@ public class XBoot implements XConstants {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(algorithm), filter);
+        XBootEncryptor xBootEncryptor = new XBootEncryptor(new XJdkEncryptor(), filter);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootEncryptor.encrypt(xKey, in, out);
     }
@@ -560,7 +560,7 @@ public class XBoot implements XConstants {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, XKey xKey) throws Exception {
-        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(xKey.getAlgorithm()));
+        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor());
         xBootDecryptor.decrypt(xKey, in, out);
     }
 
@@ -605,7 +605,7 @@ public class XBoot implements XConstants {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, XKey xKey, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(xKey.getAlgorithm()), filter);
+        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(), filter);
         xBootDecryptor.decrypt(xKey, in, out);
     }
 
@@ -773,7 +773,7 @@ public class XBoot implements XConstants {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(algorithm));
+        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor());
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootDecryptor.decrypt(xKey, in, out);
     }
@@ -954,7 +954,7 @@ public class XBoot implements XConstants {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, XEntryFilter<JarArchiveEntry> filter) throws Exception {
-        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(algorithm), filter);
+        XBootDecryptor xBootDecryptor = new XBootDecryptor(new XJdkDecryptor(), filter);
         XKey xKey = XKit.key(algorithm, keysize, ivsize, password);
         xBootDecryptor.decrypt(xKey, in, out);
     }

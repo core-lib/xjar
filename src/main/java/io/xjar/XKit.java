@@ -220,31 +220,6 @@ public abstract class XKit implements XConstants {
      * 根据密码生成密钥
      *
      * @param algorithm 密钥算法
-     * @param password  密码
-     * @return 密钥
-     * @throws NoSuchAlgorithmException 没有该密钥算法
-     */
-    public static XKey key(String algorithm, String password) throws NoSuchAlgorithmException {
-        return key(algorithm, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
-    }
-
-    /**
-     * 根据密码生成密钥
-     *
-     * @param algorithm 密钥算法
-     * @param keysize   密钥长度
-     * @param password  密码
-     * @return 密钥
-     * @throws NoSuchAlgorithmException 没有该密钥算法
-     */
-    public static XKey key(String algorithm, int keysize, String password) throws NoSuchAlgorithmException {
-        return key(algorithm, keysize, DEFAULT_IVSIZE, password);
-    }
-
-    /**
-     * 根据密码生成密钥
-     *
-     * @param algorithm 密钥算法
      * @param keysize   密钥长度
      * @param ivsize    向量长度
      * @param password  密码

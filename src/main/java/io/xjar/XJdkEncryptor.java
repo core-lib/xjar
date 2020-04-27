@@ -16,11 +16,6 @@ import java.io.*;
  * 2018/11/22 14:01
  */
 public class XJdkEncryptor implements XEncryptor {
-    private final String algorithm;
-
-    public XJdkEncryptor(String algorithm) {
-        this.algorithm = algorithm;
-    }
 
     @Override
     public void encrypt(XKey key, File src, File dest) throws IOException {
@@ -39,6 +34,7 @@ public class XJdkEncryptor implements XEncryptor {
     public void encrypt(XKey key, InputStream in, OutputStream out) throws IOException {
         CipherInputStream cis = null;
         try {
+            String algorithm = key.getAlgorithm();
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncryptKey(), algorithm.split("[/]")[0]), new IvParameterSpec(key.getIvParameter()));
             cis = new CipherInputStream(in, cipher);
@@ -53,6 +49,7 @@ public class XJdkEncryptor implements XEncryptor {
     @Override
     public InputStream encrypt(XKey key, InputStream in) throws IOException {
         try {
+            String algorithm = key.getAlgorithm();
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncryptKey(), algorithm.split("[/]")[0]), new IvParameterSpec(key.getIvParameter()));
             return new CipherInputStream(in, cipher);
@@ -64,6 +61,7 @@ public class XJdkEncryptor implements XEncryptor {
     @Override
     public OutputStream encrypt(XKey key, OutputStream out) throws IOException {
         try {
+            String algorithm = key.getAlgorithm();
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.getEncryptKey(), algorithm.split("[/]")[0]), new IvParameterSpec(key.getIvParameter()));
             return new CipherOutputStream(out, cipher);
