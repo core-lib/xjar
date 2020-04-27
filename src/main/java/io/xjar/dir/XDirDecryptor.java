@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 public class XDirDecryptor extends XEntryDecryptor<File> implements XDecryptor {
 
-    public XDirDecryptor(XDecryptor xEncryptor) {
-        this(xEncryptor, null);
+    public XDirDecryptor(XDecryptor xDecryptor) {
+        this(xDecryptor, null);
     }
 
     public XDirDecryptor(XDecryptor xDecryptor, XEntryFilter<File> filter) {
