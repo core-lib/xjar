@@ -29,7 +29,7 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xDecryptor, Deflater.DEFLATED, filter);
+        this(xDecryptor, Deflater.DEFAULT_COMPRESSION, filter);
     }
 
     public XBootDecryptor(XDecryptor xDecryptor, int level) {

@@ -1,5 +1,6 @@
 package io.xjar;
 
+import io.xjar.jar.XJarAntEntryFilter;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
@@ -13,8 +14,17 @@ import java.io.File;
  */
 public class XCrypto {
 
+    public static void main(String[] args) throws Exception {
+        XCrypto.encrypt(
+                "C:\\Users\\Payne\\IdeaProjects\\juniu-printer\\target\\juniu-printer-1.0.0.jar",
+                "C:\\Users\\Payne\\IdeaProjects\\juniu-printer\\target\\juniu-printer-1.0.0.xjar",
+                XKit.key("DES/CBC/PKCS5Padding", 56, 56, "io.xjar"),
+                new XJarAntEntryFilter("cn/regent/juniu/printer/**")
+        );
+    }
+
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -26,7 +36,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src  原文包
      * @param dest 加密包
@@ -39,7 +49,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -52,7 +62,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src    原文包
      * @param dest   加密包
@@ -66,7 +76,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -78,7 +88,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -90,7 +100,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -103,7 +113,7 @@ public class XCrypto {
     }
 
     /**
-     * 加密 普通 / spring-boot JAR 包
+     * 加密 普通 JAR 包
      *
      * @param src      原文包
      * @param dest     加密包
@@ -116,7 +126,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src  加密包
      * @param dest 解密包
@@ -128,7 +138,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src  加密包
      * @param dest 解密包
@@ -141,7 +151,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src    加密包
      * @param dest   解密包
@@ -154,7 +164,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src    加密包
      * @param dest   解密包
@@ -168,7 +178,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -180,7 +190,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -192,7 +202,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包
@@ -205,7 +215,7 @@ public class XCrypto {
     }
 
     /**
-     * 解密 普通 / spring-boot JAR 包
+     * 解密 普通 JAR 包
      *
      * @param src      加密包
      * @param dest     解密包

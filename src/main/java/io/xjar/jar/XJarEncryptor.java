@@ -27,7 +27,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xEncryptor, Deflater.DEFLATED, filter);
+        this(xEncryptor, Deflater.DEFAULT_COMPRESSION, filter);
     }
 
     public XJarEncryptor(XEncryptor xEncryptor, int level) {
@@ -75,17 +75,25 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                 } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    manifest = new Manifest(nis);
+                    ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                    XKit.transfer(nis, buf);
+                    manifest = new Manifest(new ByteArrayInputStream(buf.toByteArray()));
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
+                    boolean changed = false;
                     if (mainClass != null) {
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
+                        changed = true;
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    manifest.write(nos);
+                    if (changed) {
+                        manifest.write(nos);
+                    } else {
+                        XKit.transfer(new ByteArrayInputStream(buf.toByteArray()), nos);
+                    }
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());

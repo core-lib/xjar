@@ -44,7 +44,7 @@ public class XBootEncryptor extends XEntryEncryptor<JarArchiveEntry> implements 
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, XEntryFilter<JarArchiveEntry> filter) {
-        this(xEncryptor, Deflater.DEFLATED, filter);
+        this(xEncryptor, Deflater.DEFAULT_COMPRESSION, filter);
     }
 
     public XBootEncryptor(XEncryptor xEncryptor, int level) {

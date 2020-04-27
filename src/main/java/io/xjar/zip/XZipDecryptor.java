@@ -23,7 +23,7 @@ public class XZipDecryptor extends XEntryDecryptor<ZipArchiveEntry> implements X
     }
 
     public XZipDecryptor(XDecryptor xDecryptor, XEntryFilter<ZipArchiveEntry> filter) {
-        this(xDecryptor, Deflater.DEFLATED, filter);
+        this(xDecryptor, Deflater.DEFAULT_COMPRESSION, filter);
     }
 
     public XZipDecryptor(XDecryptor xDecryptor, int level) {
