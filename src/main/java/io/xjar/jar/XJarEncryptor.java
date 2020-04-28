@@ -75,25 +75,17 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                 } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    XKit.transfer(nis, bos);
-                    manifest = new Manifest(new ByteArrayInputStream(bos.toByteArray()));
+                    manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
-                    boolean changed = false;
                     if (mainClass != null) {
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "io.xjar.jar.XJarLauncher");
-                        changed = true;
                     }
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                    if (changed) {
-                        manifest.write(nos);
-                    } else {
-                        XKit.transfer(new ByteArrayInputStream(bos.toByteArray()), nos);
-                    }
+                    manifest.write(nos);
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
