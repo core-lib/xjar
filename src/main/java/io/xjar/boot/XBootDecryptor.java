@@ -107,12 +107,12 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     xJarDecryptor.decrypt(key, nis, cos);
-                    JarArchiveEntry jar = new JarArchiveEntry(entry.getName());
-                    jar.setMethod(JarArchiveEntry.STORED);
-                    jar.setSize(bos.size());
-                    jar.setTime(entry.getTime());
-                    jar.setCrc(cos.getChecksum().getValue());
-                    zos.putArchiveEntry(jar);
+                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                    jarArchiveEntry.setMethod(JarArchiveEntry.STORED);
+                    jarArchiveEntry.setSize(bos.size());
+                    jarArchiveEntry.setTime(entry.getTime());
+                    jarArchiveEntry.setCrc(cos.getChecksum().getValue());
+                    zos.putArchiveEntry(jarArchiveEntry);
                     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
                     XKit.transfer(bis, nos);
                 }

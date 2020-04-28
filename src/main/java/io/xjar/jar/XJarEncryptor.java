@@ -75,9 +75,9 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                 } else if (entry.getName().equals(META_INF_MANIFEST)) {
-                    ByteArrayOutputStream buf = new ByteArrayOutputStream();
-                    XKit.transfer(nis, buf);
-                    manifest = new Manifest(new ByteArrayInputStream(buf.toByteArray()));
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    XKit.transfer(nis, bos);
+                    manifest = new Manifest(new ByteArrayInputStream(bos.toByteArray()));
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     boolean changed = false;
@@ -92,7 +92,7 @@ public class XJarEncryptor extends XEntryEncryptor<JarArchiveEntry> implements X
                     if (changed) {
                         manifest.write(nos);
                     } else {
-                        XKit.transfer(new ByteArrayInputStream(buf.toByteArray()), nos);
+                        XKit.transfer(new ByteArrayInputStream(bos.toByteArray()), nos);
                     }
                 } else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());

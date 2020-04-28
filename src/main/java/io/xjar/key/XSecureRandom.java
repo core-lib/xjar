@@ -26,17 +26,17 @@ public class XSecureRandom extends SecureRandom {
     }
 
     public XSecureRandom(boolean intPad, byte[][] values) {
-        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         for (int i = 0; i != values.length; i++) {
             try {
-                bOut.write(values[i]);
+                bos.write(values[i]);
             } catch (IOException e) {
                 throw new IllegalArgumentException("can't save value array.");
             }
         }
 
-        _data = bOut.toByteArray();
+        _data = bos.toByteArray();
 
         if (intPad) {
             _intPad = _data.length % 4;
@@ -89,7 +89,7 @@ public class XSecureRandom extends SecureRandom {
         val |= (long) nextValue() << 24;
         val |= (long) nextValue() << 16;
         val |= (long) nextValue() << 8;
-        val |= (long) nextValue();
+        val |= nextValue();
 
         return val;
     }
