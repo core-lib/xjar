@@ -1,6 +1,5 @@
 package io.xjar;
 
-import io.xjar.jar.XJarAntEntryFilter;
 import io.xjar.key.XKey;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 
@@ -12,16 +11,17 @@ import java.io.File;
  * @author Payne 646742615@qq.com
  * 2020/4/27 15:46
  */
-public class XCrypto {
+public class XCrypto extends XFilters {
 
     public static void main(String[] args) throws Exception {
         XCrypto.encrypt(
                 "C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0.jar",
                 "C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0-encrypted.jar",
                 XKit.key("DES/CBC/PKCS5Padding", 56, 56, "io.xjar"),
-                new XJarAntEntryFilter("cn/regent/juniu/wxapp/**")
+                any().mix(ant("cn/"))
         );
     }
+
 
     /**
      * 加密 普通 JAR 包
