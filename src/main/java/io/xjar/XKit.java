@@ -67,6 +67,19 @@ public abstract class XKit implements XConstants {
         out.write('\n');
     }
 
+    public static byte[] read(InputStream in) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        transfer(in, bos);
+        return bos.toByteArray();
+    }
+
+    public static void write(OutputStream out, byte[] data) throws IOException {
+        if (data == null) {
+            return;
+        }
+        out.write(data);
+    }
+
     /**
      * 关闭资源，等效于XKit.close(closeable, true);
      *

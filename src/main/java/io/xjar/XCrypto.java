@@ -16,10 +16,10 @@ public class XCrypto {
 
     public static void main(String[] args) throws Exception {
         XCrypto.encrypt(
-                "C:\\Users\\Payne\\IdeaProjects\\juniu-printer\\target\\juniu-printer-1.0.0.jar",
-                "C:\\Users\\Payne\\IdeaProjects\\juniu-printer\\target\\juniu-printer-1.0.0.xjar",
+                "C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0.jar",
+                "C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0-encrypted.jar",
                 XKit.key("DES/CBC/PKCS5Padding", 56, 56, "io.xjar"),
-                new XJarAntEntryFilter("cn/regent/juniu/printer/**")
+                new XJarAntEntryFilter("cn/regent/juniu/wxapp/**")
         );
     }
 

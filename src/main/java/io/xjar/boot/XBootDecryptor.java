@@ -104,17 +104,31 @@ public class XBootDecryptor extends XEntryDecryptor<JarArchiveEntry> implements 
                 }
                 // BOOT-INF/lib/**
                 else if (entry.getName().startsWith(BOOT_INF_LIB)) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
-                    xJarDecryptor.decrypt(key, nis, cos);
-                    JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
-                    jarArchiveEntry.setMethod(JarArchiveEntry.STORED);
-                    jarArchiveEntry.setSize(bos.size());
-                    jarArchiveEntry.setTime(entry.getTime());
-                    jarArchiveEntry.setCrc(cos.getChecksum().getValue());
-                    zos.putArchiveEntry(jarArchiveEntry);
-                    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-                    XKit.transfer(bis, nos);
+                    byte[] data = XKit.read(nis);
+                    ByteArrayInputStream lib = new ByteArrayInputStream(data);
+                    boolean need = xJarDecryptor.predicate(lib);
+                    lib.reset();
+                    if (need) {
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
+                        xJarDecryptor.decrypt(key, lib, cos);
+                        JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                        jarArchiveEntry.setMethod(JarArchiveEntry.STORED);
+                        jarArchiveEntry.setSize(bos.size());
+                        jarArchiveEntry.setTime(entry.getTime());
+                        jarArchiveEntry.setCrc(cos.getChecksum().getValue());
+                        zos.putArchiveEntry(jarArchiveEntry);
+                        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+                        XKit.transfer(bis, nos);
+                    } else {
+                        JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
+                        jarArchiveEntry.setMethod(JarArchiveEntry.STORED);
+                        jarArchiveEntry.setSize(entry.getSize());
+                        jarArchiveEntry.setTime(entry.getTime());
+                        jarArchiveEntry.setCrc(entry.getCrc());
+                        zos.putArchiveEntry(jarArchiveEntry);
+                        XKit.transfer(lib, nos);
+                    }
                 }
                 // OTHER
                 else {
