@@ -101,4 +101,34 @@ public class XJarDecryptor extends XEntryDecryptor<JarArchiveEntry> implements X
         }
     }
 
+    /**
+     * 断言输入的jar是否有entry需要被解密
+     *
+     * @param jar jar
+     * @return 有: {@code true} 没有: {@code false}
+     * @throws IOException I/O 异常
+     */
+    public boolean predicate(InputStream jar) throws IOException {
+        JarArchiveInputStream zis = null;
+        try {
+            zis = new JarArchiveInputStream(jar);
+            JarArchiveEntry entry;
+            while ((entry = zis.getNextJarEntry()) != null) {
+                if (entry.getName().startsWith(XJAR_SRC_DIR)
+                        || entry.getName().endsWith(XJAR_INF_DIR)
+                        || entry.getName().endsWith(XJAR_INF_DIR + XJAR_INF_IDX)
+                        || entry.isDirectory()
+                        || entry.getName().equals(META_INF_MANIFEST)
+                ) {
+                    continue;
+                }
+                if (filtrate(entry)) {
+                    return true;
+                }
+            }
+            return false;
+        } finally {
+            XKit.close(zis);
+        }
+    }
 }
