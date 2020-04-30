@@ -31,5 +31,9 @@ public abstract class XMixEntryFilter<E> implements XEntryFilter<E> {
         return filters.remove(filter);
     }
 
+    public int size() {
+        return filters.size();
+    }
+
     public abstract XMixEntryFilter<E> mix(XEntryFilter<? extends E> filter);
 }

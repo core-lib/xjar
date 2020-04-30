@@ -13,15 +13,13 @@ import java.io.File;
  */
 public class XCrypto extends XFilters {
 
-    public static void main(String[] args) throws Exception {
-        XCrypto.encrypt(
-                "C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0.jar",
-                "C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0-encrypted.jar",
-                XKit.key("DES/CBC/PKCS5Padding", 56, 56, "io.xjar"),
-                any().mix(ant("cn/"))
-        );
+    public static XEncryption encryption() {
+        return new XEncryption();
     }
 
+    public static XDecryption decryption() {
+        return new XDecryption();
+    }
 
     /**
      * 加密 普通 JAR 包
