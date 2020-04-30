@@ -14,7 +14,7 @@ import java.io.OutputStream;
  * @author Payne 646742615@qq.com
  * 2018/11/26 11:11
  */
-public class XJar implements XConstants {
+public class XJar extends XFilters implements XConstants {
 
     /**
      * 加密 普通 JAR 包
