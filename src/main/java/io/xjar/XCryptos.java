@@ -11,7 +11,7 @@ import java.io.File;
  * @author Payne 646742615@qq.com
  * 2020/4/27 15:46
  */
-public class XCrypto extends XFilters implements XConstants {
+public class XCryptos extends XFilters implements XConstants {
 
     public static XEncryption encryption() {
         return new XEncryption();

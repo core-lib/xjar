@@ -123,5 +123,4 @@ public abstract class XFilters {
     public static XJarRegexEntryFilter regex(String regex) {
         return new XJarRegexEntryFilter(regex);
     }
-
 }

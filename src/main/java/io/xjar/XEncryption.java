@@ -19,17 +19,17 @@ import static io.xjar.XFilters.*;
  * 2020/4/30 17:05
  */
 public class XEncryption {
-    private File src;
+    private File jar;
     private XKey key;
     private XAnyEntryFilter<JarArchiveEntry> includes = XKit.any();
     private XAllEntryFilter<JarArchiveEntry> excludes = XKit.all();
 
-    public XEncryption from(String src) {
-        return from(new File(src));
+    public XEncryption from(String jar) {
+        return from(new File(jar));
     }
 
-    public XEncryption from(File src) {
-        this.src = src;
+    public XEncryption from(File jar) {
+        this.jar = jar;
         return this;
     }
 
@@ -71,11 +71,17 @@ public class XEncryption {
         return this;
     }
 
-    public void to(String dest) throws Exception {
-        to(new File(dest));
+    public void to(String xJar) throws Exception {
+        to(new File(xJar));
     }
 
-    public void to(File dest) throws Exception {
+    public void to(File xJar) throws Exception {
+        if (jar == null) {
+            throw new IllegalArgumentException("jar to encrypt is null. [please call from(String jar) or from(File jar) before]");
+        }
+        if (key == null) {
+            throw new IllegalArgumentException("key to encrypt is null. [please call use(String password) or use(String algorithm, int keysize, int ivsize, String password) before]");
+        }
         XMixEntryFilter<JarArchiveEntry> filter;
         if (includes.size() == 0 && excludes.size() == 0) {
             filter = null;
@@ -88,6 +94,6 @@ public class XEncryption {
                 filter.mix(excludes);
             }
         }
-        XCrypto.encrypt(src, dest, key, filter);
+        XCryptos.encrypt(jar, xJar, key, filter);
     }
 }
