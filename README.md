@@ -1,15 +1,15 @@
 # XJar [![](https://jitpack.io/v/core-lib/xjar.svg)](https://jitpack.io/#core-lib/xjar)
 GitHub: https://github.com/core-lib/xjar
-### Spring Boot JAR 安全加密运行工具，同时支持的原生JAR。
-### 基于对JAR包内资源的加密以及拓展ClassLoader来构建的一套程序加密启动，动态解密运行的方案，避免源码泄露或反编译。
+### Spring Boot JAR 安全加密运行工具, 同时支持的原生JAR.
+### 基于对JAR包内资源的加密以及拓展ClassLoader来构建的一套程序加密启动, 动态解密运行的方案, 避免源码泄露以及反编译.
 
 ## 功能特性
-* 无代码侵入，只需要把编译好的JAR包通过工具加密即可。
-* 完全内存解密，杜绝源码以及字节码泄露或反编译。
-* 支持所有JDK内置加解密算法。
-* 可选择需要加解密的字节码或其他资源文件。
-* 支持Maven插件，加密更加便捷。
-* 动态生成Go启动器，保护密码不泄露。
+* 无代码侵入, 只需要把编译好的JAR包通过工具加密即可.
+* 完全内存解密, 降低源码以及字节码泄露或反编译的风险.
+* 支持所有JDK内置加解密算法.
+* 可选择需要加解密的字节码或其他资源文件.
+* 支持Maven插件, 加密更加便捷.
+* 动态生成Go启动器, 保护密码不泄露.
 
 ## 环境依赖
 JDK 1.7 +
@@ -37,8 +37,8 @@ JDK 1.7 +
     </dependencies>
 </project>
 ```
-* 必须添加 https://jitpack.io Maven仓库
-* 如果使用 JUnit 测试类来运行加密可以将 XJar 依赖的 scope 设置为 test
+* 必须添加 https://jitpack.io Maven仓库.
+* 如果使用 JUnit 测试类来运行加密可以将 XJar 依赖的 scope 设置为 test.
 
 #### 2. 加密源码
 ```java
@@ -91,6 +91,9 @@ XCryptos.encryption()
 </tbody>
 </table>
 
+* 指定加密算法的时候密钥长度以及向量长度必须在算法可支持范围内, 具体加密算法的密钥及向量长度请自行百度或谷歌.
+* include 和 exclude 同时使用时即加密在include的范围内且排除了exclude的资源.
+
 #### 3. 编译脚本
 ```shell script
 go build xjar.go
@@ -108,14 +111,18 @@ xjar javaw -jar /path/to/encrypted.jar
 
 nohup xjar java -jar /path/to/encrypted.jar
 ```
-* 
+* 在 Java 启动命令前加上编译好的Go启动器可执行文件名(xjar)即可启动运行加密后的JAR包.
+* 若使用 nohup 方式启动则 nohup 要放在Go启动器可执行文件名(xjar)之前.
+* 若Go启动器可执行文件名(xjar)不在当前命令行所在目录则要通过绝对路径或相对路径指定.
+* 仅支持通过 -jar 方式启动, 不支持-cp或-classpath的方式.
 
 ## 注意事项
+#### 1. 不兼容 spring-boot-maven-plugin 的 executable = true 以及 embeddedLaunchScript
 ```xml
 <plugin>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-maven-plugin</artifactId>
-    <!-- 需要将executable和embeddedLaunchScript参数删除，目前还不能支持对该模式Jar的加密！后面将会支持该方式的打包。 
+    <!-- 需要将executable和embeddedLaunchScript参数删除, 目前还不能支持对该模式Jar的加密！后面将会支持该方式的打包. 
     <configuration>
         <executable>true</executable>
         <embeddedLaunchScript>...</embeddedLaunchScript>
@@ -124,55 +131,29 @@ nohup xjar java -jar /path/to/encrypted.jar
 </plugin>
 ```
 
-## Spring Boot + JPA(Hibernate) 问题
-如果项目中使用了 JPA 且实现为Hibernate时，由于Hibernate自己解析加密后的Jar文件，所以无法正常启动，
-可以采用以下解决方案
-1. clone [XJar-Agent-Hibernate](https://github.com/core-lib/xjar-agent-hibernate) ，使用 mvn clean package 编译出 xjar-agent-hibernate-${version}.jar 文件
-2. 采用 java -javaagent:xjar-agent-hibernate-${version}.jar -jar your-spring-boot-app.jar 命令启动
+#### 2. Spring Boot + JPA(Hibernate) 启动报错问题
+如果项目中使用了 JPA 且实现为Hibernate时, 由于Hibernate自己解析加密后的Jar文件, 所以无法正常启动.
+可以采用以下解决方案:
+1. clone [XJar-Agent-Hibernate](https://github.com/core-lib/xjar-agent-hibernate) , 使用 mvn clean package 编译出 xjar-agent-hibernate-${version}.jar 文件
+2. 采用 xjar java -javaagent:xjar-agent-hibernate-${version}.jar -jar your-spring-boot-app.jar 命令启动
 
-## 静态文件浏览器无法加载完成问题
-由于静态文件被加密后文件体积变大，Spring Boot 会采用文件的大小作为 Content-Length 头返回给浏览器，
-但实际上通过 XJar 加载解密后文件大小恢复了原本的大小，所以浏览器认为还没接收完导致一直等待服务端。
-由此我们需要在加密时忽略静态文件的加密，实际上静态文件也没加密的必要，因为即便加密了用户在浏览器
-查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下，
-我们只需要在加密时通过过滤器排除这些资源即可，可以采用以下的过滤器：
+#### 3. 静态文件浏览器无法加载完成问题
+由于静态文件被加密后文件体积变大, Spring Boot 会采用文件的大小作为 Content-Length 头返回给浏览器, 
+但实际上通过 XJar 加载解密后文件大小恢复了原本的大小, 所以浏览器认为还没接收完导致一直等待服务端.
+由此我们需要在加密时忽略静态文件的加密, 实际上静态文件也没加密的必要, 因为即便加密了用户在浏览器
+查看源代码也是能看到完整的源码.通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下, 
+我们只需要在加密时通过 exclude 方法排除这些资源即可, 可以参考以下例子：
 ```java
-
-```
-或通过插件配置排除
-```xml
-<plugin>
-    <groupId>com.github.core-lib</groupId>
-    <artifactId>xjar-maven-plugin</artifactId>
-    <version>2.0.9</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>build</goal>
-            </goals>
-            <phase>package</phase>
-            <!-- 或使用
-            <phase>install</phase>
-            -->
-            <configuration>
-                <password>io.xjar</password>
-                <excludes>
-                    <exclude>static/**</exclude>
-                    <exclude>META-INF/resources/**</exclude>
-                </excludes>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
+XCryptos.encryption()
+        .from("/path/to/read/plaintext.jar")
+        .use("password")
+        .exclude("/static/**/*")
+        .exclude("/META-INF/resources/**/*")
+        .to("/path/to/save/encrypted.jar");
 ```
 
 ## 插件集成
-[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
-GitHub: https://github.com/core-lib/xjar-maven-plugin
-
-#### 对于Spring Boot 项目或模块，该插件要后于 spring-boot-maven-plugin 插件执行，有两种方式：
-* 将插件放置于 spring-boot-maven-plugin 的后面，因为其插件的默认 phase 也是 package
-* 将插件的 phase 设置为 install（默认值为：package），打包命令采用 mvn clean install
+[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin) GitHub: https://github.com/core-lib/xjar-maven-plugin
 ```xml
 <project>
     <!-- 设置 jitpack.io 插件仓库 -->
@@ -188,7 +169,7 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>2.0.9</version>
+                <version>4.0.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -200,10 +181,21 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
                         -->
                         <configuration>
                             <password>io.xjar</password>
+                            <!-- optional
+                            <algorithm/>
+                            <keySize/>
+                            <ivSize/>
                             <includes>
-                                <include>com/company/project/**</include>
-                                <include>mapper/*Mapper.xml</include>
+                                <include/>
                             </includes>
+                            <excludes>
+                                <exclude/>
+                            </excludes>
+                            <sourceDir/>
+                            <sourceJar/>
+                            <targetDir/>
+                            <targetJar/>
+                            -->
                         </configuration>
                     </execution>
                 </executions>
@@ -211,15 +203,18 @@ GitHub: https://github.com/core-lib/xjar-maven-plugin
         </plugins>
     </build>
 </project>
-
 ```
+#### 对于Spring Boot 项目或模块, 该插件要后于 spring-boot-maven-plugin 插件执行, 有两种方式：
+* 将插件放置于 spring-boot-maven-plugin 的后面, 因为其插件的默认 phase 也是 package
+* 将插件的 phase 设置为 install（默认值为：package）, 打包命令采用 mvn clean install
+
 #### 也可以通过Maven命令执行
 ```text
 mvn xjar:build -Dxjar.password=io.xjar
 mvn xjar:build -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/target.xjar
 ```
 
-#### 但通常情况下是让XJar插件绑定到指定的phase中自动执行，这样就能在项目构建的时候自动构建出加密的包。
+#### 但通常情况下是让XJar插件绑定到指定的phase中自动执行, 这样就能在项目构建的时候自动构建出加密的包.
 ```text
 mvn clean package -Dxjar.password=io.xjar
 mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/target.xjar
@@ -228,11 +223,10 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 ## 参数说明
 | 参数名称 | 命令参数名称 | 参数说明 | 参数类型 | 缺省值 | 示例值 |
 | :------ | :----------- | :------ | :------ | :----- | :----- |
-| password | -Dxjar.password | 密码字符串 | String | 必须 | 任意字符串，io.xjar |
-| algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES | JDK内置加密算法，如：AES / DES |
-| keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定，56，128，256 |
-| ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定，128 |
-| mode | -Dxjar.mode | 加密模式 | int | 0 | 0：普通模式 1：危险模式（免密码启动）|
+| password | -Dxjar.password | 密码字符串 | String | 必须 | 任意字符串, io.xjar |
+| algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES/CBC/PKCS5Padding | JDK内置加密算法, 如：AES/CBC/PKCS5Padding / DES/CBC/PKCS5Padding |
+| keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定, 56, 128, 256 |
+| ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定, 128 |
 | sourceDir | -Dxjar.sourceDir | 源jar所在目录 | File | ${project.build.directory} | 文件目录 |
 | sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
 | targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |
@@ -240,8 +234,8 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 | includes | -Dxjar.includes | 需要加密的资源路径表达式 | String[] | 无 | com/company/project/** , mapper/*Mapper.xml , 支持Ant表达式 |
 | excludes | -Dxjar.excludes | 无需加密的资源路径表达式 | String[] | 无 | static/** , META-INF/resources/** , 支持Ant表达式 |
 
-#### 注意：
-当 includes 和 excludes 同时使用时即加密在includes的范围内且排除了excludes的资源。
+* 指定加密算法的时候密钥长度以及向量长度必须在算法可支持范围内, 具体加密算法的密钥及向量长度请自行百度或谷歌.
+* 当 includes 和 excludes 同时使用时即加密在includes的范围内且排除了excludes的资源.
 
 更多文档：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
@@ -260,21 +254,21 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
     1. 解决危险模式不支持ubuntu系统的问题
 * v2.0.3
     1. 过滤器泛型协变支持
-    2. xjar-maven-plugin 支持 includes 与 excludes 同时起效，当同时设置时即加密在includes范围内但又不在excludes范围内的资源
+    2. xjar-maven-plugin 支持 includes 与 excludes 同时起效, 当同时设置时即加密在includes范围内但又不在excludes范围内的资源
 * v2.0.2
-    1. 原生jar增加密钥文件的启动方式，解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
+    1. 原生jar增加密钥文件的启动方式, 解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
 * v2.0.1
-    1. 增加密钥文件的启动方式，解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
+    1. 增加密钥文件的启动方式, 解决类似 nohup 和 javaw 的后台启动方式无法通过控制台输入密码的问题
     2. 修复解密后没有删除危险模式中在MANIFEST.MF中保留的密钥信息
 * v2.0.0
     1. 支持内嵌JAR包资源的过滤加解密
-    2. 不兼容v1.x.x的过滤器表达式，统一采用相对于 classpath 资源URL的过滤表达式
+    2. 不兼容v1.x.x的过滤器表达式, 统一采用相对于 classpath 资源URL的过滤表达式
 * v1.1.4
-    1. 支持 Spring-Boot 以ZIP方式打包，即依赖外部化方式启动。
+    1. 支持 Spring-Boot 以ZIP方式打包, 即依赖外部化方式启动.
     2. 修复无加密资源时无法启动问题
 * v1.1.3
-    1. 实现危险模式加密启动，即不需要输入密码！
-    2. 修复无法使用 System.console(); 时用 new Scanner(System.in) 替代。
+    1. 实现危险模式加密启动, 即不需要输入密码！
+    2. 修复无法使用 System.console(); 时用 new Scanner(System.in) 替代.
 * v1.1.2
     1. 避免用户由于过滤器使用不当造成无法启动的风险
 * v1.1.1
@@ -291,15 +285,15 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 * v1.0.7
     1. 将sprint-boot-loader依赖设为provide
     2. 将XEntryFilter#filter(E entry); 变更为XEntryFilter#filtrate(E entry);
-    3. 将Encryptor/Decryptor的构造函数中接收多个过滤器参数变成接收一个，外部提供XEntryFilters工具类来实现多过滤器混合成一个，避免框架自身的逻辑限制了使用者的过滤逻辑实现。
+    3. 将Encryptor/Decryptor的构造函数中接收多个过滤器参数变成接收一个, 外部提供XEntryFilters工具类来实现多过滤器混合成一个, 避免框架自身的逻辑限制了使用者的过滤逻辑实现.
 * v1.0.6
     1. 采用[LoadKit](https://github.com/core-lib/loadkit)作为资源加载工具
 * v1.0.5
-    1. 支持并行类加载，需要JDK1.7+的支持，可提升多线程环境类加载的效率
-    2. Spring-Boot JAR 包加解密增加一个安全过滤器，避免无关资源被加密造成无法运行
-    3. XBoot / XJar 工具类中增加多个按文件路径加解密的方法，提升使用便捷性
+    1. 支持并行类加载, 需要JDK1.7+的支持, 可提升多线程环境类加载的效率
+    2. Spring-Boot JAR 包加解密增加一个安全过滤器, 避免无关资源被加密造成无法运行
+    3. XBoot / XJar 工具类中增加多个按文件路径加解密的方法, 提升使用便捷性
 * v1.0.4 小优化
-* v1.0.3 增加Spring-Boot的FatJar加解密时的缺省过滤器，避免由于没有提供过滤器时加密后的JAR包不能正常运行。
+* v1.0.3 增加Spring-Boot的FatJar加解密时的缺省过滤器, 避免由于没有提供过滤器时加密后的JAR包不能正常运行.
 * v1.0.2 修复中文及空格路径的问题
 * v1.0.1 升级detector框架
 * v1.0.0 第一个正式版发布
