@@ -41,7 +41,7 @@ JDK 1.7 +
 * 如果使用 JUnit 测试类来运行加密可以将 XJar 依赖的 scope 设置为 test.
 
 #### 2. 加密源码
-```ignorelang
+```java
 XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
         .use("io.xjar")
