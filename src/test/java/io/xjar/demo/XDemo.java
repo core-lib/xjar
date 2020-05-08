@@ -14,13 +14,10 @@ public class XDemo {
     @Test
     public void testEncrypt() throws Exception {
         XCryptos.encryption()
-                .from("/path/to/read/plaintext.jar")
-                .use("password")
-                .include("/package/name/**/*.class")
-                .include("/mapper/**/*.xml")
-                .exclude("/static/**/*")
-                .exclude("/conf/*")
-                .to("/path/to/save/encrypted.jar");
+                .from("C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0.jar")
+                .use("io.xjar")
+                .include("/cn/regent/juniu/wxapp/**/*")
+                .to("C:\\Users\\Payne\\IdeaProjects\\juniu-wxapp\\juniu-wxapp-web\\target\\juniu-wxapp-web-v1.0.0.xjar");
     }
 
     @Test

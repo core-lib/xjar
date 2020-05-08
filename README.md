@@ -91,11 +91,14 @@ XCryptos.encryption()
 </tbody>
 </table>
 
-
 #### 3. 编译脚本
 ```shell script
 go build xjar.go
 ```
+* 通过步骤2加密成功后XJar会在输出的JAR包同目录下生成一个名为 xjar.go 的的Go启动器源码文件.
+* 将 xjar.go 在不同的平台进行编译即可得到不同平台的启动器.
+* 用于编译的机器需要安装 Go 环境, 用于运行的机器则可不必安装 Go 环境.
+* 由于启动器自带JAR包防篡改校验, 故启动器无法通用, 即便密码相同也不行.
 
 #### 4. 启动运行
 ```shell script
@@ -105,6 +108,7 @@ xjar javaw -jar /path/to/encrypted.jar
 
 nohup xjar java -jar /path/to/encrypted.jar
 ```
+* 
 
 ## 注意事项
 ```xml
