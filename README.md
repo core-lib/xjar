@@ -122,7 +122,7 @@ nohup xjar java -jar /path/to/encrypted.jar
 <plugin>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-maven-plugin</artifactId>
-    <!-- 需要将executable和embeddedLaunchScript参数删除, 目前还不能支持对该模式Jar的加密！后面将会支持该方式的打包. 
+    <!-- 需要将executable和embeddedLaunchScript参数删除, 目前还不能支持对该模式Jar的加密！后面可能会支持该方式的打包. 
     <configuration>
         <executable>true</executable>
         <embeddedLaunchScript>...</embeddedLaunchScript>
@@ -132,8 +132,7 @@ nohup xjar java -jar /path/to/encrypted.jar
 ```
 
 #### 2. Spring Boot + JPA(Hibernate) 启动报错问题
-如果项目中使用了 JPA 且实现为Hibernate时, 由于Hibernate自己解析加密后的Jar文件, 所以无法正常启动.
-可以采用以下解决方案:
+如果项目中使用了 JPA 且实现为Hibernate时, 由于Hibernate自己解析加密后的Jar文件, 所以无法正常启动, 可以采用以下解决方案:
 1. clone [XJar-Agent-Hibernate](https://github.com/core-lib/xjar-agent-hibernate) , 使用 mvn clean package 编译出 xjar-agent-hibernate-${version}.jar 文件
 2. 采用 xjar java -javaagent:xjar-agent-hibernate-${version}.jar -jar your-spring-boot-app.jar 命令启动
 
@@ -224,7 +223,7 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 | 参数名称 | 命令参数名称 | 参数说明 | 参数类型 | 缺省值 | 示例值 |
 | :------ | :----------- | :------ | :------ | :----- | :----- |
 | password | -Dxjar.password | 密码字符串 | String | 必须 | 任意字符串, io.xjar |
-| algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES/CBC/PKCS5Padding | JDK内置加密算法, 如：AES/CBC/PKCS5Padding / DES/CBC/PKCS5Padding |
+| algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES/CBC/PKCS5Padding | JDK内置加密算法, 如：AES/CBC/PKCS5Padding 和 DES/CBC/PKCS5Padding |
 | keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定, 56, 128, 256 |
 | ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定, 128 |
 | sourceDir | -Dxjar.sourceDir | 源jar所在目录 | File | ${project.build.directory} | 文件目录 |
