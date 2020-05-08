@@ -46,7 +46,7 @@ XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
         .use("io.xjar")
         .include("/io/xjar/**/*.class")
-        .include("/mapper/**/*.xml")
+        .include("/mapper/**/*Mapper.xml")
         .exclude("/static/**/*")
         .exclude("/conf/*")
         .to("/path/to/save/encrypted.jar");
@@ -142,7 +142,7 @@ nohup xjar java -jar /path/to/encrypted.jar
 由此我们需要在加密时忽略静态文件的加密, 实际上静态文件也没加密的必要, 因为即便加密了用户在浏览器
 查看源代码也是能看到完整的源码.通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下, 
 我们只需要在加密时通过 exclude 方法排除这些资源即可, 可以参考以下例子：
-```java_holder_method_tree
+```java
 XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
         .use("io.xjar")
@@ -152,7 +152,8 @@ XCryptos.encryption()
 ```
 
 ## 插件集成
-[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin) GitHub: https://github.com/core-lib/xjar-maven-plugin
+#### Maven项目可通过集成 [xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin) 以免去每次加密都要执行一次上述的代码, 随着Maven构建自动生成加密后的JAR和Go启动器源码文件.
+[xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin) GitHub: https://github.com/core-lib/xjar-maven-plugin
 ```xml
 <project>
     <!-- 设置 jitpack.io 插件仓库 -->
@@ -236,7 +237,7 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 * 指定加密算法的时候密钥长度以及向量长度必须在算法可支持范围内, 具体加密算法的密钥及向量长度请自行百度或谷歌.
 * 当 includes 和 excludes 同时使用时即加密在includes的范围内且排除了excludes的资源.
 
-更多文档：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
+更多文档：[xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
 * 4.0.0
