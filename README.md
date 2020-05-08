@@ -4,16 +4,19 @@ GitHub: https://github.com/core-lib/xjar
 ### 基于对JAR包内资源的加密以及拓展ClassLoader来构建的一套程序加密启动，动态解密运行的方案，避免源码泄露或反编译。
 
 ## 功能特性
-* 无需侵入代码，只需要把编译好的JAR包通过工具加密即可。
+* 无代码侵入，只需要把编译好的JAR包通过工具加密即可。
 * 完全内存解密，杜绝源码以及字节码泄露或反编译。
 * 支持所有JDK内置加解密算法。
-* 可选择需要加解密的字节码或其他资源文件，避免计算资源浪费。
+* 可选择需要加解密的字节码或其他资源文件。
+* 支持Maven插件，加密更加便捷。
+* 动态生成Go启动器，保护密码不泄露。
 
 ## 环境依赖
 JDK 1.7 +
 
 ## 使用步骤
 
+#### 1. 添加依赖
 ```xml
 <project>
     <!-- 设置 jitpack.io 仓库 -->
@@ -28,158 +31,79 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>2.0.9</version>
+            <version>4.0.0</version>
+            <!-- <scope>test</scope> -->
         </dependency>
     </dependencies>
 </project>
 ```
+* 必须添加 https://jitpack.io Maven仓库
+* 如果使用 JUnit 测试类来运行加密可以将 XJar 依赖的 scope 设置为 test
 
+#### 2. 加密源码
 ```java
-// Spring-Boot Jar包加密
-String password = "io.xjar";
-XKey xKey = XKit.key(password);
-XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey);
+XCryptos.encryption()
+        .from("/path/to/read/plaintext.jar")
+        .use("password")
+        .include("/package/name/**/*.class")
+        .include("/mapper/**/*.xml")
+        .exclude("/static/**/*")
+        .exclude("/conf/*")
+        .to("/path/to/save/encrypted.jar");
+```
+<table>
+<thead>
+    <tr>
+        <th>方法名称</th><th>参数列表</th><th>是否必选</th><th>方法说明</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>from</td><td>(String jar)</td><td rowspan="2">二选一</td><td>指定待加密JAR包路径</td>
+    </tr>
+    <tr>
+        <td>from</td><td>(File jar)</td><td>指定待加密JAR包文件</td>
+    </tr>
+    <tr>
+        <td>use</td><td>(String password)</td><td rowspan="2">二选一</td><td>指定加密密码</td>
+    </tr>
+    <tr>
+        <td>use</td><td>(String algorithm, int keysize, int ivsize, String password)</td><td>指定高级加密密码</td>
+    </tr>
+    <tr>
+        <td>include</td><td>(String ant)</td><td>可多次调用</td><td>指定加密的资源相对于classpath的ANT路径表达式</td>
+    </tr>
+    <tr>
+        <td>include</td><td>(Pattern regex)</td><td>可多次调用</td><td>指定加密的资源相对于classpath的正则路径表达式</td>
+    </tr>
+    <tr>
+        <td>exclude</td><td>(String ant)</td><td>可多次调用</td><td>指定不加密的资源相对于classpath的ANT路径表达式</td>
+    </tr>
+    <tr>
+        <td>exclude</td><td>(Pattern regex)</td><td>可多次调用</td><td>指定不加密的资源相对于classpath的正则路径表达式</td>
+    </tr>
+    <tr>
+        <td>to</td><td>(String xJar)</td><td rowspan="2">二选一</td><td>指定加密后JAR包输出路径</td>
+    </tr>
+    <tr>
+        <td>to</td><td>(File xJar)</td><td>指定加密后JAR包输出文件</td>
+    </tr>
+</tbody>
+</table>
+
+
+#### 3. 编译脚本
+```shell script
+go build xjar.go
 ```
 
-```java
-// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
-String password = "io.xjar";
-XKey xKey = XKit.key(password);
-XBoot.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey, XConstants.MODE_DANGER);
-```
+#### 4. 启动运行
+```shell script
+xjar java -jar /path/to/encrypted.jar
 
-```java
-// Spring-Boot Jar包解密
-String password = "io.xjar";
-XKey xKey = XKit.key(password);
-XBoot.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", xKey);
-```
+xjar javaw -jar /path/to/encrypted.jar
 
-```java
-// Jar包加密
-String password = "io.xjar";
-XKey xKey = XKit.key(password);
-XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey);
-```
-
-```java
-// 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
-String password = "io.xjar";
-XKey xKey = XKit.key(password);
-XJar.encrypt("/path/to/read/plaintext.jar", "/path/to/save/encrypted.jar", xKey, XConstants.MODE_DANGER);
-```
-
-```java
-// Jar包解密
-String password = "io.xjar";
-XKey xKey = XKit.key(password);
-XJar.decrypt("/path/to/read/encrypted.jar", "/path/to/save/decrypted.jar", xKey);
-```
-
-## 启动命令
-```text
-// 命令行运行JAR 然后在提示输入密码的时候输入密码后按回车即可正常启动
-java -jar /path/to/encrypted.jar
-```
-```text
-// 也可以通过传参的方式直接启动，不太推荐这种方式，因为泄露的可能性更大！
-java -jar /path/to/encrypted.jar --xjar.password=PASSWORD
-```
-```text
-// 对于 nohup 或 javaw 这种后台启动方式，无法使用控制台来输入密码，推荐使用指定密钥文件的方式启动
-nohup java -jar /path/to/encrypted.jar --xjar.keyfile=/path/to/xjar.key
-```
-
-## 参数说明
-| 参数名称 | 参数含义 | 缺省值 | 说明 |
-| :------- | :------- | :----- | :--- |
-| --xjar.password |  密码 |
-| --xjar.algorithm | 密钥算法 | AES | 支持JDK所有内置算法，如AES / DES ... |
-| --xjar.keysize |   密钥长度 | 128 | 根据不同的算法选取不同的密钥长度。|
-| --xjar.ivsize |    向量长度 | 128 | 根据不同的算法选取不同的向量长度。|
-| --xjar.keyfile |   密钥文件 | ./xjar.key | 密钥文件相对或绝对路径。|
-
-## 密钥文件
-密钥文件采用properties的书写格式：
-```properties
-password: PASSWORD
-algorithm: ALGORITHM
-keysize: KEYSIZE
-ivsize: IVSIZE
-hold: HOLD
-```
-
-其中 algorithm/keysize/ivsize/hold 均有缺省值，当 hold 值不为 true | 1 | yes | y 时，密钥文件在读取后将自动删除。
-
-| 参数名称 | 参数含义 | 缺省值 | 说明 |
-| :------- | :------- | :----- | :--- |
-| password |  密码 | 无 | 密码字符串 |
-| algorithm | 密钥算法 | AES | 支持JDK所有内置算法，如AES / DES ... |
-| keysize |   密钥长度 | 128 | 根据不同的算法选取不同的密钥长度。|
-| ivsize |    向量长度 | 128 | 根据不同的算法选取不同的向量长度。|
-| hold | 是否保留 | false | 读取后是否保留密钥文件。|
-
-## 进阶用法
-默认情况下，即没有提供过滤器的时候，将会加密所有资源其中也包括项目其他依赖模块以及第三方依赖的 JAR 包资源，
-框架提供使用过滤器的方式来灵活指定需要加密的资源或排除不需要加密的资源。
-
-* #### 硬编码方式
-```java
-// 假如项目所有类的包名都以 com.company.project 开头，那只加密自身项目的字节码即可采用以下方式。
-XBoot.encrypt(
-        "/path/to/read/plaintext.jar", 
-        "/path/to/save/encrypted.jar", 
-        "io.xjar", 
-        (entry) -> {
-            String name = entry.getName();
-            String pkg = "com/company/project/";
-            return name.startsWith(pkg);
-        }
-    );
-```
-* #### 表达式方式
-```java
-// 1. 采用Ant表达式过滤器更简洁地来指定需要加密的资源。
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**"));
-
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("mapper/*Mapper.xml"));
-
-XBoot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**/*API.class"));
-
-// 2. 采用更精确的正则表达式过滤器。
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)"));
-
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("mapper/(.+)Mapper.xml"));
-
-XBoot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/company/project/(.+)/(.+)API.class"));
-```
-* #### 混合方式
-当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 XKit 工具类提供的多个过滤器混合方法混合成一个，XKit 提供 “与” “或” “非” 三种逻辑运算的混合。
-```java
-// 1. 与运算，即所有过滤器都满足的情况下才满足，mix() 方法返回的是this，可以继续拼接。
-XEntryFilter and = XKit.and()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("*/**.class"));
-
-XEntryFilter all = XKit.all()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("*/**.class"));
-
-// 2. 或运算，即任意一个过滤器满足的情况下就满足，mix() 方法返回的是this，可以继续拼接。
-XEntryFilter or = XKit.or()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("mapper/*Mapper.xml"));
-
-XEntryFilter any = XKit.any()
-    .mix(new XJarAntEntryFilter("com/company/project/**"))
-    .mix(new XJarAntEntryFilter("mapper/*Mapper.xml"));
-
-// 3. 非运算，即除此之外都满足，该例子中即排除项目或其他模块和第三方依赖jar中的静态文件。
-XEntryFilter not  = XKit.not(
-        XKit.or()
-            .mix(new XJarAntEntryFilter("static/**"))
-            .mix(new XJarAntEntryFilter("META-INF/resources/**"))
-);
+nohup xjar java -jar /path/to/encrypted.jar
 ```
 
 ## 注意事项
@@ -209,11 +133,7 @@ XEntryFilter not  = XKit.not(
 查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下，
 我们只需要在加密时通过过滤器排除这些资源即可，可以采用以下的过滤器：
 ```java
-XKit.not(
-        XKit.or()
-            .mix(new XJarAntEntryFilter("static/**"))
-            .mix(new XJarAntEntryFilter("META-INF/resources/**"))
-);
+
 ```
 或通过插件配置排除
 ```xml

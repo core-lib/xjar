@@ -13,10 +13,20 @@ import java.io.File;
  */
 public class XCryptos extends XFilters implements XConstants {
 
+    /**
+     * Jar 包加密
+     *
+     * @return 加密
+     */
     public static XEncryption encryption() {
         return new XEncryption();
     }
 
+    /**
+     * Jar 包解密
+     *
+     * @return 解密
+     */
     public static XDecryption decryption() {
         return new XDecryption();
     }

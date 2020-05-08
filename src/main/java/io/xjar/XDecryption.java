@@ -24,15 +24,33 @@ public class XDecryption {
     private XAnyEntryFilter<JarArchiveEntry> includes = XKit.any();
     private XAllEntryFilter<JarArchiveEntry> excludes = XKit.all();
 
+    /**
+     * 指定密文包路径
+     *
+     * @param xJar 密文包路径
+     * @return {@code this}
+     */
     public XDecryption from(String xJar) {
         return from(new File(xJar));
     }
 
+    /**
+     * 指定密文包文件
+     *
+     * @param xJar 密文包文件
+     * @return {@code this}
+     */
     public XDecryption from(File xJar) {
         this.xJar = xJar;
         return this;
     }
 
+    /**
+     * 指定密码
+     *
+     * @param password 密码
+     * @return {@code this}
+     */
     public XDecryption use(String password) {
         try {
             this.key = XKit.key(password);
@@ -42,6 +60,15 @@ public class XDecryption {
         }
     }
 
+    /**
+     * 指定高级密码
+     *
+     * @param algorithm 算法名称
+     * @param keysize   密钥长度
+     * @param ivsize    向量长度
+     * @param password  解密密码
+     * @return {@code this}
+     */
     public XDecryption use(String algorithm, int keysize, int ivsize, String password) {
         try {
             this.key = XKit.key(algorithm, keysize, ivsize, password);
@@ -51,30 +78,66 @@ public class XDecryption {
         }
     }
 
+    /**
+     * 指定包含资源的ANT表达式, 可指定多个.
+     *
+     * @param ant 包含资源的ANT表达式
+     * @return {@code this}
+     */
     public XDecryption include(String ant) {
         includes.mix(ant(ant));
         return this;
     }
 
+    /**
+     * 指定包含资源的正则表达式, 可指定多个.
+     *
+     * @param regex 包含资源的正则表达式
+     * @return {@code this}
+     */
     public XDecryption include(Pattern regex) {
         includes.mix(regex(regex.pattern()));
         return this;
     }
 
+    /**
+     * 指定排除资源的ANT表达式, 可指定多个.
+     *
+     * @param ant 排除资源的ANT表达式
+     * @return {@code this}
+     */
     public XDecryption exclude(String ant) {
         excludes.mix(not(ant(ant)));
         return this;
     }
 
+    /**
+     * 指定排除资源的正则表达式, 可指定多个.
+     *
+     * @param regex 排除资源的正则表达式
+     * @return {@code this}
+     */
     public XDecryption exclude(Pattern regex) {
         excludes.mix(not(regex(regex.pattern())));
         return this;
     }
 
+    /**
+     * 指定原文包路径, 并执行解密.
+     *
+     * @param jar 原文包路径
+     * @throws Exception 解密异常
+     */
     public void to(String jar) throws Exception {
         to(new File(jar));
     }
 
+    /**
+     * 指定原文包文件, 并执行解密.
+     *
+     * @param jar 原文包文件
+     * @throws Exception 解密异常
+     */
     public void to(File jar) throws Exception {
         if (xJar == null) {
             throw new IllegalArgumentException("xJar to decrypt is null. [please call from(String xJar) or from(File xJar) before]");
