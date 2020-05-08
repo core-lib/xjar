@@ -41,7 +41,7 @@ JDK 1.7 +
 * 如果使用 JUnit 测试类来运行加密可以将 XJar 依赖的 scope 设置为 test.
 
 #### 2. 加密源码
-```java
+```ignorelang
 XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
         .use("io.xjar")
@@ -142,10 +142,10 @@ nohup xjar java -jar /path/to/encrypted.jar
 由此我们需要在加密时忽略静态文件的加密, 实际上静态文件也没加密的必要, 因为即便加密了用户在浏览器
 查看源代码也是能看到完整的源码.通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下, 
 我们只需要在加密时通过 exclude 方法排除这些资源即可, 可以参考以下例子：
-```java
+```ignorelang
 XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
-        .use("password")
+        .use("io.xjar")
         .exclude("/static/**/*")
         .exclude("/META-INF/resources/**/*")
         .to("/path/to/save/encrypted.jar");
@@ -239,6 +239,17 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 更多文档：[XJar-Maven-Plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* 4.0.0
+    1. 加解密支持填充模式
+    2. 加解密支持IV-Parameter
+    3. 升级启动器
+    4. 移除危险模式
+    5. 拼写错误修正
+    6. 提供智能加密/解密器 避免使用失误
+    7. 删除多余的加密/解密方法
+    8. 修复有安全校验的nested-lib在不加密其内部资源情况下启动时也无法通过校验的问题
+    9. 去除命令启动和手输密码启动的方式只保留Go启动器的模式
+    10. 增加可读性更强的Fluent风格的加密/解密API
 * 2.0.9
     1. 修复XJar类加载器加载的类没有 ProtectionDomain 以及 CodeSource 的问题
     2. 去除版本号前置的"v"
