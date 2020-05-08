@@ -142,7 +142,7 @@ nohup xjar java -jar /path/to/encrypted.jar
 由此我们需要在加密时忽略静态文件的加密, 实际上静态文件也没加密的必要, 因为即便加密了用户在浏览器
 查看源代码也是能看到完整的源码.通常情况下静态文件都会放在 static/ 和 META-INF/resources/ 目录下, 
 我们只需要在加密时通过 exclude 方法排除这些资源即可, 可以参考以下例子：
-```ignorelang
+```java_holder_method_tree
 XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
         .use("io.xjar")
