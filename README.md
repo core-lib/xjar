@@ -68,7 +68,7 @@ XCryptos.encryption()
         <td>use</td><td>(String password)</td><td rowspan="2">二选一</td><td>指定加密密码</td>
     </tr>
     <tr>
-        <td>use</td><td>(String algorithm, int keysize, int ivsize, String password)</td><td>指定高级加密密码</td>
+        <td>use</td><td>(String algorithm, int keysize, int ivsize, String password)</td><td>指定加密算法及加密密码</td>
     </tr>
     <tr>
         <td>include</td><td>(String ant)</td><td>可多次调用</td><td>指定要加密的资源相对于classpath的ANT路径表达式</td>
