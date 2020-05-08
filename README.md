@@ -71,10 +71,10 @@ XCryptos.encryption()
         <td>use</td><td>(String algorithm, int keysize, int ivsize, String password)</td><td>指定高级加密密码</td>
     </tr>
     <tr>
-        <td>include</td><td>(String ant)</td><td>可多次调用</td><td>指定加密的资源相对于classpath的ANT路径表达式</td>
+        <td>include</td><td>(String ant)</td><td>可多次调用</td><td>指定要加密的资源相对于classpath的ANT路径表达式</td>
     </tr>
     <tr>
-        <td>include</td><td>(Pattern regex)</td><td>可多次调用</td><td>指定加密的资源相对于classpath的正则路径表达式</td>
+        <td>include</td><td>(Pattern regex)</td><td>可多次调用</td><td>指定要加密的资源相对于classpath的正则路径表达式</td>
     </tr>
     <tr>
         <td>exclude</td><td>(String ant)</td><td>可多次调用</td><td>指定不加密的资源相对于classpath的ANT路径表达式</td>
@@ -83,10 +83,10 @@ XCryptos.encryption()
         <td>exclude</td><td>(Pattern regex)</td><td>可多次调用</td><td>指定不加密的资源相对于classpath的正则路径表达式</td>
     </tr>
     <tr>
-        <td>to</td><td>(String xJar)</td><td rowspan="2">二选一</td><td>指定加密后JAR包输出路径</td>
+        <td>to</td><td>(String xJar)</td><td rowspan="2">二选一</td><td>指定加密后JAR包输出路径, 并执行加密.</td>
     </tr>
     <tr>
-        <td>to</td><td>(File xJar)</td><td>指定加密后JAR包输出文件</td>
+        <td>to</td><td>(File xJar)</td><td>指定加密后JAR包输出文件, 并执行加密.</td>
     </tr>
 </tbody>
 </table>
