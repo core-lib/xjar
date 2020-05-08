@@ -44,8 +44,8 @@ JDK 1.7 +
 ```java
 XCryptos.encryption()
         .from("/path/to/read/plaintext.jar")
-        .use("password")
-        .include("/package/name/**/*.class")
+        .use("io.xjar")
+        .include("/io/xjar/**/*.class")
         .include("/mapper/**/*.xml")
         .exclude("/static/**/*")
         .exclude("/conf/*")
@@ -230,7 +230,7 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 | sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
 | targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |
 | targetJar | -Dxjar.targetJar | 目标jar名称 | String | ${project.build.finalName}.xjar | 文件名称 |
-| includes | -Dxjar.includes | 需要加密的资源路径表达式 | String[] | 无 | com/company/project/** , mapper/*Mapper.xml , 支持Ant表达式 |
+| includes | -Dxjar.includes | 需要加密的资源路径表达式 | String[] | 无 | io/xjar/** , mapper/*Mapper.xml , 支持Ant表达式 |
 | excludes | -Dxjar.excludes | 无需加密的资源路径表达式 | String[] | 无 | static/** , META-INF/resources/** , 支持Ant表达式 |
 
 * 指定加密算法的时候密钥长度以及向量长度必须在算法可支持范围内, 具体加密算法的密钥及向量长度请自行百度或谷歌.
