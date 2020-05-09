@@ -153,6 +153,9 @@ XCryptos.encryption()
 
 #### 4. JDK-9及以上版本由于模块化导致XJar无法使用 jdk.internal.loader 包的问题解决方案
 在启动时添加参数 --add-opens java.base/jdk.internal.loader=ALL-UNNAMED
+```shell script
+xjar java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -jar /path/to/encrypted.jar
+```
 
 ## 插件集成
 #### Maven项目可通过集成 [xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin) 以免去每次加密都要执行一次上述的代码, 随着Maven构建自动生成加密后的JAR和Go启动器源码文件.
