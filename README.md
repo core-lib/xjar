@@ -31,7 +31,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.1</version>
             <!-- <scope>test</scope> -->
         </dependency>
     </dependencies>
@@ -243,6 +243,8 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 更多文档：[xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* 4.0.1
+    1. 兼容JDK-9及更新版本的模块化
 * 4.0.0
     1. 加解密支持填充模式
     2. 加解密支持IV-Parameter
