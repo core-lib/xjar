@@ -250,7 +250,7 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 
 ## 版本记录
 * 4.0.1
-    1. 兼容JDK-9及更新版本的模块化
+    1. 兼容JDK-9及以上版本
 * 4.0.0
     1. 加解密支持填充模式
     2. 加解密支持IV-Parameter
