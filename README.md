@@ -175,7 +175,7 @@ xjar java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -jar /path/to/en
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.1</version>
                 <executions>
                     <execution>
                         <goals>
