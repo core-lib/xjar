@@ -157,6 +157,17 @@ XCryptos.encryption()
 xjar java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -jar /path/to/encrypted.jar
 ```
 
+#### 5. 由于使用了阿里云Maven镜像导致无法从 jitpack.io 下载 XJar 依赖的问题
+参考如下设置, 在镜像配置的 mirrorOf 元素中加入 ,!jitpack.io 结尾.
+```xml
+<mirror>
+    <id>alimaven</id>
+    <mirrorOf>central,!jitpack.io</mirrorOf>
+    <name>aliyun maven</name>
+    <url>http://maven.aliyun.com/nexus/content/repositories/central/</url>
+</mirror>
+```
+
 ## 插件集成
 #### Maven项目可通过集成 [xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin) 以免去每次加密都要执行一次上述的代码, 随着Maven构建自动生成加密后的JAR和Go启动器源码文件.
 [xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin) GitHub: https://github.com/core-lib/xjar-maven-plugin
