@@ -31,13 +31,11 @@ public class XExtLauncher extends PropertiesLauncher {
 
     /**
      * 查看源码，spring boot 2.3.x 不再调用createClassLoader(List<Archive> archives)，故修改launch方法更合适
-     *
      * @param args
      * @param launchClass
      * @param classLoader
      * @throws Exception
      */
-
     @Override
     protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
         URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
@@ -47,13 +45,4 @@ public class XExtLauncher extends PropertiesLauncher {
         createMainMethodRunner(launchClass, args, classLoader).run();
     }
 
-    /**
-     * don't use it
-
-     @Override protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
-     URLClassLoader classLoader = (URLClassLoader) super.createClassLoader(archives);
-     URL[] urls = classLoader.getURLs();
-     return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
-     }
-     **/
 }

@@ -27,6 +27,14 @@ public class XJarLauncher extends JarLauncher {
         launch(xLauncher.args);
     }
 
+    /**
+     * 查看源码，spring boot 2.3.x 不再调用createClassLoader(List<Archive> archives)，故修改launch方法更合适
+     *
+     * @param args
+     * @param launchClass
+     * @param classLoader
+     * @throws Exception
+     */
     @Override
     protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
         URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
@@ -35,13 +43,5 @@ public class XJarLauncher extends JarLauncher {
         Thread.currentThread().setContextClassLoader(cl);
         createMainMethodRunner(launchClass, args, classLoader).run();
     }
-
-    /**
-     * don't use it
-
-     @Override protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-     return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
-     }
-     */
 
 }
