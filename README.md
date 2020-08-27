@@ -116,7 +116,7 @@ nohup /path/to/xjar /path/to/java [OPTIONS] -jar /path/to/encrypted.jar [ARGS]
 * 若Go启动器可执行文件名(xjar)不在当前命令行所在目录则要通过绝对路径或相对路径指定.
 * 仅支持通过 -jar 方式启动, 不支持-cp或-classpath的方式.
 * -jar 后面必须紧跟着启动的加密jar文件路径
-* 例子: 如果当前命令行就在 xjar 所在目录, java 环境变量也设置了, ./xjar java -Xms256m -Xmx1024m -jar /path/to/encrypted.jar
+* 例子: 如果当前命令行就在 xjar 所在目录, java 环境变量也设置了: ./xjar java -Xms256m -Xmx1024m -jar /path/to/encrypted.jar
 
 ## 注意事项
 #### 1. 不兼容 spring-boot-maven-plugin 的 executable = true 以及 embeddedLaunchScript
