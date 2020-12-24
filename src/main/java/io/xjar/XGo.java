@@ -5,7 +5,9 @@ import io.xjar.key.XKey;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,31 +36,34 @@ public class XGo {
         variables.put("xKey.ivsize", convert(ivsize));
         variables.put("xKey.password", convert(password));
 
-        URL url = XGo.class.getClassLoader().getResource("xjar/xjar.go");
-        if (url == null) {
-            throw new IOException("could not find xjar.go");
-        }
-        String dir = xJar.getParent();
-        File src = new File(dir, "xjar.go");
-        try (
-                InputStream in = url.openStream();
-                Reader reader = new InputStreamReader(in);
-                BufferedReader br = new BufferedReader(reader);
-                OutputStream out = new FileOutputStream(src);
-                Writer writer = new OutputStreamWriter(out);
-                BufferedWriter bw = new BufferedWriter(writer)
-        ) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                for (Map.Entry<String, String> variable : variables.entrySet()) {
-                    line = line.replace("#{" + variable.getKey() + "}", variable.getValue());
-                }
-                bw.write(line);
-                bw.write(CLRF);
+        List<String> templates = Arrays.asList("xjar.go", "xjar_agentable.go");
+        for (String template : templates) {
+            URL url = XGo.class.getClassLoader().getResource("xjar/" + template);
+            if (url == null) {
+                throw new IOException("could not find xjar/" + template + " in classpath");
             }
-            bw.flush();
-            writer.flush();
-            out.flush();
+            String dir = xJar.getParent();
+            File src = new File(dir, template);
+            try (
+                    InputStream in = url.openStream();
+                    Reader reader = new InputStreamReader(in);
+                    BufferedReader br = new BufferedReader(reader);
+                    OutputStream out = new FileOutputStream(src);
+                    Writer writer = new OutputStreamWriter(out);
+                    BufferedWriter bw = new BufferedWriter(writer)
+            ) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    for (Map.Entry<String, String> variable : variables.entrySet()) {
+                        line = line.replace("#{" + variable.getKey() + "}", variable.getValue());
+                    }
+                    bw.write(line);
+                    bw.write(CLRF);
+                }
+                bw.flush();
+                writer.flush();
+                out.flush();
+            }
         }
     }
 

@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 var xJar = XJar{
@@ -54,18 +53,6 @@ func main() {
 	}
 	if bytes.Compare(SHA1, xJar.sha1) != 0 {
 		panic(errors.New("invalid jar with SHA-1"))
-	}
-
-	// check agent forbid
-	{
-		args := os.Args
-		l := len(args)
-		for i := 0; i < l; i++ {
-			arg := args[i]
-			if strings.HasPrefix(arg, "-javaagent:") {
-				panic(errors.New("agent forbidden"))
-			}
-		}
 	}
 
 	// start java application

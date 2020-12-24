@@ -31,7 +31,7 @@ JDK 1.7 +
         <dependency>
             <groupId>com.github.core-lib</groupId>
             <artifactId>xjar</artifactId>
-            <version>4.0.1</version>
+            <version>4.0.2</version>
             <!-- <scope>test</scope> -->
         </dependency>
     </dependencies>
@@ -188,7 +188,7 @@ xjar java --add-opens java.base/jdk.internal.loader=ALL-UNNAMED -jar /path/to/en
             <plugin>
                 <groupId>com.github.core-lib</groupId>
                 <artifactId>xjar-maven-plugin</artifactId>
-                <version>4.0.1</version>
+                <version>4.0.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -262,6 +262,8 @@ mvn clean install -Dxjar.password=io.xjar -Dxjar.targetDir=/directory/to/save/ta
 更多文档：[xjar-maven-plugin](https://github.com/core-lib/xjar-maven-plugin)
 
 ## 版本记录
+* 4.0.2
+    1. 安全性升级
 * 4.0.1
     1. 兼容JDK-9及以上版本
 * 4.0.0
