@@ -29,10 +29,20 @@ public class XExtLauncher extends PropertiesLauncher {
         launch(xLauncher.args);
     }
 
+    /**
+     * 查看源码，spring boot 2.3.x 不再调用createClassLoader(List<Archive> archives)，故修改launch方法更合适
+     * @param args
+     * @param launchClass
+     * @param classLoader
+     * @throws Exception
+     */
     @Override
-    protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
-        URLClassLoader classLoader = (URLClassLoader) super.createClassLoader(archives);
-        URL[] urls = classLoader.getURLs();
-        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+    protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
+        URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+        URL[] urls = urlClassLoader.getURLs();
+        ClassLoader cl = new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+        Thread.currentThread().setContextClassLoader(cl);
+        createMainMethodRunner(launchClass, args, classLoader).run();
     }
+
 }

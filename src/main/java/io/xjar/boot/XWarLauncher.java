@@ -4,6 +4,7 @@ import io.xjar.XLauncher;
 import org.springframework.boot.loader.WarLauncher;
 
 import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * Spring-Boot Jar 启动器
@@ -26,9 +27,20 @@ public class XWarLauncher extends WarLauncher {
         launch(xLauncher.args);
     }
 
+    /**
+     * 查看源码，spring boot 2.3.x 不再调用createClassLoader(List<Archive> archives)，故修改launch方法更合适
+     *
+     * @param args
+     * @param launchClass
+     * @param classLoader
+     * @throws Exception
+     */
     @Override
-    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+    protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
+        URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+        URL[] urls = urlClassLoader.getURLs();
+        ClassLoader cl = new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+        Thread.currentThread().setContextClassLoader(cl);
+        createMainMethodRunner(launchClass, args, classLoader).run();
     }
-
 }
