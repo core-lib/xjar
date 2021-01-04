@@ -2,11 +2,8 @@ package io.xjar.boot;
 
 import io.xjar.XLauncher;
 import org.springframework.boot.loader.PropertiesLauncher;
-import org.springframework.boot.loader.archive.Archive;
 
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
 
 /**
  * Spring-Boot Properties 启动器
@@ -30,9 +27,7 @@ public class XExtLauncher extends PropertiesLauncher {
     }
 
     @Override
-    protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
-        URLClassLoader classLoader = (URLClassLoader) super.createClassLoader(archives);
-        URL[] urls = classLoader.getURLs();
+    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
         return new XBootClassLoader(urls, this.getClass().getClassLoader(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
     }
 }
