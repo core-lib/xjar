@@ -4,6 +4,7 @@ import io.loadkit.Loaders;
 import io.loadkit.Resource;
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
+import org.apache.commons.compress.utils.Sets;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,9 @@ import java.util.Set;
  * 2018/11/25 10:34
  */
 public class XInjector {
+    
+    public static HashSet<String> ignoreClass = Sets.newHashSet("io/xjar/XInjector.class", "io/xjar/XGo.class",
+            "io/xjar/XJar.class");
 
     /**
      * 往JAR包中注入XJar框架的classes
@@ -31,6 +35,9 @@ public class XInjector {
         while (resources.hasMoreElements()) {
             Resource resource = resources.nextElement();
             String name = resource.getName();
+            if (ignoreClass.contains(name)) {
+                continue;
+            }
             String directory = name.substring(0, name.lastIndexOf('/') + 1);
             if (directories.add(directory)) {
                 JarArchiveEntry xDirEntry = new JarArchiveEntry(directory);
