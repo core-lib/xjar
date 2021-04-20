@@ -15,10 +15,11 @@ import java.util.Set;
 /**
  * XJAR API
  *
- * @author Payne 646742615@qq.com 2018/11/25 10:34
+ * @author Payne 646742615@qq.com
+ * 2018/11/25 10:34
  */
 public class XInjector {
-
+    
     public static HashSet<String> ignoreClass = Sets.newHashSet("io/xjar/XInjector.class", "io/xjar/XGo.class",
             "io/xjar/XJar.class");
 
