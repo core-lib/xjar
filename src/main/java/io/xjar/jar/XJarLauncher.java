@@ -10,6 +10,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -46,9 +48,22 @@ public class XJarLauncher implements XConstants {
             if (path == null) {
                 throw new IllegalStateException("Unable to determine code source archive");
             }
-            File jar = new File(path);
-            URL url = jar.toURI().toURL();
-            xJarClassLoader = new XJarClassLoader(new URL[]{url}, classLoader.getParent(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+            String classPath = getJavaClassPath();
+            if (null == classPath || classPath.isEmpty()) {
+                File jar = new File(path);
+                URL url = jar.toURI().toURL();
+                xJarClassLoader = new XJarClassLoader(new URL[]{url}, classLoader.getParent(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+            } else {
+                List<String> jarPathList = analyzeClassPath(classPath);
+                URL[] urlArray = new URL[jarPathList.size()];
+                for (int i = 0; i < jarPathList.size(); i++) {
+                    String single = jarPathList.get(i);
+                    File classPathJar = new File(single);
+                    URL classPathUrl = classPathJar.toURI().toURL();
+                    urlArray[i] = classPathUrl;
+                }
+                xJarClassLoader = new XJarClassLoader(urlArray, classLoader.getParent(), xLauncher.xDecryptor, xLauncher.xEncryptor, xLauncher.xKey);
+            }
         }
 
         Thread.currentThread().setContextClassLoader(xJarClassLoader);
@@ -66,4 +81,22 @@ public class XJarLauncher implements XConstants {
         mainMethod.invoke(null, new Object[]{xLauncher.args});
     }
 
+    private List<String> analyzeClassPath(String classPath) {
+        List<String> jarPathList = new ArrayList<>();
+        String[] jarPathArryay = classPath.split(File.pathSeparator);
+        if (jarPathArryay.length == 0) {
+            return jarPathList;
+        }
+        for (String jarPath : jarPathArryay) {
+            if (null == jarPath || jarPath.trim().isEmpty()) {
+                continue;
+            }
+            jarPathList.add(jarPath.trim());
+        }
+        return jarPathList;
+    }
+
+    private String getJavaClassPath() {
+        return System.getProperty("java.class.path");
+    }
 }
