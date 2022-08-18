@@ -78,12 +78,24 @@ func main() {
 		xKey.password, {13, 10},
 	}, []byte{})
 	cmd := exec.Command(java, args...)
-	cmd.Stdin = bytes.NewReader(key)
+	
+	stdin, err := cmd.StdinPipe()
+	if err != nil {
+		fmt.Printf("[*] launch fail:%v", err)
+		return
+	}
+
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err = cmd.Run()
-	if err != nil {
-		panic(err)
+
+	if err = cmd.Start(); err != nil {
+		fmt.Printf("[*] launch start fail:%v", err)
+		return
+	}
+	
+	_, _ = stdin.Write(key)
+	if err = cmd.Wait(); err != nil {
+		fmt.Printf("[*] launch exit with:%v", err)
 	}
 }
 
