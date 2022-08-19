@@ -93,7 +93,13 @@ func main() {
 		return
 	}
 	
-	_, _ = stdin.Write(key)
+	go func() {
+		stdin.Write(key)
+
+		io.Copy(stdin, os.Stdin)
+		fmt.Printf("[*] launch stdin over")
+	}()
+	
 	if err = cmd.Wait(); err != nil {
 		fmt.Printf("[*] launch exit with:%v", err)
 	}
